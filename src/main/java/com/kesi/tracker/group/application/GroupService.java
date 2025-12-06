@@ -5,14 +5,14 @@ import com.kesi.tracker.group.domain.Group;
 import java.util.List;
 
 public interface GroupService {
-    Group save(Group group, Long currentUserId);
-    Group getById(Long id);
-    List<Group> searchByName(String name);
-    List<Group> searchByDescription(String description);
+    Group create(Group group);
+    Group getByGid(Long gid);
+    List<Group> searchPublicByName(String name);
 
-    void join(Long groupId, Long currentUserId);
-    void invite(Long groupId, Long currentUserId);
+    void join(Long groupId, Long currentUid);
+    void invite(Long groupId, Long currentUid);
+    void request(Long groupId, Long currentUid);
 
-    void registerHost(Long groupId, Long currentUserId, Long registerUserId);
-    void unregisterHost(Long groupId, Long currentUserId, Long unregisterUserId);
+    void registerHost(Long groupId, Long currentUid, Long registerUid);
+    void unregisterHost(Long groupId, Long currentUid, Long unregisterUid);
 }

@@ -1,7 +1,10 @@
 package com.kesi.tracker.track.domain;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class Track {
     private Long id;
     private Long gid;

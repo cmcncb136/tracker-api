@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public interface GroupRepository {
     List<Group> searchByName(String name);
-    List<Group> searchByNameAndPublic(String name);
-    Optional<Group> searchByGid(Long gid);
+    List<Group> searchPublicByName(String name);
+    Optional<Group> findByGid(Long gid);
     List<Group> findAll();
     List<Group> findByUserId(Long userId);
 
