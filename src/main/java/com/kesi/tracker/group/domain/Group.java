@@ -1,11 +1,12 @@
 package com.kesi.tracker.group.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
+@Builder
 public class Group {
     private Long gid;
     private String name;

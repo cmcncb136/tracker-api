@@ -1,8 +1,6 @@
 package com.kesi.tracker.track.application;
 
 import com.kesi.tracker.group.application.GroupMemberService;
-import com.kesi.tracker.group.application.GroupService;
-import com.kesi.tracker.group.domain.Group;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
@@ -10,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
