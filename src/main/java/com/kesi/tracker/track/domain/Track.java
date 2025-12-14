@@ -1,14 +1,16 @@
 package com.kesi.tracker.track.domain;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Builder
 public class Track {
     private Long id;
     private Long gid;
-    private int hostId;
+    private Long hostId;
 
     private int capacity; //최대 수용인원
     private int followerCnt;

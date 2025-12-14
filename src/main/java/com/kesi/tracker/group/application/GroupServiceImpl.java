@@ -27,7 +27,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<Group> searchPublicByName(String name) {
-        return groupRepository.searchPublicByName(name);
+        return groupRepository.findByNameContainingIgnoreCaseAndAccess(name, AccessType.PUBLIC);
     }
 
     @Override
