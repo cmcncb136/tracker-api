@@ -1,6 +1,6 @@
-package com.kesi.tracker.nofitication.application.repository;
+package com.kesi.tracker.notification.application.repository;
 
-import com.kesi.tracker.nofitication.domain.Notification;
+import com.kesi.tracker.notification.domain.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

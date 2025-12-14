@@ -1,4 +1,4 @@
-package com.kesi.tracker.nofitication.domain;
+package com.kesi.tracker.notification.domain;
 
 public enum NotificationType {
     INFO,
