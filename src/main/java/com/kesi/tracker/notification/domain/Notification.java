@@ -25,4 +25,9 @@ public class Notification {
 
     /** 타입별 추가 데이터를 넣기 위한 확장 영역 */
     private Map<String, Object> metadata;
+
+    public void read() {
+        this.readAt = LocalDateTime.now();
+        this.isRead = true;
+    }
 }
