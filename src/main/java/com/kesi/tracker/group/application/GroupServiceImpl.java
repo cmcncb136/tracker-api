@@ -3,17 +3,24 @@ package com.kesi.tracker.group.application;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
+import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
+import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
+    private final UserService userService;
 
     @Override
     public Group create(Group group) {
@@ -41,10 +48,23 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void invite(Long groupId, Long currentUserId) {
+    public void invite(Long groupId, String invitedUserEmail, Long currentUserId) {
+        GroupMember currentGroupMember
+                = groupMemberRepository.findByGidAndUid(groupId, currentUserId)
+                .orElseThrow(() -> new RuntimeException("GroupMember not found"));
+
+        User invitedUser = userService.getByEmail(invitedUserEmail);
+        Group group = getByGid(groupId);
+
+        if(!currentGroupMember.isLeader()) throw new RuntimeException("초대는 리더만 할 수 있습니다");
+
+        if(groupMemberRepository.findByGidAndUid(currentGroupMember.getGid(), invitedUser.getId()).isPresent())
+            throw new RuntimeException("이미 그룹 멤버이거나 초대가 진행 중입니다."); //Todo. block 등의 경우 보완 로직 필요
+
+
         GroupMember groupMember = GroupMember.builder()
                 .gid(groupId)
-                .uid(currentUserId)
+                .uid(invitedUser.getId())
                 .role(GroupRole.MEMBER)
                 .trackRole(GroupTrackRole.FOLLOWER)
                 .status(GroupMemberStatus.INVITED)
@@ -53,6 +73,14 @@ public class GroupServiceImpl implements GroupService {
                 .build();
 
         groupMemberRepository.save(groupMember);
+
+        applicationEventPublisher.publishEvent(
+                GroupMemberInvitedEvent.builder()
+                        .invitedUserId(invitedUser.getId())
+                        .inviterId(currentUserId)
+                        .groupName(group.getName())
+                        .gid(groupId)
+                .build());
     }
 
     @Override

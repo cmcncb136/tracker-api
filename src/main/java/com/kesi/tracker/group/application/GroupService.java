@@ -10,7 +10,7 @@ public interface GroupService {
     List<Group> searchPublicByName(String name);
 
     void join(Long groupId, Long currentUid);
-    void invite(Long groupId, Long currentUid);
+    void invite(Long groupId, String invitedUserEmail, Long currentUid);
     void request(Long groupId, Long currentUid);
 
     void registerHost(Long groupId, Long currentUid, Long registerUid);

@@ -19,8 +19,11 @@ public class Notification {
     private String confirmUrl;
     private String cancelUrl;
 
-    private Boolean isRead;
-    private LocalDateTime createdAt;
+    @Builder.Default
+    private Boolean isRead = false;
+    @Builder.Default
+    private LocalDateTime createdAt =  LocalDateTime.now();
+
     private LocalDateTime readAt;
 
     /** 타입별 추가 데이터를 넣기 위한 확장 영역 */
