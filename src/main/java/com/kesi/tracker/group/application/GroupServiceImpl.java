@@ -3,10 +3,12 @@ package com.kesi.tracker.group.application;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
+import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final GroupMemberRepository groupMemberRepository;
@@ -85,6 +88,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void request(Long groupId, Long currentUserId) {
+        User user = userService.getById(currentUserId);
+        Group group = getByGid(groupId);
+
+        List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
+
+        if(leaderGroupMembers.isEmpty()) {
+            log.error("해당 그룹에 리더가 존재하지 않습니다..? groupId : {}", groupId);
+        }
+
         GroupMember groupMember = GroupMember.builder()
                 .gid(groupId)
                 .uid(currentUserId)
@@ -96,8 +108,20 @@ public class GroupServiceImpl implements GroupService {
                 .build();
 
         groupMemberRepository.save(groupMember);
-    }
 
+        for(GroupMember leader :  leaderGroupMembers ) {
+            applicationEventPublisher.publishEvent(
+                    GroupMemberInviteRequestedEvent.builder()
+                            .groupName(group.getName())
+                            .groupId(groupId)
+                            .leaderId(leader.getUid())
+                            .requestedUserEmail(user.getEmail())
+                            .requestedUserNickname(user.getNickname())
+                            .build()
+            );
+        }
+
+    }
     @Override
     public void registerHost(Long gid, Long currentUid, Long registerUid) {
         changeTrackRole(gid, currentUid, registerUid, GroupTrackRole.HOST);

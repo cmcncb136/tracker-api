@@ -3,6 +3,7 @@ package com.kesi.tracker.group.infrastructure;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.group.domain.GroupMemberStatus;
+import com.kesi.tracker.group.domain.GroupRole;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -45,6 +46,12 @@ public class GroupMemberRepositoryImpl implements GroupMemberRepository {
     @Override
     public List<GroupMember> findByGidAndStatus(Long gid, GroupMemberStatus status) {
         return groupMemberJpaRepository.findByGidAndStatus(gid, status)
+                .stream().map(GroupMemberEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<GroupMember> findByGidAndRole(Long gid, GroupRole role) {
+        return groupMemberJpaRepository.findByGidAndRole(gid, role)
                 .stream().map(GroupMemberEntity::toDomain).toList();
     }
 }
