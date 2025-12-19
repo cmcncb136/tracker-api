@@ -136,7 +136,7 @@ public class GroupServiceImpl implements GroupService {
         GroupMember currentGroupMember = groupMemberRepository.findByGidAndUid(gid, currentUid)
                 .orElseThrow(() -> new RuntimeException("GroupMember not found"));
 
-        //리더만 TrackRole를 지정할 수 있다
+        //리더만 Track Role를 지정할 수 있다
         if (!currentGroupMember.isLeader()) throw new RuntimeException("GroupMember is not leader");
 
         GroupMember registerGroupMember = groupMemberRepository.findByGidAndUid(gid, targetUid)

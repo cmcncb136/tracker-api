@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface NotificationRepository {
     Notification save(Notification notification);
+    List<Notification> save(List<Notification> notifications);
     Optional<Notification> findById(Long id);
     List<Notification> findByReceiverId(Long receiverId);
     Page<Notification> findByReceiverId(Long receiverId, Pageable pageable);

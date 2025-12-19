@@ -23,6 +23,13 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
+    public List<Notification> save(List<Notification> notifications) {
+        return notificationJpaRepository
+                .saveAll(notifications.stream().map(NotificationEntity::fromDomain).toList())
+                .stream().map(NotificationEntity::toDomain).toList();
+    }
+
+    @Override
     public Optional<Notification> findById(Long id) {
         return notificationJpaRepository.findById(id).map(NotificationEntity::toDomain);
     }

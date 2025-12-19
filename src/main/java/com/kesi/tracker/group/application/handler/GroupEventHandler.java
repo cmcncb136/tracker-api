@@ -7,6 +7,7 @@ import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
+import com.kesi.tracker.notification.domain.NotificationContent;
 import com.kesi.tracker.notification.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.weaver.ast.Not;
@@ -23,14 +24,18 @@ public class GroupEventHandler {
         String title = "그룹 초대";
         String message = String.format("%s 그룹에 초대 요청이 들어왔습니다", event.groupName());
 
-        Notification notification = Notification.builder()
-                .receiverId(event.invitedUserId())
+        NotificationContent notificationContent = NotificationContent.builder()
                 .type(NotificationType.ACTION)
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
                 .confirmUrl("") //Todo. 추수 controller 생성 후 작성
                 .cancelUrl("")
+                .build();
+
+        Notification notification = Notification.builder()
+                .receiverId(event.invitedUserId())
+                .content(notificationContent)
                 .build();
 
         notificationService.send(notification);
@@ -43,8 +48,7 @@ public class GroupEventHandler {
                 String.format("%s(%s)님이 %s 그룹 초대를 요청했습니다",
                         event.requestedUserNickname(), event.requestedUserEmail(), event.groupName());
 
-        Notification notification = Notification.builder()
-                .receiverId(event.leaderId())
+        NotificationContent notificationContent = NotificationContent.builder()
                 .type(NotificationType.ACTION)
                 .category(NotificationCategory.GROUP)
                 .title(title)
@@ -52,5 +56,12 @@ public class GroupEventHandler {
                 .confirmUrl("") //Todo. 추수 controller 생성 후 작성
                 .cancelUrl("")
                 .build();
+
+        Notification notification = Notification.builder()
+                .receiverId(event.leaderId())
+                .content(notificationContent)
+                .build();
+
+        notificationService.send(notification);
     }
 }

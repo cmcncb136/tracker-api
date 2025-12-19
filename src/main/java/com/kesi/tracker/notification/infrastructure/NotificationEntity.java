@@ -2,6 +2,7 @@ package com.kesi.tracker.notification.infrastructure;
 
 import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
+import com.kesi.tracker.notification.domain.NotificationContent;
 import com.kesi.tracker.notification.domain.NotificationType;
 
 import jakarta.persistence.*;
@@ -66,21 +67,20 @@ public class NotificationEntity {
 
 
     public static NotificationEntity fromDomain(Notification domain) {
-        LocalDateTime now = LocalDateTime.now();
 
         return NotificationEntity.builder()
                 .id(domain.getId())
                 .receiverId(domain.getReceiverId())
-                .type(domain.getType())
-                .category(domain.getCategory())
-                .title(domain.getTitle())
-                .message(domain.getMessage())
-                .confirmUrl(domain.getConfirmUrl())
-                .cancelUrl(domain.getCancelUrl())
+                .type(domain.getContent().type())
+                .category(domain.getContent().category())
+                .title(domain.getContent().title())
+                .message(domain.getContent().message())
+                .confirmUrl(domain.getContent().confirmUrl())
+                .cancelUrl(domain.getContent().cancelUrl())
                 .isRead(domain.getIsRead() != null ? domain.getIsRead() : false) // null 방지
                 .createdAt(domain.getCreatedAt())
                 .readAt(domain.getReadAt())
-                .metadata(domain.getMetadata())
+                .metadata(domain.getContent().metadata())
                 .build();
     }
 
@@ -89,16 +89,18 @@ public class NotificationEntity {
         return Notification.builder()
                 .id(this.id)
                 .receiverId(this.receiverId)
-                .type(this.type)
-                .category(this.category)
-                .title(this.title)
-                .message(this.message)
-                .confirmUrl(this.confirmUrl)
-                .cancelUrl(this.cancelUrl)
+                .content(NotificationContent.builder()
+                        .type(this.type)
+                        .category(this.category)
+                        .title(this.title)
+                        .message(this.message)
+                        .confirmUrl(this.confirmUrl)
+                        .cancelUrl(this.cancelUrl)
+                        .metadata(this.metadata)
+                        .build())
                 .isRead(this.isRead)
                 .createdAt(this.createdAt)
                 .readAt(this.readAt)
-                .metadata(this.metadata)
                 .build();
     }
 }

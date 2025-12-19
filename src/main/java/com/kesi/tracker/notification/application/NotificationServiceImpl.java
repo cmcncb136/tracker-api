@@ -21,6 +21,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
+    public void send(List<Notification> notifications) {
+        notificationRepository.save
+    }
+
+    @Override
     public void read(Long notificationId) {
         Optional<Notification> notificationOptional = notificationRepository.findById(notificationId);
 

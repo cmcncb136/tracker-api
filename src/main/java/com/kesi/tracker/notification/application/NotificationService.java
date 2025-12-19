@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface NotificationService {
     void send(Notification notification);
+    void send(List<Notification> notifications);
     void read(Long notificationId);
 
     List<Notification> findByReceiverId(Long receiverId);
