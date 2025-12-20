@@ -1,34 +1,30 @@
-package com.kesi.tracker.notification.application.handler;
+package com.kesi.tracker.notification.application.handler.group;
 
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.domain.Group;
-import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
+import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
+import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
 import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
 import com.kesi.tracker.notification.domain.NotificationContent;
 import com.kesi.tracker.notification.domain.NotificationType;
-import com.kesi.tracker.user.application.UserService;
-import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @RequiredArgsConstructor
-public class GroupMemberInviteRequestedNotificationHandler implements NotificationEventHandler<GroupMemberInviteRequestedEvent> {
+public class GroupMemberInvitedNotificationHandler implements NotificationEventHandler<GroupMemberInvitedEvent> {
     private final NotificationService notificationService;
     private final GroupService groupService;
-    private final UserService userService;
 
     @Override
-    public void handle(GroupMemberInviteRequestedEvent event) {
-        User requestedUser = userService.getById(event.requestedUserId());
-        Group group = groupService.getByGid(event.groupId());
+    public void handle(GroupMemberInvitedEvent event) {
+        Group group = groupService.getByGid(event.gid());
 
-        String title = "그룹 초대 요청";
-        String message =
-                String.format("%s(%s)님이 %s 그룹 초대를 요청했습니다",
-                        requestedUser.getNickname(), requestedUser.getEmail(), group.getName());
+        String title = "그룹 초대";
+        String message = String.format("%s 그룹에 초대 요청이 들어왔습니다", group.getName());
 
         NotificationContent notificationContent = NotificationContent.builder()
                 .type(NotificationType.ACTION)
@@ -40,15 +36,16 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
                 .build();
 
         Notification notification = Notification.builder()
-                .receiverId(event.leaderId())
+                .receiverId(event.invitedUserId())
                 .content(notificationContent)
                 .build();
 
         notificationService.send(notification);
+
     }
 
     @Override
-    public Class<GroupMemberInviteRequestedEvent> supports() {
-        return GroupMemberInviteRequestedEvent.class;
+    public Class<GroupMemberInvitedEvent> supports() {
+        return GroupMemberInvitedEvent.class;
     }
 }

@@ -1,18 +1,17 @@
 package com.kesi.tracker.track.domain.event;
 
 
+import com.kesi.tracker.notification.domain.NotificaitonEvent;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record TrackCreatedEvent(
-        String groupName,
-        String createdByUserName,
-        String trackName,
-
         Long groupId,
         Long trackId,
         Long createdByUserId,
-        Long groupLeaderId
-) {
+        List<Long> groupLeaderIds
+) implements NotificaitonEvent {
 }
 

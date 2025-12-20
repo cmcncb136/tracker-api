@@ -7,6 +7,7 @@ import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.User;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +52,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void invite(Long groupId, String invitedUserEmail, Long currentUserId) {
         GroupMember currentGroupMember
                 = groupMemberRepository.findByGidAndUid(groupId, currentUserId)
@@ -57,9 +60,9 @@ public class GroupServiceImpl implements GroupService {
 
         User invitedUser = userService.getByEmail(invitedUserEmail);
 
-        if(!currentGroupMember.isLeader()) throw new RuntimeException("초대는 리더만 할 수 있습니다");
+        if (!currentGroupMember.isLeader()) throw new RuntimeException("초대는 리더만 할 수 있습니다");
 
-        if(groupMemberRepository.findByGidAndUid(currentGroupMember.getGid(), invitedUser.getId()).isPresent())
+        if (groupMemberRepository.findByGidAndUid(currentGroupMember.getGid(), invitedUser.getId()).isPresent())
             throw new RuntimeException("이미 그룹 멤버이거나 초대가 진행 중입니다."); //Todo. block 등의 경우 보완 로직 필요
 
 
@@ -80,14 +83,15 @@ public class GroupServiceImpl implements GroupService {
                         .invitedUserId(invitedUser.getId())
                         .inviterId(currentUserId)
                         .gid(groupId)
-                .build());
+                        .build());
     }
 
     @Override
+    @Transactional
     public void request(Long groupId, Long currentUserId) {
         List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
 
-        if(leaderGroupMembers.isEmpty()) {
+        if (leaderGroupMembers.isEmpty()) {
             log.error("해당 그룹에 리더가 존재하지 않습니다..? groupId : {}", groupId);
         }
 
@@ -103,17 +107,15 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(groupMember);
 
-        for(GroupMember leader :  leaderGroupMembers ) {
-            applicationEventPublisher.publishEvent(
-                    GroupMemberInviteRequestedEvent.builder()
-                            .groupId(groupId)
-                            .leaderId(leader.getUid())
-                            .requestedUserId(currentUserId)
-                            .build()
-            );
-        }
-
+        applicationEventPublisher.publishEvent(
+                GroupMemberInviteRequestedEvent.builder()
+                        .groupId(groupId)
+                        .leaderIds(leaderGroupMembers.stream().map(GroupMember::getUid).collect(Collectors.toList()))
+                        .requestedUserId(currentUserId)
+                        .build()
+        );
     }
+
     @Override
     public void registerHost(Long gid, Long currentUid, Long registerUid) {
         changeTrackRole(gid, currentUid, registerUid, GroupTrackRole.HOST);

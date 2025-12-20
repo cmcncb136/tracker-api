@@ -1,13 +1,15 @@
 package com.kesi.tracker.track.domain.event;
 
-public record TrackCanceledEvent (
-        String groupName,
-        String trackName,
-        String canceledUserName,
+import com.kesi.tracker.notification.domain.NotificaitonEvent;
+import lombok.Builder;
 
+import java.util.List;
+
+@Builder
+public record TrackCanceledEvent (
         Long groupId,
         Long trackId,
-        Long appliedUserId,
+        Long canceledUserId,
         Long hostId,
-        Long groupLeaderId
-) {}
+        List<Long> groupLeaderIds
+) implements NotificaitonEvent {}
