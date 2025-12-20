@@ -2,7 +2,7 @@ package com.kesi.tracker.notification.application.handler.group;
 
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.domain.Group;
-import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
+import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
 import com.kesi.tracker.notification.domain.Notification;
@@ -12,22 +12,22 @@ import com.kesi.tracker.notification.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-
 @Component
 @RequiredArgsConstructor
-public class GroupMemberInvitedNotificationHandler implements NotificationEventHandler<GroupMemberInvitedEvent> {
-    private final NotificationService notificationService;
+public class GroupTrackRoleChangedNotificationHandler implements NotificationEventHandler<GroupTrackRoleChangedEvent> {
     private final GroupService groupService;
+    private final NotificationService notificationService;
 
     @Override
-    public void handle(GroupMemberInvitedEvent event) {
-        Group group = groupService.getByGid(event.gid());
+    public void handle(GroupTrackRoleChangedEvent event) {
+        Group group = groupService.getByGid(event.groupId());
 
-        String title = "그룹 초대";
-        String message = String.format("%s 그룹에 초대 요청이 들어왔습니다", group.getName());
+        String title = "그룹 트랙 Role 변경";
+        String message = String.format("%s 그룹에서 Role이 %s로 변경되었어요",
+                group.getName(), event.changedRole());
 
         NotificationContent notificationContent = NotificationContent.builder()
-                .type(NotificationType.ACTION)
+                .type(NotificationType.INFO)
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
@@ -36,7 +36,7 @@ public class GroupMemberInvitedNotificationHandler implements NotificationEventH
                 .build();
 
         Notification notification = Notification.builder()
-                .receiverId(event.invitedUserId())
+                .receiverId(event.roleChangedUserId())
                 .content(notificationContent)
                 .build();
 
@@ -44,7 +44,7 @@ public class GroupMemberInvitedNotificationHandler implements NotificationEventH
     }
 
     @Override
-    public Class<GroupMemberInvitedEvent> supports() {
-        return GroupMemberInvitedEvent.class;
+    public Class<GroupTrackRoleChangedEvent> supports() {
+        return GroupTrackRoleChangedEvent.class;
     }
 }

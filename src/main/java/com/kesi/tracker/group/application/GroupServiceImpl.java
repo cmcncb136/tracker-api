@@ -5,6 +5,7 @@ import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
 import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
+import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.User;
 import jakarta.transaction.Transactional;
@@ -117,12 +118,14 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    @Transactional
     public void registerHost(Long gid, Long currentUid, Long registerUid) {
         changeTrackRole(gid, currentUid, registerUid, GroupTrackRole.HOST);
     }
 
     @Override
-    public void unregisterHost(Long gid, Long currentUid, Long unregisterUid) {
+    @Transactional
+    public void registerFollower(Long gid, Long currentUid, Long unregisterUid) {
         changeTrackRole(gid, currentUid, unregisterUid, GroupTrackRole.FOLLOWER);
     }
 
@@ -136,7 +139,17 @@ public class GroupServiceImpl implements GroupService {
         GroupMember registerGroupMember = groupMemberRepository.findByGidAndUid(gid, targetUid)
                 .orElseThrow(() -> new RuntimeException("target GroupMember not found"));
 
+        if (registerGroupMember.getTrackRole() == trackRole) return;
+
         registerGroupMember.setTrackRole(trackRole);
         groupMemberRepository.save(registerGroupMember);
+
+        applicationEventPublisher.publishEvent(
+                GroupTrackRoleChangedEvent.builder()
+                .groupId(gid)
+                .changedRole(trackRole)
+                .roleChangedUserId(registerGroupMember.getUid())
+                .build()
+        );
     }
 }

@@ -14,5 +14,5 @@ public interface GroupService {
     void request(Long groupId, Long currentUid);
 
     void registerHost(Long groupId, Long currentUid, Long registerUid);
-    void unregisterHost(Long groupId, Long currentUid, Long unregisterUid);
+    void registerFollower(Long groupId, Long currentUid, Long unregisterUid);
 }
