@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +56,6 @@ public class GroupServiceImpl implements GroupService {
                 .orElseThrow(() -> new RuntimeException("GroupMember not found"));
 
         User invitedUser = userService.getByEmail(invitedUserEmail);
-        Group group = getByGid(groupId);
 
         if(!currentGroupMember.isLeader()) throw new RuntimeException("초대는 리더만 할 수 있습니다");
 
@@ -81,16 +79,12 @@ public class GroupServiceImpl implements GroupService {
                 GroupMemberInvitedEvent.builder()
                         .invitedUserId(invitedUser.getId())
                         .inviterId(currentUserId)
-                        .groupName(group.getName())
                         .gid(groupId)
                 .build());
     }
 
     @Override
     public void request(Long groupId, Long currentUserId) {
-        User user = userService.getById(currentUserId);
-        Group group = getByGid(groupId);
-
         List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
 
         if(leaderGroupMembers.isEmpty()) {
@@ -112,11 +106,9 @@ public class GroupServiceImpl implements GroupService {
         for(GroupMember leader :  leaderGroupMembers ) {
             applicationEventPublisher.publishEvent(
                     GroupMemberInviteRequestedEvent.builder()
-                            .groupName(group.getName())
                             .groupId(groupId)
                             .leaderId(leader.getUid())
-                            .requestedUserEmail(user.getEmail())
-                            .requestedUserNickname(user.getNickname())
+                            .requestedUserId(currentUserId)
                             .build()
             );
         }

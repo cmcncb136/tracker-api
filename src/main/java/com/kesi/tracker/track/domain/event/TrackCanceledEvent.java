@@ -1,18 +1,13 @@
 package com.kesi.tracker.track.domain.event;
 
-
-import lombok.Builder;
-
-@Builder
-public record TrackCreatedEvent(
+public record TrackCanceledEvent (
         String groupName,
-        String createdByUserName,
         String trackName,
+        String canceledUserName,
 
         Long groupId,
         Long trackId,
-        Long createdByUserId,
+        Long appliedUserId,
+        Long hostId,
         Long groupLeaderId
-) {
-}
-
+) {}

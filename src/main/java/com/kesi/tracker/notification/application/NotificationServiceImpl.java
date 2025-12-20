@@ -22,7 +22,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void send(List<Notification> notifications) {
-        notificationRepository.save
+        notificationRepository.save(notifications);
     }
 
     @Override

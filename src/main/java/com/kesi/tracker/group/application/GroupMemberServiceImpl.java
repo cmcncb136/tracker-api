@@ -2,8 +2,11 @@ package com.kesi.tracker.group.application;
 
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.domain.GroupMember;
+import com.kesi.tracker.group.domain.GroupRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,5 +27,10 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     public GroupMember getByGidAndUid(Long gid, Long uid) {
         return groupMemberRepository.findByGidAndUid(gid, uid)
                 .orElseThrow(() -> new RuntimeException("Group member not found"));
+    }
+
+    @Override
+    public List<GroupMember> findByGidAndRole(Long gid, GroupRole role) {
+        return groupMemberRepository.findByGidAndRole(gid, role);
     }
 }
