@@ -31,9 +31,6 @@ public class GroupEntity {
     @Lob
     private String description;
 
-    @Column(name = "profile_url", length = 512)
-    private String profileUrl;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private AccessType access;
@@ -51,7 +48,6 @@ public class GroupEntity {
                 .name(this.name)
                 .introduce(this.introduce)
                 .description(this.description)
-                .profileUrl(this.profileUrl)
                 .access(this.access)
                 .createdBy(this.createdBy)
                 .createdAt(this.createdAt)
@@ -64,7 +60,6 @@ public class GroupEntity {
                 .name(group.getName())
                 .introduce(group.getIntroduce())
                 .description(group.getDescription())
-                .profileUrl(group.getProfileUrl())
                 .access(group.getAccess())
                 .createdBy(group.getCreatedBy())
                 .createdAt(group.getCreatedAt())

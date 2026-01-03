@@ -14,7 +14,6 @@ public class Track {
 
     private int capacity; //최대 수용인원
     private int followerCnt;
-    private String imageUrl;
 
     private String title;
     private String introduce;

@@ -12,8 +12,6 @@ public class Group {
     private String name;
     private String introduce;
     private String description;
-    private String profileUrl;
-
 
     private AccessType access;
     private Long createdBy;

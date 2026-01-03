@@ -14,7 +14,6 @@ public class User {
     private String name;
     private String nickname;
     private String phone;
-    private String profileUrl;
     private LocalDateTime birthday;
     private LocalDateTime createdAt;
     private Role role;

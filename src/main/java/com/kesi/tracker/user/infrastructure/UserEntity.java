@@ -37,9 +37,6 @@ public class UserEntity {
     @Column(length = 20)
     private String phone;
 
-    @Column(name = "profile_url")
-    private String profileUrl;
-
     private LocalDateTime birthday;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -57,7 +54,6 @@ public class UserEntity {
                 .name(this.name)
                 .nickname(this.nickname)
                 .phone(this.phone)
-                .profileUrl(this.profileUrl)
                 .birthday(this.birthday)
                 .createdAt(this.createdAt)
                 .role(this.role)
@@ -72,7 +68,6 @@ public class UserEntity {
                 .name(domain.getName())
                 .nickname(domain.getNickname())
                 .phone(domain.getPhone())
-                .profileUrl(domain.getProfileUrl())
                 .birthday(domain.getBirthday())
                 .createdAt(domain.getCreatedAt())
                 .role(domain.getRole())

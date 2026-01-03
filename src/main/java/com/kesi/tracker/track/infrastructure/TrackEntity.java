@@ -34,9 +34,6 @@ public class TrackEntity {
     @Column(name = "follower_cnt", nullable = false)
     private int followerCnt; // 현재 참여 인원
 
-    @Column(name = "image_url")
-    private String imageUrl;
-
     @Column(nullable = false, length = 100)
     private String title;
 
@@ -72,7 +69,6 @@ public class TrackEntity {
                 .hostId(this.hostId)
                 .capacity(this.capacity)
                 .followerCnt(this.followerCnt)
-                .imageUrl(this.imageUrl)
                 .title(this.title)
                 .introduce(this.introduce)
                 .description(this.description)
@@ -94,7 +90,6 @@ public class TrackEntity {
                 .hostId(domain.getHostId())
                 .capacity(domain.getCapacity())
                 .followerCnt(domain.getFollowerCnt())
-                .imageUrl(domain.getImageUrl())
                 .title(domain.getTitle())
                 .introduce(domain.getIntroduce())
                 .description(domain.getDescription())
