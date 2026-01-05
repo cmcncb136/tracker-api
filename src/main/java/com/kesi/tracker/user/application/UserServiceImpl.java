@@ -1,5 +1,6 @@
 package com.kesi.tracker.user.application;
 
+import com.kesi.tracker.user.application.dto.UserJoinRequest;
 import com.kesi.tracker.user.application.repository.UserRepository;
 import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +31,26 @@ public class UserServiceImpl implements UserService {
     public User save(User user) {
         return userRepository.save(user);
     }
+
+    @Override
+    public void join(UserJoinRequest dto) {
+
+        //email 중복 확인
+        //phone 중복 확인
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

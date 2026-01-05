@@ -1,5 +1,7 @@
 package com.kesi.tracker.user.infrastructure;
 
+import com.kesi.tracker.user.domain.Email;
+import com.kesi.tracker.user.domain.Phone;
 import com.kesi.tracker.user.domain.Role;
 import com.kesi.tracker.user.domain.User;
 import jakarta.persistence.*;
@@ -49,11 +51,11 @@ public class UserEntity {
     public User toDomain() {
         return User.builder()
                 .id(this.id)
-                .email(this.email)
+                .email(new Email(email))
                 .password(this.password)
                 .name(this.name)
                 .nickname(this.nickname)
-                .phone(this.phone)
+                .phone(phone != null ? new Phone(phone) : null)
                 .birthday(this.birthday)
                 .createdAt(this.createdAt)
                 .role(this.role)
@@ -63,11 +65,11 @@ public class UserEntity {
     public static UserEntity fromDomain(User domain) {
         return UserEntity.builder()
                 .id(domain.getId())
-                .email(domain.getEmail())
+                .email(domain.getEmail().value())
                 .password(domain.getPassword())
                 .name(domain.getName())
                 .nickname(domain.getNickname())
-                .phone(domain.getPhone())
+                .phone(domain.getPhone().value())
                 .birthday(domain.getBirthday())
                 .createdAt(domain.getCreatedAt())
                 .role(domain.getRole())

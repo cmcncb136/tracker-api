@@ -22,4 +22,7 @@ public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
     WHERE tm.trackId = :trackId
     """)
     List<UserEntity> findByTrackId(Long trackId);
+
+    boolean existsByEmail(String email);
+    boolean existsByPhone(String phone);
 }

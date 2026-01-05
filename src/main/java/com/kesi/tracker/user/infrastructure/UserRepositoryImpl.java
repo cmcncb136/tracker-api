@@ -29,6 +29,16 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public boolean existsByEmail(String email) {
+        return userJpaRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean existsByPhone(String phone) {
+        return userJpaRepository.existsByPhone(phone);
+    }
+
+    @Override
     public List<User> findByGid(Long gid) {
         return userJpaRepository.findByGid(gid)
                 .stream().map(UserEntity::toDomain).toList();
