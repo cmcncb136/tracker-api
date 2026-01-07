@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 public class User {
@@ -24,34 +25,16 @@ public class User {
     @Builder
     public User(Long id, Email email, String password, String name, String nickname, Phone phone, LocalDateTime birthday, LocalDateTime createdAt, Role role) {
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.nickname = nickname;
+        this.email = Objects.requireNonNull(email);
+        this.password = ObjectUtils.requireNonEmpty(password);
+        this.name = ObjectUtils.requireNonEmpty(name);
+        this.nickname = ObjectUtils.requireNonEmpty(nickname);
         this.phone = phone;
-        this.birthday = birthday;
-        this.createdAt = createdAt;
-        this.role = role;
-
-        if(ObjectUtils.isEmpty(email))
-            throw new IllegalArgumentException("email is empty");
-
-        if(ObjectUtils.isEmpty(password))
-            throw new IllegalArgumentException("Password cannot be empty");
-
-        if(ObjectUtils.isEmpty(name))
-            throw new IllegalArgumentException("Name cannot be empty");
-
-        if(ObjectUtils.isEmpty(nickname))
-            throw new IllegalArgumentException("Nickname cannot be empty");
-
-        if(ObjectUtils.isEmpty(birthday))
-            throw new IllegalArgumentException("Birthday cannot be empty");
-
-
+        this.birthday = Objects.requireNonNull(birthday);
+        this.createdAt = Objects.requireNonNull(createdAt);
+        this.role = Objects.requireNonNull(role);
 
         if(password.length() > MAX_PASSWORD_LENGTH)
             throw new IllegalArgumentException("Password length exceeds maximum length of 32");
-
     }
 }
