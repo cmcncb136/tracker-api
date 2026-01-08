@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface FileService {
     Optional<File> findById(Long id);
+    List<File> findByIds(List<Long> ids);
     List<File> findByOwner(FileOwner owner);
     File save(File file);
     void deleteById(Long id);

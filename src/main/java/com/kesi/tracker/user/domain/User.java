@@ -35,6 +35,8 @@ public class User {
         this.role = Objects.requireNonNull(role);
 
         if(password.length() > MAX_PASSWORD_LENGTH)
-            throw new IllegalArgumentException("Password length exceeds maximum length of 32");
+            throw new IllegalArgumentException("Password length exceeds maximum length of 128");
+
+        //Todo. 기타 유효성 검사 (각 변수를 VO를 만들어야 할지 고민)
     }
 }

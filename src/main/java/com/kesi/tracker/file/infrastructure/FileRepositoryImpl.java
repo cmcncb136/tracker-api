@@ -25,6 +25,11 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
+    public List<File> findByIds(List<Long> ids) {
+        return fileJpaRepository.findByIdIn(ids).stream().map(FileEntity::toDomain).toList();
+    }
+
+    @Override
     public void deleteById(Long id) {
         fileJpaRepository.deleteById(id);
     }

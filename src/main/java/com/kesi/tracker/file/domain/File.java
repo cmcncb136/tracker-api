@@ -21,4 +21,13 @@ public class File {
 
     private StorageKey storageKey;
     private FileMetadata metadata;
+
+    public void assignFileOwner(FileOwner owner) {
+        this.owner = owner;
+    }
+
+    public void assignFilePurpose(FilePurpose purpose) {
+
+        this.purpose = purpose;
+    }
 }

@@ -13,4 +13,7 @@ public enum FilePurpose {
     FilePurpose(String dirName) {
         this.dirName = dirName;
     }
+    public boolean validate(FileMetadata fileMetadata) {
+        return true; //Todo. 여기서 부터 시작
+    }
 }

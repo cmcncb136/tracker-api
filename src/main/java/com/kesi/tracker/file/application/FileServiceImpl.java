@@ -20,6 +20,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<File> findByIds(List<Long> ids) {
+        return fileRepository.findByIds(ids);
+    }
+
+    @Override
     public List<File> findByOwner(FileOwner owner) {
         return fileRepository.findByOwner(owner);
     }

@@ -7,6 +7,7 @@ import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void invite(Long groupId, String invitedUserEmail, Long currentUserId) {
+    public void invite(Long groupId, Email invitedUserEmail, Long currentUserId) {
         GroupMember currentGroupMember
                 = groupMemberRepository.findByGidAndUid(groupId, currentUserId)
                 .orElseThrow(() -> new RuntimeException("GroupMember not found"));

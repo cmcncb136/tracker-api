@@ -1,6 +1,7 @@
 package com.kesi.tracker.group.application;
 
 import com.kesi.tracker.group.domain.Group;
+import com.kesi.tracker.user.domain.Email;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface GroupService {
     List<Group> searchPublicByName(String name);
 
     void join(Long groupId, Long currentUid);
-    void invite(Long groupId, String invitedUserEmail, Long currentUid);
+    void invite(Long groupId, Email invitedUserEmail, Long currentUid);
     void request(Long groupId, Long currentUid);
 
     void registerHost(Long groupId, Long currentUid, Long registerUid);

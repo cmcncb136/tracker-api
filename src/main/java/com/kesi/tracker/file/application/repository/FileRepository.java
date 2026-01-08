@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface FileRepository {
     File save(File file);
     Optional<File> findById(Long id);
+    List<File> findByIds(List<Long> ids);
     void deleteById(Long id);
     List<File> findByOwner(FileOwner owner);
 }
