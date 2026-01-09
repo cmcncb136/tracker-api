@@ -20,6 +20,12 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
+    public List<File> save(List<File> files) {
+        return fileJpaRepository.saveAll(files.stream().map(FileEntity::fromDomain).toList())
+                .stream().map(FileEntity::toDomain).toList();
+    }
+
+    @Override
     public Optional<File> findById(Long id) {
         return fileJpaRepository.findById(id).map(FileEntity::toDomain);
     }

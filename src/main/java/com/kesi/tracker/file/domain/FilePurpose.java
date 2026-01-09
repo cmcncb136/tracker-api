@@ -3,9 +3,26 @@ package com.kesi.tracker.file.domain;
 import lombok.Getter;
 
 public enum FilePurpose {
-    PROFILE("profile"),
-    CONTENT("content"),
-    ATTACHMENT("attachment");
+    PROFILE("profile") {
+        @Override
+        public boolean validate(FileMetadata fileMetadata) {
+            return isImage(fileMetadata);
+        }
+    },
+
+    CONTENT("content") {
+        @Override
+        public boolean validate(FileMetadata fileMetadata) {
+            return isImage(fileMetadata);
+        }
+    },
+
+    ATTACHMENT("attachment") {
+        @Override
+        public boolean validate(FileMetadata fileMetadata) {
+            return true;
+        }
+    };
 
     @Getter
     private final String dirName;
@@ -13,7 +30,8 @@ public enum FilePurpose {
     FilePurpose(String dirName) {
         this.dirName = dirName;
     }
-    public boolean validate(FileMetadata fileMetadata) {
-        return true; //Todo. 여기서 부터 시작
+    public abstract boolean validate(FileMetadata fileMetadata);
+    protected boolean isImage(FileMetadata fileMetadata) {
+        return fileMetadata.contentType().startsWith("image");
     }
 }

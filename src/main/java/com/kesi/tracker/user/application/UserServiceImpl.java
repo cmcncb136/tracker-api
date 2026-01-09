@@ -2,6 +2,9 @@ package com.kesi.tracker.user.application;
 
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.File;
+import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.file.domain.FilePurpose;
+import com.kesi.tracker.file.domain.OwnerType;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
 import com.kesi.tracker.user.application.repository.UserRepository;
@@ -48,14 +51,21 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByPhone(dto.getPhone()))
             throw new IllegalArgumentException("Phone already in use");
 
-
         User user = UserMapper.toDomain(dto);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
+        //Profile 파일로 저장 및 Owner 설정
         List<File> files = fileService.findByIds(dto.getProfileIds());
-        files.forEach(file -> {
-            file
-        });
+        FileOwner owner = FileOwner.builder()
+                .ownerId(savedUser.getId())
+                .ownerType(OwnerType.USER)
+                .build();
+
+        for(File file : files){
+            file.assignAsProfile(owner);
+        }
+
+        fileService.save(files);
     }
 }
 

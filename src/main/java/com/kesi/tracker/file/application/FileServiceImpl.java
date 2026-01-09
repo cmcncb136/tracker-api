@@ -35,6 +35,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<File> save(List<File> files) {
+        return fileRepository.save(files);
+    }
+
+    @Override
     public void deleteById(Long id) {
         fileRepository.deleteById(id);
     }

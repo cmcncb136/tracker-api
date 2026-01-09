@@ -11,5 +11,6 @@ public interface FileService {
     List<File> findByIds(List<Long> ids);
     List<File> findByOwner(FileOwner owner);
     File save(File file);
+    List<File> save(List<File> files);
     void deleteById(Long id);
 }

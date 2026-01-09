@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -22,12 +24,13 @@ public class File {
     private StorageKey storageKey;
     private FileMetadata metadata;
 
-    public void assignFileOwner(FileOwner owner) {
+    public void assignAsProfile(FileOwner owner) {
+        Objects.requireNonNull(owner, "Owner must not be null");
+
+        if(!FilePurpose.PROFILE.validate(this.getMetadata()))
+            throw new IllegalArgumentException("Invalid file purpose");
+
+        this.purpose = FilePurpose.PROFILE;
         this.owner = owner;
-    }
-
-    public void assignFilePurpose(FilePurpose purpose) {
-
-        this.purpose = purpose;
     }
 }
