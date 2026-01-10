@@ -49,4 +49,5 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
         }
         return String.join("/", elements);
     }
+
 }

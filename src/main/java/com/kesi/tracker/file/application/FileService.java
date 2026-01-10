@@ -1,6 +1,7 @@
 package com.kesi.tracker.file.application;
 
 import com.kesi.tracker.file.domain.File;
+import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface FileService {
     File save(File file);
     List<File> save(List<File> files);
     void deleteById(Long id);
+
+    List<FileAccessUrl> findAccessUrlByOwner(FileOwner owner);
 }

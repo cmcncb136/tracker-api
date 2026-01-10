@@ -1,12 +1,11 @@
 package com.kesi.tracker.user.presentation;
 
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
+import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,5 +16,18 @@ public class UserController {
     @PostMapping
     public void join(@RequestBody UserJoinRequest dto) {
         userService.join(dto);
+    }
+
+    @GetMapping("profile")
+    public MyProfileResponse getMyProfile() {
+        //Todo. 추후 id 정보를 가져올 예정 아직 기술 미지정
+        return null;
+    }
+
+    @GetMapping
+    public UserProfileResponse getUserProfile(
+            @PathVariable long id
+    ) {
+        return null;
     }
 }

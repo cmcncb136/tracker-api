@@ -12,4 +12,11 @@ import lombok.NoArgsConstructor;
 public class FileOwner {
     Long ownerId;
     OwnerType ownerType;
+
+    public static FileOwner ofUser(Long userId) {
+        return FileOwner.builder()
+                .ownerType(OwnerType.USER)
+                .ownerId(userId)
+                .build();
+    }
 }
