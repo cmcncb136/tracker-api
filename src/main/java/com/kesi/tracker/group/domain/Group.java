@@ -16,4 +16,12 @@ public class Group {
     private AccessType access;
     private Long createdBy;
     private LocalDateTime createdAt;
+
+    public boolean isPrivate() {
+        return access == AccessType.PRIVATE;
+    }
+
+    public boolean isPublic() {
+        return access == AccessType.PUBLIC;
+    }
 }

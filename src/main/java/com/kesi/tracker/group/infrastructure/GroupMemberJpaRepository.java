@@ -13,4 +13,5 @@ public interface GroupMemberJpaRepository extends JpaRepository<GroupMemberEntit
     List<GroupMemberEntity> findByUid(Long uid);
     List<GroupMemberEntity> findByGidAndStatus(Long gid, GroupMemberStatus status);
     List<GroupMemberEntity> findByGidAndRole(Long gid, GroupRole role);
+    boolean existsByGidAndUid(Long gid, Long uid);
 }

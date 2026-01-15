@@ -1,5 +1,6 @@
 package com.kesi.tracker.group.application;
 
+import com.kesi.tracker.group.application.dto.GroupResponse;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
@@ -9,6 +10,7 @@ import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
+import jakarta.annotation.Nullable;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
-    private final GroupMemberRepository groupMemberRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UserService userService;
+    private final GroupMemberService groupMemberService;
+
+    private final GroupMemberRepository groupMemberRepository;
+
 
     @Override
     public Group create(Group group) {
@@ -55,36 +60,24 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void invite(Long groupId, Email invitedUserEmail, Long currentUserId) {
-        GroupMember currentGroupMember
-                = groupMemberRepository.findByGidAndUid(groupId, currentUserId)
-                .orElseThrow(() -> new RuntimeException("GroupMember not found"));
+    public void invite(Long gid, Email invitedUserEmail, Long currentUserId) {
+        if (!groupMemberService.isGroupLeader(gid, currentUserId)) throw new RuntimeException("초대는 리더만 할 수 있습니다");
+
 
         User invitedUser = userService.getByEmail(invitedUserEmail);
 
-        if (!currentGroupMember.isLeader()) throw new RuntimeException("초대는 리더만 할 수 있습니다");
 
-        if (groupMemberRepository.findByGidAndUid(currentGroupMember.getGid(), invitedUser.getId()).isPresent())
+        if (groupMemberService.existsGroupMember(gid, currentUserId))
             throw new RuntimeException("이미 그룹 멤버이거나 초대가 진행 중입니다."); //Todo. block 등의 경우 보완 로직 필요
 
 
-        GroupMember groupMember = GroupMember.builder()
-                .gid(groupId)
-                .uid(invitedUser.getId())
-                .role(GroupRole.MEMBER)
-                .trackRole(GroupTrackRole.FOLLOWER)
-                .status(GroupMemberStatus.INVITED)
-                .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .build();
-
-        groupMemberRepository.save(groupMember);
+        groupMemberService.createInviteMember(gid, invitedUser.getId());
 
         applicationEventPublisher.publishEvent(
                 GroupMemberInvitedEvent.builder()
                         .invitedUserId(invitedUser.getId())
                         .inviterId(currentUserId)
-                        .gid(groupId)
+                        .gid(gid)
                         .build());
     }
 
@@ -128,6 +121,19 @@ public class GroupServiceImpl implements GroupService {
     @Transactional
     public void registerFollower(Long gid, Long currentUid, Long unregisterUid) {
         changeTrackRole(gid, currentUid, unregisterUid, GroupTrackRole.FOLLOWER);
+    }
+
+    @Override
+    public GroupResponse getGroupResponseByGid(Long gid, @Nullable Long currentUid) {
+        Group group = getByGid(gid);
+
+        if(group.isPrivate()) { //PRIVATE인 그룹인 경우
+            if(!groupMemberService.isGroupMember(gid, currentUid)) //GROUP에 속한 경우만 확인 가능
+                throw new IllegalArgumentException("Don't have permission to access this group");
+        }
+
+
+        return null;
     }
 
     private void changeTrackRole(Long gid, Long currentUid, Long targetUid, GroupTrackRole trackRole) {

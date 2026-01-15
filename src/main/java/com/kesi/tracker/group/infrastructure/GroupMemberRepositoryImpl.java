@@ -54,4 +54,9 @@ public class GroupMemberRepositoryImpl implements GroupMemberRepository {
         return groupMemberJpaRepository.findByGidAndRole(gid, role)
                 .stream().map(GroupMemberEntity::toDomain).toList();
     }
+
+    @Override
+    public boolean existsByGidAndUid(Long gid, Long uid) {
+        return groupMemberJpaRepository.existsByGidAndUid(gid, uid);
+    }
 }

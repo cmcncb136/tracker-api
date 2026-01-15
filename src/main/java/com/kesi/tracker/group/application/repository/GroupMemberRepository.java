@@ -15,4 +15,5 @@ public interface GroupMemberRepository {
     List<GroupMember> findByUid(Long uid);
     List<GroupMember> findByGidAndStatus(Long gid, GroupMemberStatus status);
     List<GroupMember> findByGidAndRole(Long gid, GroupRole role);
+    boolean existsByGidAndUid(Long gid, Long uid);
 }

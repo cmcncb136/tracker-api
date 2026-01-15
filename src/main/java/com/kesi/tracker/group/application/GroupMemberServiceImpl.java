@@ -2,11 +2,14 @@ package com.kesi.tracker.group.application;
 
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.domain.GroupMember;
+import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.group.domain.GroupRole;
+import com.kesi.tracker.group.domain.GroupTrackRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,6 +17,22 @@ import java.util.List;
 @Slf4j
 public class GroupMemberServiceImpl implements GroupMemberService {
     private final GroupMemberRepository groupMemberRepository;
+
+
+    @Override
+    public boolean isGroupMember(Long gid, Long uid) {
+        return groupMemberRepository.findByGidAndUid(gid, uid)
+                .map(GroupMember::isApproved)
+                .orElse(false);
+    }
+
+    @Override
+    public boolean isGroupLeader(Long gid, Long uid) {
+        return groupMemberRepository.findByGidAndUid(gid, uid)
+                .map(GroupMember::isLeader)
+                .orElse(false);
+    }
+
 
     @Override
     public GroupMember getApprovedByGidAndUid(Long gid, Long uid) {
@@ -40,4 +59,25 @@ public class GroupMemberServiceImpl implements GroupMemberService {
 
         return leaderGroupMembers;
     }
+
+    @Override
+    public GroupMember createInviteMember(Long gid, Long invitedUid) {
+        GroupMember groupMember = GroupMember.builder()
+                .gid(gid)
+                .uid(invitedUid)
+                .role(GroupRole.MEMBER)
+                .trackRole(GroupTrackRole.FOLLOWER)
+                .status(GroupMemberStatus.INVITED)
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .build();
+
+        return groupMemberRepository.save(groupMember);
+    }
+
+    @Override
+    public boolean existsGroupMember(Long gid, Long uid) {
+        return groupMemberRepository.existsByGidAndUid(gid, uid);
+    }
+
 }
