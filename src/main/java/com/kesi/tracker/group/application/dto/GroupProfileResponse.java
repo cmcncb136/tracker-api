@@ -9,10 +9,9 @@ import java.util.List;
 
 @Data
 @Builder
-public class GroupResponse {
+public class GroupProfileResponse {
     private String name;
     private String introduction;
-    private String description;
 
     private UserProfileResponse creator;
     private LocalDateTime creationDate;

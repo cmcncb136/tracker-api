@@ -8,4 +8,5 @@ import java.util.List;
 public interface FileJpaRepository extends JpaRepository<FileEntity, Long> {
     List<FileEntity> findByOwnerIdAndOwnerType(Long ownerId, OwnerType ownerType);
     List<FileEntity> findByIdIn(List<Long> ids);
+    List<FileEntity> findByOwnerTypeAndOwnerIdIn(OwnerType ownerType, List<Long> ids);
 }

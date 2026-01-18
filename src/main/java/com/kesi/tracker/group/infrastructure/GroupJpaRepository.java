@@ -1,6 +1,8 @@
 package com.kesi.tracker.group.infrastructure;
 
 import com.kesi.tracker.group.domain.AccessType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +20,5 @@ public interface GroupJpaRepository extends JpaRepository<GroupEntity, Long> {
     List<GroupEntity> findByUid(Long uid);
 
 
-    List<GroupEntity> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access);
+    Page<GroupEntity> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access, Pageable pageable);
 }

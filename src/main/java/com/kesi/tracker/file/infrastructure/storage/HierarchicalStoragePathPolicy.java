@@ -18,7 +18,7 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
         if(ObjectUtils.isEmpty(owner) || ObjectUtils.isEmpty(purpose))
             throw new IllegalArgumentException("The file has no owner or purpose");
 
-        OwnerType ownerType = owner.getOwnerType();
+        OwnerType ownerType = owner.ownerType();
         String directory = getPath(owner, ownerType, purpose);
 
         return new StorageKey(directory + "/" + file.getMetadata().virtualName());
@@ -26,7 +26,7 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
 
     @NotNull
     private static String getPath(FileOwner owner, OwnerType ownerType, FilePurpose purpose) {
-        Long ownerId = owner.getOwnerId();
+        Long ownerId = owner.ownerId();
 
         String directory = switch (ownerType) {
             case USER -> joinWithSlash("users", ownerId.toString(), purpose.getDirName());

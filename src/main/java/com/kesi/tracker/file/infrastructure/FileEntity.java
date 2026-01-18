@@ -54,8 +54,8 @@ public class FileEntity {
         return FileEntity.builder()
                 .id(file.getId())
                 .metadata(FileMetadataEmbeddable.fromDomain(file.getMetadata()))
-                .ownerType(file.getOwner() != null ? file.getOwner().getOwnerType() : null)
-                .ownerId(file.getOwner() != null ? file.getOwner().getOwnerId() : null)
+                .ownerType(file.getOwner() != null ? file.getOwner().ownerType() : null)
+                .ownerId(file.getOwner() != null ? file.getOwner().ownerId() : null)
                 .purpose(file.getPurpose())
                 .storageKey(file.getStorageKey().value())
                 .build();

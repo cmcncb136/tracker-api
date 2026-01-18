@@ -5,11 +5,14 @@ import com.kesi.tracker.file.application.storage.FileUrlAccessPolicy;
 import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.group.application.query.FileOwners;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,5 +57,28 @@ public class FileServiceImpl implements FileService {
                 .map(fileUrlAccessPolicy::generate)
                 .map(FileAccessUrl::new)
                 .toList();
+    }
+
+    @Override
+    public Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners fileOwers) {
+        List<File> files = fileRepository.findbyOwners(fileOwers);
+
+        return files.stream().collect(Collectors.groupingBy(
+                File::getId,
+                Collectors.mapping(
+                        file -> new FileAccessUrl(fileUrlAccessPolicy.generate(file.getStorageKey())),
+                        Collectors.toList()
+                )));
+    }
+
+    @Override
+    public List<File> assignFileOwner(FileOwner owner, List<Long> fileIds) {
+        List<File> files = this.findByIds(fileIds);
+
+        for(File file : files){
+            file.assignAsProfile(owner);
+        }
+
+        return this.save(files);
     }
 }

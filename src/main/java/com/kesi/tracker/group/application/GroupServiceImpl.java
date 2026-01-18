@@ -1,6 +1,15 @@
 package com.kesi.tracker.group.application;
 
+import com.kesi.tracker.file.application.FileService;
+import com.kesi.tracker.file.domain.File;
+import com.kesi.tracker.file.domain.FileAccessUrl;
+import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.group.application.dto.GroupCreationRequest;
+import com.kesi.tracker.group.application.dto.GroupProfileResponse;
 import com.kesi.tracker.group.application.dto.GroupResponse;
+import com.kesi.tracker.group.application.dto.GroupSearchRequest;
+import com.kesi.tracker.group.application.mapper.GroupMapper;
+import com.kesi.tracker.group.application.query.FileOwners;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
@@ -15,10 +24,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,6 +43,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupMemberService groupMemberService;
 
     private final GroupMemberRepository groupMemberRepository;
+    private final FileService fileService;
 
 
     @Override
@@ -44,8 +57,8 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<Group> searchPublicByName(String name) {
-        return groupRepository.findByNameContainingIgnoreCaseAndAccess(name, AccessType.PUBLIC);
+    public Page<Group> searchPublicByName(String name, Pageable pageable) {
+        return groupRepository.findByNameContainingIgnoreCaseAndAccess(name, AccessType.PUBLIC, pageable);
     }
 
     @Override
@@ -127,13 +140,46 @@ public class GroupServiceImpl implements GroupService {
     public GroupResponse getGroupResponseByGid(Long gid, @Nullable Long currentUid) {
         Group group = getByGid(gid);
 
-        if(group.isPrivate()) { //PRIVATE인 그룹인 경우
-            if(!groupMemberService.isGroupMember(gid, currentUid)) //GROUP에 속한 경우만 확인 가능
+        if (group.isPrivate()) { //PRIVATE인 그룹인 경우
+            if (!groupMemberService.isGroupMember(gid, currentUid)) //GROUP에 속한 경우만 확인 가능
                 throw new IllegalArgumentException("Don't have permission to access this group");
         }
 
+        return GroupMapper.toGroupResponse(
+                group,
+                userService.getProfile(group.getCreatedBy()),
+                fileService.findAccessUrlByOwner(FileOwner.ofGroup(gid))
+        );
+    }
 
-        return null;
+    @Override
+    public Page<GroupProfileResponse> searchPublicGroups(GroupSearchRequest searchRequest, Pageable pageable) {
+        Page<Group> groups = this.searchPublicByName(searchRequest.getGroupName(), pageable);
+
+        Map<Long, List<FileAccessUrl>> fileAccessUrlMap
+                = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
+
+        return groups.map(group ->
+                GroupMapper.toGroupProfileResponse(
+                        group,
+                        fileAccessUrlMap.getOrDefault(group.getGid(), List.of()
+                        )
+                )
+        );
+    }
+
+    @Override
+    public GroupResponse create(GroupCreationRequest groupCreationRequest, Long currentUid) {
+        Group group = GroupMapper.toGroup(groupCreationRequest, currentUid);
+
+        Group savedGroup = groupRepository.save(group);
+        FileOwner fileOwner = FileOwner.ofGroup(savedGroup.getGid());
+
+        fileService.assignFileOwner(fileOwner, groupCreationRequest.getProfileFileIds());
+
+        return GroupMapper.toGroupResponse(savedGroup,
+                userService.getProfile(group.getCreatedBy()),
+                fileService.findAccessUrlByOwner(fileOwner));
     }
 
     private void changeTrackRole(Long gid, Long currentUid, Long targetUid, GroupTrackRole trackRole) {
@@ -153,10 +199,10 @@ public class GroupServiceImpl implements GroupService {
 
         applicationEventPublisher.publishEvent(
                 GroupTrackRoleChangedEvent.builder()
-                .groupId(gid)
-                .changedRole(trackRole)
-                .roleChangedUserId(registerGroupMember.getUid())
-                .build()
+                        .groupId(gid)
+                        .changedRole(trackRole)
+                        .roleChangedUserId(registerGroupMember.getUid())
+                        .build()
         );
     }
 }

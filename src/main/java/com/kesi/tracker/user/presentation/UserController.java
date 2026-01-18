@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -24,9 +24,9 @@ public class UserController {
         return null;
     }
 
-    @GetMapping
+    @GetMapping("/{uid}")
     public UserProfileResponse getUserProfile(
-            @PathVariable long id
+            @PathVariable long uid
     ) {
         return null;
     }

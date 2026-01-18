@@ -17,4 +17,5 @@ public interface UserService {
     void join(UserJoinRequest dto);
     MyProfileResponse getMyProfile(Long id);
     UserProfileResponse getProfile(String email);
+    UserProfileResponse getProfile(Long id);
 }

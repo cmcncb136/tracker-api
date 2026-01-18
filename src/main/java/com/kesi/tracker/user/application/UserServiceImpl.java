@@ -57,14 +57,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         //Profile 파일로 저장 및 Owner 설정
-        List<File> files = fileService.findByIds(dto.getProfileIds());
-        FileOwner owner = FileOwner.ofUser(savedUser.getId());
-
-        for(File file : files){
-            file.assignAsProfile(owner);
-        }
-
-        fileService.save(files);
+        fileService.assignFileOwner(FileOwner.ofUser(savedUser.getId()), dto.getProfileIds());
     }
 
     @Override
@@ -82,6 +75,17 @@ public class UserServiceImpl implements UserService {
 
         return UserMapper.toUserProfileResponse(user,
                 fileService.findAccessUrlByOwner(owner));
+    }
+
+    @Override
+    public UserProfileResponse getProfile(Long id) {
+        User user = this.getById(id);
+        FileOwner owner = FileOwner.ofUser(user.getId());
+
+        return UserMapper.toUserProfileResponse(
+                user,
+                fileService.findAccessUrlByOwner(owner)
+        );
     }
 }
 

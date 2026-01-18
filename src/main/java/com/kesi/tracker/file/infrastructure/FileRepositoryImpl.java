@@ -3,6 +3,7 @@ package com.kesi.tracker.file.infrastructure;
 import com.kesi.tracker.file.application.repository.FileRepository;
 import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.group.application.query.FileOwners;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -42,7 +43,13 @@ public class FileRepositoryImpl implements FileRepository {
 
     @Override
     public List<File> findByOwner(FileOwner owner) {
-        return fileJpaRepository.findByOwnerIdAndOwnerType(owner.getOwnerId(), owner.getOwnerType())
+        return fileJpaRepository.findByOwnerIdAndOwnerType(owner.ownerId(), owner.ownerType())
+                .stream().map(FileEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<File> findbyOwners(FileOwners owners) {
+        return fileJpaRepository.findByOwnerTypeAndOwnerIdIn(owners.ownerType(), owners.ownerIds())
                 .stream().map(FileEntity::toDomain).toList();
     }
 

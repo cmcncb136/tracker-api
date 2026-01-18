@@ -2,7 +2,7 @@ package com.kesi.tracker.file.application.repository;
 
 import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.file.domain.OwnerType;
+import com.kesi.tracker.group.application.query.FileOwners;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +14,5 @@ public interface FileRepository {
     List<File> findByIds(List<Long> ids);
     void deleteById(Long id);
     List<File> findByOwner(FileOwner owner);
+    List<File> findbyOwners(FileOwners owners);
 }

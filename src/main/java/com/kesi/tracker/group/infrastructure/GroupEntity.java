@@ -41,6 +41,8 @@ public class GroupEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "member_count", nullable = false)
+    private Integer memberCount;
 
     public Group toDomain() {
         return Group.builder()
@@ -49,6 +51,7 @@ public class GroupEntity {
                 .introduce(this.introduce)
                 .description(this.description)
                 .access(this.access)
+                .memberCount(this.memberCount)
                 .createdBy(this.createdBy)
                 .createdAt(this.createdAt)
                 .build();
@@ -61,6 +64,7 @@ public class GroupEntity {
                 .introduce(group.getIntroduce())
                 .description(group.getDescription())
                 .access(group.getAccess())
+                .memberCount(group.getMemberCount())
                 .createdBy(group.getCreatedBy())
                 .createdAt(group.getCreatedAt())
                 .build();

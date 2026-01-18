@@ -4,6 +4,8 @@ import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.AccessType;
 import com.kesi.tracker.group.domain.Group;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,9 +24,9 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    public List<Group> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access) {
-        return groupJpaRepository.findByNameContainingIgnoreCaseAndAccess(name,access)
-                .stream().map(GroupEntity::toDomain).toList();
+    public Page<Group> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access, Pageable pageable) {
+        return groupJpaRepository.findByNameContainingIgnoreCaseAndAccess(name,access, pageable)
+                .map(GroupEntity::toDomain);
     }
 
     @Override
