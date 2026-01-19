@@ -21,4 +21,11 @@ public record FileOwner(
                 .ownerId(groupId)
                 .build();
     }
+
+    public static FileOwner ofTrack(Long trackId) {
+        return FileOwner.builder()
+                .ownerType(OwnerType.TRACK)
+                .ownerId(trackId)
+                .build();
+    }
 }

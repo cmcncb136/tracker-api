@@ -1,5 +1,6 @@
 package com.kesi.tracker.track.application;
 
+import com.kesi.tracker.track.application.dto.TrackResponse;
 import com.kesi.tracker.track.domain.Track;
 
 import java.util.List;
@@ -9,4 +10,5 @@ public interface TrackService {
     Track updateTrack(Track track, Long currentUid);
     Track getById(Long id);
     List<Track> findByGid(Long gid);
+    TrackResponse getTrackResponseById(Long id, Long currentUid);
 }
