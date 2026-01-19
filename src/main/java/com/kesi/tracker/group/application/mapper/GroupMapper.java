@@ -41,7 +41,7 @@ public class GroupMapper {
                 .access(groupCreationRequest.getAccess())
                 .createdBy(createBy)
                 .createdAt(LocalDateTime.now())
-                .memberCount(1)
+                .memberCount(1) //초기 인원은 1명
                 .build();
     }
 }

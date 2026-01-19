@@ -37,7 +37,6 @@ public class GroupController {
             @RequestBody GroupCreationRequest groupCreationRequest
             ) {
         //Todo. UID 가져오기
-
-        return null;
+        return groupService.create(groupCreationRequest, null);
     }
 }
