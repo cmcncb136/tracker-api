@@ -8,8 +8,8 @@ import java.util.Optional;
 public interface TrackMemberRepository {
     TrackMember save(TrackMember trackMember);
     Optional<TrackMember> findById(Long id);
-    Optional<TrackMember> findByTrackIdAndUid(Long trackId, Long uid);
-    List<TrackMember> findByTrackId(Long trackId);
+    List<TrackMember> findByTrackAssignmentId(Long trackAssignmentId);
     List<TrackMember> findByUid(Long uid);
+    Optional<TrackMember> findByTrackAssignmentIdAndUid(Long trackAssignmentId, Long uid);
     void deleteById(Long id);
 }

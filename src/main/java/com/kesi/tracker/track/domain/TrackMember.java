@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TrackMember {
     private Long id;
-    private Long trackId;
+    private Long trackAssignmentId;
     private Long uid;
     private LocalDateTime createdAt;
 }

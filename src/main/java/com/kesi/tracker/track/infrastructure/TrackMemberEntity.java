@@ -21,8 +21,8 @@ public class TrackMemberEntity {
     @Column
     private Long id;
 
-    @Column(name = "track_id", nullable = false)
-    Long trackId;
+    @Column(name = "track_assignment_id", nullable = false)
+    Long trackAssignmentId;
 
     @Column(nullable = false)
     Long uid;
@@ -34,7 +34,7 @@ public class TrackMemberEntity {
         return TrackMember.builder()
                 .id(id)
                 .uid(uid)
-                .trackId(trackId)
+                .trackAssignmentId(trackAssignmentId)
                 .createdAt(createdAt)
                 .build();
     }
@@ -42,7 +42,7 @@ public class TrackMemberEntity {
     public static TrackMemberEntity fromDomain(TrackMember domain) {
         return TrackMemberEntity.builder()
                 .id(domain.getId())
-                .trackId(domain.getTrackId())
+                .trackAssignmentId(domain.getTrackAssignmentId())
                 .uid(domain.getUid())
                 .createdAt(domain.getCreatedAt())
                 .build();

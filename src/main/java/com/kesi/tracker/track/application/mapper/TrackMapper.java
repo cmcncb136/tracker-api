@@ -17,7 +17,6 @@ public class TrackMapper {
                 .id(track.getId())
                 .gid(track.getGid())
                 .hostProfile(hostProfile)
-                .capacity(track.getCapacity())
                 .followersCount(track.getFollowerCnt())
 
                 .title(track.getTitle())

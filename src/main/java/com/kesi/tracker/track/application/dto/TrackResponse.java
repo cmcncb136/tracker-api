@@ -14,7 +14,6 @@ public class TrackResponse {
     private Long gid;
     private UserProfileResponse hostProfile;
 
-    private int capacity;
     private int followersCount;
 
     private String title;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TrackMemberJpaRepository extends JpaRepository<TrackMemberEntity, Long> {
-    Optional<TrackMemberEntity> findByTrackIdAndUid(Long trackId, Long uid);
-    List<TrackMemberEntity> findByTrackId(Long trackId);
+    Optional<TrackMemberEntity> findByTrackAssignmentIdAndUid(Long trackAssignmentId, Long uid);
+    List<TrackMemberEntity> findByTrackAssignmentId(Long trackAssignmentId);
     List<TrackMemberEntity> findByUid(Long uid);
 }

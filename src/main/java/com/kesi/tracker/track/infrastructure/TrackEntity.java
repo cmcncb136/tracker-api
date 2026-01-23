@@ -28,9 +28,6 @@ public class TrackEntity {
     @Column(name = "host_id", nullable = false)
     private Long hostId;
 
-    @Column(nullable = false)
-    private int capacity; // 최대 수용 인원
-
     @Column(name = "follower_cnt", nullable = false)
     private int followerCnt; // 현재 참여 인원
 
@@ -67,7 +64,6 @@ public class TrackEntity {
                 .id(this.id)
                 .gid(this.gid)
                 .hostId(this.hostId)
-                .capacity(this.capacity)
                 .followerCnt(this.followerCnt)
                 .title(this.title)
                 .introduce(this.introduce)
@@ -88,7 +84,6 @@ public class TrackEntity {
                 .id(domain.getId())
                 .gid(domain.getGid())
                 .hostId(domain.getHostId())
-                .capacity(domain.getCapacity())
                 .followerCnt(domain.getFollowerCnt())
                 .title(domain.getTitle())
                 .introduce(domain.getIntroduce())

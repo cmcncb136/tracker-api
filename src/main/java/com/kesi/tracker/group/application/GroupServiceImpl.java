@@ -53,7 +53,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getByGid(Long gid) {
-        return groupRepository.findByGid(gid).orElseThrow(() -> new RuntimeException("Group not found"));
+        return groupRepository.findByGid(gid).orElseThrow(() -> new IllegalArgumentException("Group not found"));
     }
 
     @Override

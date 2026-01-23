@@ -12,7 +12,6 @@ public class Track {
     private Long gid;
     private Long hostId;
 
-    private int capacity; //최대 수용인원
     private int followerCnt;
 
     private String title;

@@ -8,8 +8,10 @@ import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
 import com.kesi.tracker.notification.domain.NotificationContent;
 import com.kesi.tracker.notification.domain.NotificationType;
+import com.kesi.tracker.track.application.TrackAssignmentService;
 import com.kesi.tracker.track.application.TrackService;
 import com.kesi.tracker.track.domain.Track;
+import com.kesi.tracker.track.domain.TrackAssignment;
 import com.kesi.tracker.track.domain.event.TrackCanceledEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.User;
@@ -26,13 +28,15 @@ public class TrackCanceledNotificationHandler implements NotificationEventHandle
     private final GroupService groupService;
     private final TrackService trackService;
     private final UserService userService;
+    private final TrackAssignmentService trackAssignmentService;
 
 
     @Override
     public void handle(TrackCanceledEvent event) {
         User canceledUser = userService.getById(event.canceledUserId());
         Group group = groupService.getByGid(event.groupId());
-        Track track = trackService.getById(event.trackId());
+        TrackAssignment trackAssignment = trackAssignmentService.getById(event.trackAssignmentId());
+        Track track = trackService.getById(trackAssignment.getId());
 
         String title = "수강 신청 취소";
         String message = String.format("%s 그룹에서 %s님이 %s 트랙 신청을 취소했습니다",

@@ -8,7 +8,7 @@ import java.util.List;
 @Builder
 public record TrackAppliedEvent (
     Long groupId,
-    Long trackId,
+    Long trackAssignmentId,
     Long appliedUserId,
     Long hostId,
     List<Long> groupLeaderIds

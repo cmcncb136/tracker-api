@@ -24,13 +24,8 @@ public class TrackMemberRepositoryImpl implements TrackMemberRepository {
     }
 
     @Override
-    public Optional<TrackMember> findByTrackIdAndUid(Long trackId, Long uid) {
-        return trackMemberJpaRepository.findByTrackIdAndUid(trackId, uid).map(TrackMemberEntity::toDomain);
-    }
-
-    @Override
-    public List<TrackMember> findByTrackId(Long trackId) {
-        return trackMemberJpaRepository.findByTrackId(trackId)
+    public List<TrackMember> findByTrackAssignmentId(Long trackAssignmentId) {
+        return trackMemberJpaRepository.findByTrackAssignmentId(trackAssignmentId)
                 .stream().map(TrackMemberEntity::toDomain).toList();
     }
 
@@ -38,6 +33,12 @@ public class TrackMemberRepositoryImpl implements TrackMemberRepository {
     public List<TrackMember> findByUid(Long uid) {
         return trackMemberJpaRepository.findByUid(uid)
                 .stream().map(TrackMemberEntity::toDomain).toList();
+    }
+
+    @Override
+    public Optional<TrackMember> findByTrackAssignmentIdAndUid(Long trackAssignmentId, Long uid) {
+        return trackMemberJpaRepository.findByTrackAssignmentIdAndUid(trackAssignmentId, uid)
+                .map(TrackMemberEntity::toDomain);
     }
 
     @Override

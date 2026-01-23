@@ -11,7 +11,8 @@ public interface TrackJpaRepository  extends JpaRepository<TrackEntity, Long> {
 
     @Query("""
     SELECT t FROM TrackEntity t
-    JOIN TrackMemberEntity tm ON t.id = tm.trackId
+    JOIN TrackAssignmentEntity ta ON t.id = ta.trackId
+    JOIN TrackMemberEntity tm ON ta.id = tm.trackAssignmentId
     WHERE tm.uid = :uid
     """)
     List<TrackEntity> findByUid(@Param("uid") Long uid);
