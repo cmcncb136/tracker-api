@@ -19,6 +19,7 @@ public interface GroupJpaRepository extends JpaRepository<GroupEntity, Long> {
     """)
     List<GroupEntity> findByUid(Long uid);
 
+    List<GroupEntity> findByGidIn(List<Long> gids);
 
     Page<GroupEntity> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access, Pageable pageable);
 }

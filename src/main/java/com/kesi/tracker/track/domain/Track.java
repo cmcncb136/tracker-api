@@ -21,8 +21,16 @@ public class Track {
     private String place;
     private Long cost;
 
+    private LocalDateTime assignmentStartAt;
+    private LocalDateTime assignmentEndAt;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long createdBy;
     private Long modifiedBy;
+
+    public boolean isAssignmentWithinPeriod(LocalDateTime target) {
+        return !target.isBefore(assignmentStartAt) && !target.isAfter(assignmentEndAt);
+    }
+
 }

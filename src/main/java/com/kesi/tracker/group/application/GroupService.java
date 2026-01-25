@@ -10,6 +10,10 @@ import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public interface GroupService {
     Group create(Group group);
     Group getByGid(Long gid);
@@ -23,6 +27,9 @@ public interface GroupService {
     void registerFollower(Long groupId, Long currentUid, Long unregisterUid);
 
     GroupResponse getGroupResponseByGid(Long gid, @Nullable Long currentUid);
+    List<GroupProfileResponse> getGroupResponsByUid(Long uid);
+    Map<Long, GroupProfileResponse> getGroupResponsByGids(List<Long> gids);
+    Map<Long, GroupProfileResponse> getGroupResponsByGids(Set<Long> gids);
     Page<GroupProfileResponse> searchPublicGroups(GroupSearchRequest searchRequest, Pageable pageable);
     GroupResponse create(GroupCreationRequest groupCreationRequest, Long currentUid);
 }

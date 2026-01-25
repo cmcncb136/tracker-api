@@ -1,10 +1,8 @@
 package com.kesi.tracker.user.application;
 
 import com.kesi.tracker.file.application.FileService;
-import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.file.domain.FilePurpose;
-import com.kesi.tracker.file.domain.OwnerType;
+import com.kesi.tracker.file.domain.*;
+import com.kesi.tracker.group.application.query.FileOwners;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
@@ -16,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +35,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public List<User> getByIds(List<Long> ids) {
+        Set<Long> idSet = new HashSet<>(ids);
+
+        return this.getByIds(idSet);
+    }
+
+    @Override
+    public List<User> getByIds(Set<Long> ids) {
+        List<User> user =  userRepository.findByIdIn(ids.stream().toList());
+
+        if(user.size() != ids.size())
+            throw new RuntimeException("User not found (request : " + ids.size() + ", found : " + user.size() + ")");
+
+        return user;
     }
 
     @Override
@@ -86,6 +101,21 @@ public class UserServiceImpl implements UserService {
                 user,
                 fileService.findAccessUrlByOwner(owner)
         );
+    }
+
+
+    @Override
+    public Map<Long, UserProfileResponse> getProfiles(Set<Long> ids) {
+        List<User> users = this.getByIds(ids);
+        Map<Long, List<FileAccessUrl>> accessUrlMap =
+                fileService.findAccessUrlByOwners(FileOwners.ofUser(users.stream().map(User::getId).toList()));
+
+        return users.stream().collect(Collectors.toMap(
+                User::getId,
+                user -> UserMapper.toUserProfileResponse(
+                        user,
+                        accessUrlMap.getOrDefault(user.getId(), Collections.emptyList()))
+        ));
     }
 }
 

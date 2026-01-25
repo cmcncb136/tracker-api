@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class TrackApplyServiceImpl implements TrackApplyService {
+public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     private final TrackMemberRepository trackMemberRepository;
     private final TrackService trackService;
     private final GroupMemberService groupMemberService;
@@ -33,6 +33,9 @@ public class TrackApplyServiceImpl implements TrackApplyService {
     @Transactional
     public void applyTrack(Long currentUid, Long trackId) {
         Track track = trackService.getById(trackId);
+        if(!track.isAssignmentWithinPeriod(LocalDateTime.now()))
+            throw new IllegalArgumentException("수강 신청 기간만 신청 가능합니다");
+
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(currentUid, track.getGid());
 
         if(!groupMember.isFollower())

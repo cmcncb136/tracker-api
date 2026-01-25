@@ -1,7 +1,10 @@
 package com.kesi.tracker.track.application.mapper;
 
 import com.kesi.tracker.file.domain.FileAccessUrl;
+import com.kesi.tracker.group.application.dto.GroupProfileResponse;
+import com.kesi.tracker.group.application.dto.GroupResponse;
 import com.kesi.tracker.track.application.dto.TrackResponse;
+import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 
@@ -26,9 +29,22 @@ public class TrackMapper {
                 .place(track.getPlace())
                 .cost(track.getCost())
 
+                .assignmentEndAt(track.getAssignmentEndAt())
+                .assignmentEndAt(track.getAssignmentEndAt())
+
                 .createdAt(track.getCreatedAt())
                 .modifiedAt(track.getModifiedAt())
                 .profileUrls(profileUrls.stream().map(FileAccessUrl::toString).toList())
+                .build();
+    }
+
+    public static TrackWithGroupResponse toTrackWithGroupResponse(
+            TrackResponse track,
+            GroupProfileResponse group
+    ) {
+        return TrackWithGroupResponse.builder()
+                .track(track)
+                .group(group)
                 .build();
     }
 }

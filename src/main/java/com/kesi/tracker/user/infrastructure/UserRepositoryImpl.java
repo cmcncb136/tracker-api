@@ -29,6 +29,11 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public List<User> findByIdIn(List<Long> ids) {
+        return userJpaRepository.findByIdIn(ids).stream().map(UserEntity::toDomain).toList();
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userJpaRepository.existsByEmail(email);
     }

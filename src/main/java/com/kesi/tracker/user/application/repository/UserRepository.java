@@ -9,6 +9,7 @@ public interface UserRepository {
     User save(User user);
     Optional<User> findByEmail(String email);
     Optional<User> findById(Long id);
+    List<User> findByIdIn(List<Long> ids);
     boolean existsByEmail(String email);
     boolean existsByPhone(String phone);
 

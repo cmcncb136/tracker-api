@@ -41,8 +41,14 @@ public class GroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    public List<Group> findByUserId(Long userId) {
-        return groupJpaRepository.findByUid(userId)
+    public List<Group> findByUid(Long uid) {
+        return groupJpaRepository.findByUid(uid)
+                .stream().map(GroupEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<Group> findByGids(List<Long> gids) {
+        return groupJpaRepository.findByGidIn(gids)
                 .stream().map(GroupEntity::toDomain).toList();
     }
 

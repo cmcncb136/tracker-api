@@ -2,12 +2,20 @@ package com.kesi.tracker.track.application;
 
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.File;
+import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
+import com.kesi.tracker.group.application.dto.GroupProfileResponse;
+import com.kesi.tracker.group.application.query.FileOwners;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.dto.TrackResponse;
+import com.kesi.tracker.track.application.dto.TrackSearchRequest;
+import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
+import com.kesi.tracker.track.application.dto.TrackWithGroupSearchRequest;
 import com.kesi.tracker.track.application.mapper.TrackMapper;
+import com.kesi.tracker.track.application.query.TrackSearchCondition;
+import com.kesi.tracker.track.application.query.TrackWithGroupSearchCondition;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
@@ -18,9 +26,12 @@ import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +44,7 @@ public class TrackServiceImpl implements TrackService {
     private final ApplicationEventPublisher applicationEventPublisher;
     private final UserService userService;
     private final FileService fileService;
+    private final GroupService groupService;
 
     @Override
     public Track createTrack(Track track, Long currentUid) {
@@ -99,6 +111,51 @@ public class TrackServiceImpl implements TrackService {
                 hostProfile,
                 fileService.findAccessUrlByOwner(FileOwner.ofTrack(track.getId()))
         );
+    }
+
+    @Override
+    public Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable) {
+        if(!groupMemberService.isGroupMember(currentUid, gid))
+            throw new RuntimeException("not group member");
+
+        TrackSearchCondition searchCondition = searchRequest.toTrackSearchCondition();
+        Page<Track> tracks = trackRepository.searchInGroup(gid, searchCondition, pageable);
+
+        Map<Long, UserProfileResponse> userProfileResponseMap
+                = userService.getProfiles(tracks.map(Track::getHostId).toSet());
+
+        Map<Long, List<FileAccessUrl>> fileAccessUrlsMap
+                = fileService.findAccessUrlByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
+
+        return tracks.map(track -> TrackMapper.toTrackResponse(
+                track,
+                userProfileResponseMap.get(track.getHostId()),
+                fileAccessUrlsMap.get(track.getId())
+        ));
+    }
+
+    @Override
+    public Page<TrackWithGroupResponse> searchTrackInGroupInUser(Long currentUid, TrackWithGroupSearchRequest searchRequest, Pageable pageable) {
+        TrackWithGroupSearchCondition searchCondition = searchRequest.toTrackWithGroupSearchCondition();
+        Page<Track> tracks = trackRepository.searchInGroupInUser(currentUid, searchCondition, pageable);
+
+        Map<Long, UserProfileResponse> userProfileResponseMap
+                = userService.getProfiles(tracks.map(Track::getHostId).toSet());
+
+        Map<Long, GroupProfileResponse> groupProfileResponseMap
+                = groupService.getGroupResponsByGids(tracks.map(Track::getHostId).toSet());
+
+        Map<Long, List<FileAccessUrl>> fileAccessUrlsMap
+                = fileService.findAccessUrlByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
+
+        return tracks.map(track -> TrackMapper.toTrackWithGroupResponse(
+                TrackMapper.toTrackResponse(
+                        track,
+                        userProfileResponseMap.get(track.getHostId()),
+                        fileAccessUrlsMap.get(track.getId())
+                ),
+                groupProfileResponseMap.get(track.getGid())
+        ));
     }
 }
 

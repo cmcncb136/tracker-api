@@ -23,6 +23,9 @@ public class TrackResponse {
     private String place;
     private Long cost;
 
+    private LocalDateTime assignmentStartAt;
+    private LocalDateTime assignmentEndAt;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 

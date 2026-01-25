@@ -1,7 +1,6 @@
 package com.kesi.tracker.group.application;
 
 import com.kesi.tracker.file.application.FileService;
-import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.dto.GroupCreationRequest;
@@ -29,8 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -149,6 +147,45 @@ public class GroupServiceImpl implements GroupService {
                 group,
                 userService.getProfile(group.getCreatedBy()),
                 fileService.findAccessUrlByOwner(FileOwner.ofGroup(gid))
+        );
+    }
+
+    @Override
+    public List<GroupProfileResponse> getGroupResponsByUid(Long uid) {
+        List<Group> groups = groupRepository.findByUid(uid);
+
+        Map<Long, List<FileAccessUrl>> fileaccessurlsMap
+                = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
+
+        return groups.stream().map(group ->
+                GroupMapper.toGroupProfileResponse(
+                        group,
+                        fileaccessurlsMap.getOrDefault(group.getGid(), Collections.emptyList())))
+                .toList();
+    }
+
+    @Override
+    public Map<Long, GroupProfileResponse> getGroupResponsByGids(List<Long> gids) {
+        return this.getGroupResponsByGids(new HashSet<>(gids));
+    }
+
+    @Override
+    public Map<Long, GroupProfileResponse> getGroupResponsByGids(Set<Long> gids) {
+        List<Group> groups = groupRepository.findByGids(gids.stream().toList());
+        if(groups.size() != gids.size())
+            throw new RuntimeException("Group not found (request : " + gids.size() + ", found : " + gids.size() + ")");
+
+        Map<Long, List<FileAccessUrl>> fileaccessurlsMap
+                = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
+
+        return groups.stream().collect(
+                Collectors.toMap(
+                        Group::getGid,
+                        group -> GroupMapper.toGroupProfileResponse(
+                                group,
+                                fileaccessurlsMap.getOrDefault(group.getGid(), Collections.emptyList())
+                        )
+                )
         );
     }
 

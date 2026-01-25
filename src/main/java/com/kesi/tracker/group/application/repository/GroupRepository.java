@@ -13,7 +13,8 @@ public interface GroupRepository {
     Page<Group> findByNameContainingIgnoreCaseAndAccess(String name, AccessType access, Pageable pageable);
     Optional<Group> findByGid(Long gid);
     List<Group> findAll();
-    List<Group> findByUserId(Long userId);
+    List<Group> findByUid(Long uid);
+    List<Group> findByGids(List<Long> gids);
 
     Group save(Group group);
     void deleteByGid(Long gid);
