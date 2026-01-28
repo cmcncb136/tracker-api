@@ -39,6 +39,7 @@ public class UserEntity {
     @Column(length = 20)
     private String phone;
 
+    @Column
     private LocalDateTime birthday;
 
     @Column(name = "created_at", nullable = false, updatable = false)

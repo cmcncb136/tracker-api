@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -30,7 +31,7 @@ public class User {
         this.name = ObjectUtils.requireNonEmpty(name);
         this.nickname = ObjectUtils.requireNonEmpty(nickname);
         this.phone = phone;
-        this.birthday = Objects.requireNonNull(birthday);
+        this.birthday = birthday;
         this.createdAt = Objects.requireNonNull(createdAt);
         this.role = Objects.requireNonNull(role);
 

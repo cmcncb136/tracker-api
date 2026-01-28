@@ -9,7 +9,7 @@ public class PhoneValidator {
         for(char c : phone.toCharArray())
             if(!Character.isDigit(c)) return false;
 
-        if(!phone.startsWith("010") || !phone.startsWith("011"))
+        if(!phone.startsWith("010") && !phone.startsWith("011"))
             return false;
 
         return true;

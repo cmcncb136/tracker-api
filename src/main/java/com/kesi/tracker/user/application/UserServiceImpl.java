@@ -11,6 +11,7 @@ import com.kesi.tracker.user.application.repository.UserRepository;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public Optional<User> findByEmail(Email email) {
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByPhone(dto.getPhone()))
             throw new IllegalArgumentException("Phone already in use");
 
-        User user = UserMapper.toDomain(dto);
+        User user = UserMapper.toDomain(dto, bCryptPasswordEncoder.encode(dto.getPassword()));
         User savedUser = userRepository.save(user);
 
         //Profile 파일로 저장 및 Owner 설정

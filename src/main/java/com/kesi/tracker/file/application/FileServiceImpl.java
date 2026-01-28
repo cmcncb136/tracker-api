@@ -7,6 +7,7 @@ import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.query.FileOwners;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,6 +74,8 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public List<File> assignFileOwner(FileOwner owner, List<Long> fileIds) {
+        if(ObjectUtils.isEmpty(fileIds)) return List.of();
+
         List<File> files = this.findByIds(fileIds);
 
         for(File file : files){
