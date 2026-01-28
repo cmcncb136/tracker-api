@@ -2,6 +2,7 @@ package com.kesi.tracker.core.filter;
 
 import com.kesi.tracker.core.JwtUtil;
 import com.kesi.tracker.user.application.model.CustomUserDetails;
+import com.kesi.tracker.user.domain.Role;
 import com.kesi.tracker.user.domain.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,7 +10,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,6 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.substring(7);
+        log.info("token: {}", token);
 
         try {
             if(jwtUtil.isTokenExpired(token)) {
@@ -37,14 +38,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
+            Long userId = jwtUtil.getUserId(token);
+            Role role = jwtUtil.getRole(token);
 
-            User user = User.builder()
-                    .id(jwtUtil.getUserId(token))
-                    .role(jwtUtil.getRole(token))
-                    .build();
-
-
-            CustomUserDetails userDetails = new CustomUserDetails(user);
+            CustomUserDetails userDetails = CustomUserDetails.of(userId, role);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // SecurityContext에 인증 정보 저장
@@ -52,7 +49,10 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         } catch (Exception e) {
+            log.warn(e.getClass().getName(), e);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is invalid");
         }
+
+        filterChain.doFilter(request, response);
     }
 }

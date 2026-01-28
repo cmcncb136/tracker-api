@@ -11,7 +11,6 @@ import java.util.Date;
 import io.jsonwebtoken.Jwts;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 @Component
 public class JwtUtil {
@@ -25,25 +24,26 @@ public class JwtUtil {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseClaimsJwt(jwt)
+                .parseSignedClaims(jwt)
                 .getPayload()
                 .get("userId", Long.class);
     }
 
     public Role getRole(String jwt) {
-        return Jwts.parser()
+        String roleString = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseClaimsJwt(jwt)
+                .parseSignedClaims(jwt)
                 .getPayload()
-                .get("role", Role.class);
-    }
+                .get("role", String.class);
+
+        return Role.valueOf(roleString.replace("ROLE_", ""));    }
 
     public Boolean isTokenExpired(String jwt) {
         return Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
-                .parseClaimsJws(jwt)
+                .parseSignedClaims(jwt)
                 .getPayload()
                 .getExpiration()
                 .before(new Date());
@@ -52,7 +52,7 @@ public class JwtUtil {
     public String createJwt(Long userId, Role role, Long expiredMs) {
         return Jwts.builder()
                 .claim("userId", userId)
-                .claim("role", role)
+                .claim("role", "ROLE_" + role.name())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)
