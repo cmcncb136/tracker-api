@@ -5,6 +5,7 @@ import com.kesi.tracker.user.domain.User;
 import jakarta.annotation.Nullable;
 import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Builder(access = AccessLevel.PRIVATE)
+@Getter
 public class CustomUserDetails implements UserDetails {
     @Nullable
     private final String password;
@@ -43,22 +45,7 @@ public class CustomUserDetails implements UserDetails {
         return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
     public Long getId() {
         return userId;
     }
-
 }

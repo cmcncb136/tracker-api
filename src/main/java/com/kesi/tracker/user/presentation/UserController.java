@@ -28,6 +28,6 @@ public class UserController {
     public UserProfileResponse getUserProfile(
             @PathVariable long uid
     ) {
-        return null;
+        return userService.getProfile(uid);
     }
 }

@@ -3,7 +3,6 @@ package com.kesi.tracker.core.filter;
 import com.kesi.tracker.core.JwtUtil;
 import com.kesi.tracker.user.application.model.CustomUserDetails;
 import com.kesi.tracker.user.domain.Role;
-import com.kesi.tracker.user.domain.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
