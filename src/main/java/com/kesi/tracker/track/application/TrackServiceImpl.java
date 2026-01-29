@@ -1,8 +1,7 @@
 package com.kesi.tracker.track.application;
 
 import com.kesi.tracker.file.application.FileService;
-import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileAccessUrl;
+ import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
@@ -19,10 +18,8 @@ import com.kesi.tracker.track.application.query.TrackWithGroupSearchCondition;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
-import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
-import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -143,7 +140,7 @@ public class TrackServiceImpl implements TrackService {
                 = userService.getProfiles(tracks.map(Track::getHostId).toSet());
 
         Map<Long, GroupProfileResponse> groupProfileResponseMap
-                = groupService.getGroupResponsByGids(tracks.map(Track::getHostId).toSet());
+                = groupService.getGroupResponseByGids(tracks.map(Track::getHostId).toSet());
 
         Map<Long, List<FileAccessUrl>> fileAccessUrlsMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));

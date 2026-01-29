@@ -1,5 +1,6 @@
 package com.kesi.tracker.group.presentation;
 
+import com.kesi.tracker.core.security.annotation.UserId;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.GroupCreationRequest;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
@@ -11,32 +12,38 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("groups")
 public class GroupController {
     private final GroupService groupService;
 
-    @GetMapping("/{gid}")
+    @GetMapping("groups/{gid}")
     public GroupResponse getByGid(
-            @PathVariable long gid
+            @PathVariable long gid,
+            @UserId Long userId
     ) {
-        //Todo. 추후 구현되면 UID 가져오기
-        return groupService.getGroupResponseByGid(gid, null);
+        return groupService.getGroupResponseByGid(gid, userId);
     }
 
-    @GetMapping
+    @GetMapping("groups")
     public Page<GroupProfileResponse> search(
             @ModelAttribute  GroupSearchRequest searchRequest,
             @PageableDefault Pageable pageable) {
         return groupService.searchPublicGroups(searchRequest, pageable);
     }
 
-    @PostMapping
+    @PostMapping("groups")
     public GroupResponse create(
-            @RequestBody GroupCreationRequest groupCreationRequest
+            @RequestBody GroupCreationRequest groupCreationRequest,
+            @UserId Long userId
             ) {
-        //Todo. UID 가져오기
-        return groupService.create(groupCreationRequest, null);
+        return groupService.create(groupCreationRequest, userId);
+    }
+
+    @GetMapping("users/groups")
+    public List<GroupProfileResponse> findByUserId(@UserId Long userId) {
+        return groupService.getGroupResponseByUid(userId);
     }
 }

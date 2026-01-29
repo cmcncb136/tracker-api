@@ -151,7 +151,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupProfileResponse> getGroupResponsByUid(Long uid) {
+    public List<GroupProfileResponse> getGroupResponseByUid(Long uid) {
         List<Group> groups = groupRepository.findByUid(uid);
 
         Map<Long, List<FileAccessUrl>> fileaccessurlsMap
@@ -165,12 +165,12 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Map<Long, GroupProfileResponse> getGroupResponsByGids(List<Long> gids) {
-        return this.getGroupResponsByGids(new HashSet<>(gids));
+    public Map<Long, GroupProfileResponse> getGroupResponseByGids(List<Long> gids) {
+        return this.getGroupResponseByGids(new HashSet<>(gids));
     }
 
     @Override
-    public Map<Long, GroupProfileResponse> getGroupResponsByGids(Set<Long> gids) {
+    public Map<Long, GroupProfileResponse> getGroupResponseByGids(Set<Long> gids) {
         List<Group> groups = groupRepository.findByGids(gids.stream().toList());
         if(groups.size() != gids.size())
             throw new RuntimeException("Group not found (request : " + gids.size() + ", found : " + gids.size() + ")");

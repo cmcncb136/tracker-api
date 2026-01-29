@@ -27,9 +27,9 @@ public interface GroupService {
     void registerFollower(Long groupId, Long currentUid, Long unregisterUid);
 
     GroupResponse getGroupResponseByGid(Long gid, @Nullable Long currentUid);
-    List<GroupProfileResponse> getGroupResponsByUid(Long uid);
-    Map<Long, GroupProfileResponse> getGroupResponsByGids(List<Long> gids);
-    Map<Long, GroupProfileResponse> getGroupResponsByGids(Set<Long> gids);
+    List<GroupProfileResponse> getGroupResponseByUid(Long uid);
+    Map<Long, GroupProfileResponse> getGroupResponseByGids(List<Long> gids);
+    Map<Long, GroupProfileResponse> getGroupResponseByGids(Set<Long> gids);
     Page<GroupProfileResponse> searchPublicGroups(GroupSearchRequest searchRequest, Pageable pageable);
     GroupResponse create(GroupCreationRequest groupCreationRequest, Long currentUid);
 }
