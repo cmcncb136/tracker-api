@@ -1,17 +1,14 @@
 package com.kesi.tracker.track.application;
 
 import com.kesi.tracker.file.application.FileService;
- import com.kesi.tracker.file.domain.FileAccessUrl;
+import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
 import com.kesi.tracker.group.application.query.FileOwners;
 import com.kesi.tracker.group.domain.GroupMember;
-import com.kesi.tracker.track.application.dto.TrackResponse;
-import com.kesi.tracker.track.application.dto.TrackSearchRequest;
-import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
-import com.kesi.tracker.track.application.dto.TrackWithGroupSearchRequest;
+import com.kesi.tracker.track.application.dto.*;
 import com.kesi.tracker.track.application.mapper.TrackMapper;
 import com.kesi.tracker.track.application.query.TrackSearchCondition;
 import com.kesi.tracker.track.application.query.TrackWithGroupSearchCondition;
@@ -42,15 +39,16 @@ public class TrackServiceImpl implements TrackService {
     private final UserService userService;
     private final FileService fileService;
     private final GroupService groupService;
+    private final TrackService trackService;
 
     @Override
-    public Track createTrack(Track track, Long currentUid) {
+    public Track create(Track track, Long currentUid) {
         //TRACK에 있는 그룹이 존재하고 해당 TRACK에 승인된 멤버이어야 한다
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(track.getGid(), currentUid);
 
 
         //HOST 역할을 붙어야 받아야 한다
-        if(!groupMember.isHost())
+        if (!groupMember.isHost())
             throw new RuntimeException("Group member is not host");
 
 
@@ -70,12 +68,12 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public Track updateTrack(Track track, Long currentUid) {
+    public Track update(Track track, Long currentUid) {
         //TRACK에 있는 그룹이 존재하고 해당 TRACK에 승인된 멤버이어야 한다
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(track.getGid(), currentUid);
 
         //HOST 역할을 붙어야 받아야 한다
-        if(!groupMember.isHost())
+        if (!groupMember.isHost())
             throw new RuntimeException("Group member is not host");
 
         return trackRepository.save(track);
@@ -83,7 +81,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Track getById(Long id) {
-        return  trackRepository.findById(id)
+        return trackRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Track not found"));
     }
 
@@ -98,7 +96,7 @@ public class TrackServiceImpl implements TrackService {
         Track track = getById(id);
 
         //그룹 멤버인지 확인
-        if(!groupMemberService.isGroupMember(currentUid, track.getGid()))
+        if (!groupMemberService.isGroupMember(currentUid, track.getGid()))
             throw new RuntimeException("not group member");
 
         UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
@@ -112,7 +110,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable) {
-        if(!groupMemberService.isGroupMember(currentUid, gid))
+        if (!groupMemberService.isGroupMember(currentUid, gid))
             throw new RuntimeException("not group member");
 
         TrackSearchCondition searchCondition = searchRequest.toTrackSearchCondition();
@@ -153,6 +151,20 @@ public class TrackServiceImpl implements TrackService {
                 ),
                 groupProfileResponseMap.get(track.getGid())
         ));
+    }
+
+    @Override
+    public TrackResponse create(TrackCreationRequest trackCreationRequest, Long currentUid) {
+        Track track = TrackMapper.toTrack(trackCreationRequest, currentUid);
+        Track savedTrack =  trackService.create(track, currentUid);
+
+        UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
+
+        return TrackMapper.toTrackResponse(
+                savedTrack,
+                hostProfile,
+                fileService.findAccessUrlByOwner(FileOwner.ofTrack(track.getId()))
+        );
     }
 }
 

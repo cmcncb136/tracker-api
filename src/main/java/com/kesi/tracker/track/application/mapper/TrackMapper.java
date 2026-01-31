@@ -2,12 +2,13 @@ package com.kesi.tracker.track.application.mapper;
 
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.group.application.dto.GroupResponse;
+import com.kesi.tracker.track.application.dto.TrackCreationRequest;
 import com.kesi.tracker.track.application.dto.TrackResponse;
 import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TrackMapper {
@@ -45,6 +46,28 @@ public class TrackMapper {
         return TrackWithGroupResponse.builder()
                 .track(track)
                 .group(group)
+                .build();
+    }
+
+    public static Track toTrack(
+            TrackCreationRequest trackCreationRequest,
+            Long currentUserId) {
+        return Track.builder()
+                .gid(trackCreationRequest.getGid())
+                .hostId(currentUserId)
+                .capacity(trackCreationRequest.getCapacity())
+                .followerCnt(0)
+                .title(trackCreationRequest.getTitle())
+                .introduce(trackCreationRequest.getIntroduction())
+                .description(trackCreationRequest.getDescription())
+                .place(trackCreationRequest.getPlace())
+                .cost(trackCreationRequest.getCost())
+                .assignmentStartAt(trackCreationRequest.getAssignmentStartAt())
+                .assignmentEndAt(trackCreationRequest.getAssignmentEndAt())
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .createdBy(currentUserId)
+                .modifiedBy(currentUserId)
                 .build();
     }
 }

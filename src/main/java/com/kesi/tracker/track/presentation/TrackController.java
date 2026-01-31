@@ -3,10 +3,7 @@ package com.kesi.tracker.track.presentation;
 
 import com.kesi.tracker.core.security.annotation.UserId;
 import com.kesi.tracker.track.application.TrackService;
-import com.kesi.tracker.track.application.dto.TrackResponse;
-import com.kesi.tracker.track.application.dto.TrackSearchRequest;
-import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
-import com.kesi.tracker.track.application.dto.TrackWithGroupSearchRequest;
+import com.kesi.tracker.track.application.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +17,7 @@ public class TrackController {
     private final TrackService trackService;
 
     @GetMapping("/groups/tracks/{trackId}")
-    public TrackResponse getTrack(
+    public TrackResponse get(
             @PathVariable("trackId") Long trackId,
             @UserId Long userId
             ) {
@@ -38,6 +35,14 @@ public class TrackController {
         return trackService.searchTrackInGroup(gid, userId, searchRequest, pageable);
     }
 
+    @PostMapping("/groups/tracks")
+    public TrackResponse create(
+            @RequestBody TrackCreationRequest trackCreationRequest,
+            @UserId Long userId
+            ) {
+        return trackService.create(trackCreationRequest, userId);
+    }
+
     @GetMapping("/users/tracks")
     public Page<TrackWithGroupResponse> searchTrackInUser(
             @UserId Long userId,
@@ -46,4 +51,5 @@ public class TrackController {
     ) {
         return trackService.searchTrackInGroupInUser(userId, searchRequest, pageable);
     }
+
 }
