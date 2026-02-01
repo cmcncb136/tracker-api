@@ -3,6 +3,7 @@ package com.kesi.tracker.track.application;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.repository.TrackMemberRepository;
+import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.TrackMember;
 import com.kesi.tracker.track.domain.event.TrackAppliedEvent;
@@ -23,6 +24,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     private final TrackService trackService;
     private final GroupMemberService groupMemberService;
     private final ApplicationEventPublisher applicationEventPublisher;
+    private final TrackRepository trackRepository;
 
     private TrackMember getTrackMemberByTrackIdAndUid(Long trackId, Long uid) {
         return trackMemberRepository.findByTrackIdAndUid(trackId, uid)
@@ -39,7 +41,11 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(currentUid, track.getGid());
 
         if(!groupMember.isFollower())
-            throw  new RuntimeException("follower만 신청이 가능합니다");
+            throw new RuntimeException("follower만 신청이 가능합니다");
+
+        if(!trackRepository.applyById(trackId)) {
+            throw new RuntimeException("수강 신청 인원이 모두 찼습니다");
+        }
 
         trackMemberRepository.save(TrackMember.builder()
                         .uid(currentUid)
@@ -63,10 +69,15 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     @Transactional
     public void cancelTrack(Long currentUid, Long trackId) {
         TrackMember trackMember = getTrackMemberByTrackIdAndUid(currentUid, trackId);
-        Track track = trackService.getById(trackId);
 
-        trackMemberRepository.deleteById(trackMember.getId());
+        Track track = trackService.getById(trackId);
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(track.getGid());
+
+        if(!trackRepository.cancelById(trackId, currentUid)) {
+            throw new RuntimeException("취소할 수 없습니다");
+        }
+        //Todo. 동시성 문제를 고려해서 풀 수 있도록 추후 수정
+        trackMemberRepository.deleteById(trackMember.getId());
 
         applicationEventPublisher.publishEvent(TrackCanceledEvent.builder()
                 .canceledUserId(currentUid)
@@ -75,6 +86,5 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
                 .hostId(track.getHostId())
                 .groupLeaderIds(leaderGroupMembers.stream().map(GroupMember::getUid).collect(Collectors.toList()))
                 .build());
-
     }
 }

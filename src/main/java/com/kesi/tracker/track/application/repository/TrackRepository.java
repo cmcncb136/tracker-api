@@ -18,4 +18,6 @@ public interface TrackRepository {
     Track save(Track track);
     Page<Track> searchInGroup(Long gid, TrackSearchCondition condition, Pageable pageable);
     Page<Track> searchInGroupInUser(Long uid, TrackWithGroupSearchCondition condition, Pageable pageable);
+    Boolean applyById(Long id);
+    Boolean cancelById(Long id, Long uid);
 }

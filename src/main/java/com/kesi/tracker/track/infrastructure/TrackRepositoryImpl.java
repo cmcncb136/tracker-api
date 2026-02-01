@@ -120,6 +120,16 @@ public class TrackRepositoryImpl implements TrackRepository {
         return new PageImpl<>(domainTracks, pageable, total != null ? total : 0L);
     }
 
+    @Override
+    public Boolean applyById(Long id) {
+        return trackJpaRepository.apply(id) == 1;
+    }
+
+    @Override
+    public Boolean cancelById(Long id, Long uid) {
+        return trackJpaRepository.cancel(id, uid) == 1;
+    }
+
     // 동적 쿼리를 위한 BooleanExpression 메서드들
     private BooleanExpression assignmentOverlaps(
             LocalDateTime startAt,

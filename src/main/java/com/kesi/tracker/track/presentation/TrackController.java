@@ -2,6 +2,7 @@ package com.kesi.tracker.track.presentation;
 
 
 import com.kesi.tracker.core.security.annotation.UserId;
+import com.kesi.tracker.track.application.TrackAssignmentService;
 import com.kesi.tracker.track.application.TrackService;
 import com.kesi.tracker.track.application.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class TrackController {
     private final TrackService trackService;
+    private final TrackAssignmentService trackAssignmentService;
 
     @GetMapping("/groups/tracks/{trackId}")
     public TrackResponse get(
@@ -52,4 +54,19 @@ public class TrackController {
         return trackService.searchTrackInGroupInUser(userId, searchRequest, pageable);
     }
 
+    @PostMapping("/groups/tracks/{trackId}/assignments")
+    public void apply(
+            @PathVariable Long trackId,
+            @UserId Long userId
+    ) {
+        trackAssignmentService.applyTrack(userId, trackId);
+    }
+
+    @DeleteMapping("/groups/tracks/{trackId}/assignments")
+    public void assignmentCancel(
+            @PathVariable Long trackId,
+            @UserId Long userId
+    ) {
+        trackAssignmentService.cancelTrack(trackId, userId);
+    }
 }
