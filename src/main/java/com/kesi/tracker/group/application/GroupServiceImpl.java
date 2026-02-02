@@ -3,12 +3,9 @@ package com.kesi.tracker.group.application;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.group.application.dto.GroupCreationRequest;
-import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.group.application.dto.GroupResponse;
-import com.kesi.tracker.group.application.dto.GroupSearchRequest;
+import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.application.mapper.GroupMapper;
-import com.kesi.tracker.group.application.query.FileOwners;
+import com.kesi.tracker.file.domain.FileOwners;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.*;
@@ -94,7 +91,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void request(Long groupId, Long currentUserId) {
+    public void joinRequest(Long groupId, Long currentUserId) {
         List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
 
         if (leaderGroupMembers.isEmpty()) {
@@ -124,14 +121,14 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void registerHost(Long gid, Long currentUid, Long registerUid) {
-        changeTrackRole(gid, currentUid, registerUid, GroupTrackRole.HOST);
+    public void registerHost(Long gid, Long currentUid, Email targetUserEmail) {
+        changeTrackRole(gid, currentUid, targetUserEmail, GroupTrackRole.HOST);
     }
 
     @Override
     @Transactional
-    public void registerFollower(Long gid, Long currentUid, Long unregisterUid) {
-        changeTrackRole(gid, currentUid, unregisterUid, GroupTrackRole.FOLLOWER);
+    public void registerFollower(Long gid, Long currentUid, Email targetUserEmail) {
+        changeTrackRole(gid, currentUid, targetUserEmail, GroupTrackRole.FOLLOWER);
     }
 
     @Override
@@ -219,14 +216,17 @@ public class GroupServiceImpl implements GroupService {
                 fileService.findAccessUrlByOwner(fileOwner));
     }
 
-    private void changeTrackRole(Long gid, Long currentUid, Long targetUid, GroupTrackRole trackRole) {
+
+    private void changeTrackRole(Long gid, Long currentUid, Email targetUserEmail, GroupTrackRole trackRole) {
         GroupMember currentGroupMember = groupMemberRepository.findByGidAndUid(gid, currentUid)
                 .orElseThrow(() -> new RuntimeException("GroupMember not found"));
 
         //리더만 Track Role를 지정할 수 있다
         if (!currentGroupMember.isLeader()) throw new RuntimeException("GroupMember is not leader");
 
-        GroupMember registerGroupMember = groupMemberRepository.findByGidAndUid(gid, targetUid)
+        User targetUser = userService.getByEmail(targetUserEmail);
+
+        GroupMember registerGroupMember = groupMemberRepository.findByGidAndUid(gid, targetUser.getId())
                 .orElseThrow(() -> new RuntimeException("target GroupMember not found"));
 
         if (registerGroupMember.getTrackRole() == trackRole) return;

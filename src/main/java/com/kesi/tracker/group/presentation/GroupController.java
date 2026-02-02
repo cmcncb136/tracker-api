@@ -2,10 +2,8 @@ package com.kesi.tracker.group.presentation;
 
 import com.kesi.tracker.core.security.annotation.UserId;
 import com.kesi.tracker.group.application.GroupService;
-import com.kesi.tracker.group.application.dto.GroupCreationRequest;
-import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.group.application.dto.GroupResponse;
-import com.kesi.tracker.group.application.dto.GroupSearchRequest;
+import com.kesi.tracker.group.application.dto.*;
+import com.kesi.tracker.user.domain.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +27,7 @@ public class GroupController {
 
     @GetMapping("groups")
     public Page<GroupProfileResponse> search(
-            @ModelAttribute  GroupSearchRequest searchRequest,
+            @ModelAttribute GroupSearchRequest searchRequest,
             @PageableDefault Pageable pageable) {
         return groupService.searchPublicGroups(searchRequest, pageable);
     }
@@ -38,12 +36,51 @@ public class GroupController {
     public GroupResponse create(
             @RequestBody GroupCreationRequest groupCreationRequest,
             @UserId Long userId
-            ) {
+    ) {
         return groupService.create(groupCreationRequest, userId);
     }
 
-    @GetMapping("users/groups")
+    @GetMapping("users/me/groups")
     public List<GroupProfileResponse> findByUserId(@UserId Long userId) {
         return groupService.getGroupResponseByUid(userId);
+    }
+
+    @PostMapping("/groups/{gid}/invitations")
+    public void invite(
+            @PathVariable Long gid,
+            @RequestParam String targetUserEmail,
+            @UserId Long userId
+            ) {
+        groupService.invite(
+                gid,
+                new Email(targetUserEmail),
+                userId
+        );
+    }
+
+    @PostMapping("groups/{gid}/join-requests")
+    public void joinRequest(
+            @PathVariable Long gid,
+            @UserId Long userId
+            ) {
+        groupService.joinRequest(gid, userId);
+    }
+
+    @PatchMapping("groups/{gid}/followers")
+    public void registerFollower(
+            @PathVariable Long gid,
+            @RequestParam String targetUserEmail,
+            @UserId Long userId
+    ) {
+        groupService.registerFollower(gid, userId, new Email(targetUserEmail));
+    }
+
+    @PatchMapping("groups/{gid}/hosts")
+    public void registerHost(
+            @PathVariable Long gid,
+            @RequestParam String targetUserEmail,
+            @UserId Long userId
+            ) {
+        groupService.registerHost(gid, userId, new Email(targetUserEmail));
     }
 }

@@ -3,7 +3,7 @@ package com.kesi.tracker.file.infrastructure;
 import com.kesi.tracker.file.application.repository.FileRepository;
 import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.group.application.query.FileOwners;
+import com.kesi.tracker.file.domain.FileOwners;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -2,7 +2,7 @@ package com.kesi.tracker.user.application;
 
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.*;
-import com.kesi.tracker.group.application.query.FileOwners;
+import com.kesi.tracker.file.domain.FileOwners;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;

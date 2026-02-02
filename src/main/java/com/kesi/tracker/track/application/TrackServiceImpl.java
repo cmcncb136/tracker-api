@@ -6,7 +6,7 @@ import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.group.application.query.FileOwners;
+import com.kesi.tracker.file.domain.FileOwners;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.dto.*;
 import com.kesi.tracker.track.application.mapper.TrackMapper;

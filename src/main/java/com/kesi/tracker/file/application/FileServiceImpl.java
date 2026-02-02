@@ -5,7 +5,7 @@ import com.kesi.tracker.file.application.storage.FileUrlAccessPolicy;
 import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.group.application.query.FileOwners;
+import com.kesi.tracker.file.domain.FileOwners;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;

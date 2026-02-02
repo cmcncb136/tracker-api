@@ -1,6 +1,5 @@
-package com.kesi.tracker.group.application.query;
+package com.kesi.tracker.file.domain;
 
-import com.kesi.tracker.file.domain.OwnerType;
 import lombok.Builder;
 
 import java.util.List;
