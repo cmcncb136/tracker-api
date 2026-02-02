@@ -51,6 +51,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    public GroupMember getById(Long id) {
+        return groupMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Group member not found"));
+    }
+
+    @Override
     public List<GroupMember> findByGidAndRoleIsLeader(Long gid) {
         List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(gid, GroupRole.LEADER);
         if(leaderGroupMembers.isEmpty()) {

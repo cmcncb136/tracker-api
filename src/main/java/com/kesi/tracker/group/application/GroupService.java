@@ -16,12 +16,14 @@ public interface GroupService {
     Group getByGid(Long gid);
     Page<Group> searchPublicByName(String name, Pageable pageable);
 
-    void join(Long groupId, Long currentUid);
-    void invite(Long groupId, Email invitedUserEmail, Long currentUid);
-    void joinRequest(Long groupId, Long currentUid);
+    void approveJoinRequest(Long gid, Long requestId, Long currentUid);
+    void acceptInvitation(Long gid, Long currentUid);
 
-    void registerHost(Long groupId, Long currentUid, Email targetUserEmail);
-    void registerFollower(Long groupId, Long currentUid, Email targetUserEmail);
+    void invite(Long gid, Email invitedUserEmail, Long currentUid);
+    void joinRequest(Long gid, Long currentUid);
+
+    void registerHost(Long gid, Long currentUid, Email targetUserEmail);
+    void registerFollower(Long gid, Long currentUid, Email targetUserEmail);
 
     GroupResponse getGroupResponseByGid(Long gid, @Nullable Long currentUid);
     List<GroupProfileResponse> getGroupResponseByUid(Long uid);

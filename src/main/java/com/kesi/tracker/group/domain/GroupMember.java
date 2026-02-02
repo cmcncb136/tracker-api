@@ -26,6 +26,13 @@ public class GroupMember {
         status = GroupMemberStatus.APPROVED;
     }
 
+    public void acceptInvitation() {
+        if(status != GroupMemberStatus.INVITED)
+            throw new IllegalStateException("초대받은 상태가 아닙니다");
+
+        status = GroupMemberStatus.APPROVED;
+    }
+
     public boolean isLeader() {
         return role == GroupRole.LEADER;
     }

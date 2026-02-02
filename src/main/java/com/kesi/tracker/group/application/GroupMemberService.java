@@ -7,6 +7,7 @@ import java.util.List;
 public interface GroupMemberService {
     GroupMember getApprovedByGidAndUid(Long gid, Long uid);
     GroupMember getByGidAndUid(Long gid, Long uid);
+    GroupMember getById(Long id);
     List<GroupMember> findByGidAndRoleIsLeader(Long gid);
 
     GroupMember createInviteMember(Long gid, Long invitedUid);

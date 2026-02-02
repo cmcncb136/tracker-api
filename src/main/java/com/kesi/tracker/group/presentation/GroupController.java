@@ -58,12 +58,31 @@ public class GroupController {
         );
     }
 
+    @PostMapping("/groups/{gid}/invitations/accept")
+    public void acceptInvitation(
+            @PathVariable Long gid,
+            @UserId Long userId
+    ) {
+        groupService.acceptInvitation(gid, userId);
+    }
+
     @PostMapping("groups/{gid}/join-requests")
     public void joinRequest(
             @PathVariable Long gid,
             @UserId Long userId
             ) {
         groupService.joinRequest(gid, userId);
+    }
+
+    @PostMapping("groups/{gid}/join-requests/{requestId}/approve")
+    public void approveJoinRequest(
+            @PathVariable Long gid,
+            @PathVariable Long requestId,
+            @UserId Long userId
+    ) {
+        groupService.approveJoinRequest(
+                gid, requestId, userId
+        );
     }
 
     @PatchMapping("groups/{gid}/followers")

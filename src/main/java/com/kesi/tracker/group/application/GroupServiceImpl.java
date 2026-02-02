@@ -57,12 +57,21 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void join(Long groupId, Long currentUserId) {
-        GroupMember groupMember = groupMemberRepository.findByGidAndUid(groupId, currentUserId)
-                .orElseThrow(() -> new RuntimeException("GroupMember not found"));
+    public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
+        if(!groupMemberService.isGroupLeader(currentUserId, groupId))
+            throw new RuntimeException("리더만 가입 승인을 할 수 있습니다");
 
-        groupMember.approve();
+        GroupMember pendingMember = groupMemberService.getById(requestId);
 
+        pendingMember.approve();
+
+        groupMemberRepository.save(pendingMember);
+    }
+
+    @Override
+    public void acceptInvitation(Long gid, Long currentUid) {
+        GroupMember groupMember = groupMemberService.getByGidAndUid(gid, currentUid);
+        groupMember.acceptInvitation();
         groupMemberRepository.save(groupMember);
     }
 
