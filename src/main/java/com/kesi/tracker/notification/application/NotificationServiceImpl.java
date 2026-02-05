@@ -1,5 +1,6 @@
 package com.kesi.tracker.notification.application;
 
+import com.kesi.tracker.notification.application.dto.NotificationResponse;
 import com.kesi.tracker.notification.application.repository.NotificationRepository;
 import com.kesi.tracker.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
@@ -47,4 +48,11 @@ public class NotificationServiceImpl implements NotificationService {
     public Page<Notification> findByReceiverId(Long receiverId, Pageable pageable) {
         return notificationRepository.findByReceiverId(receiverId, pageable);
     }
+
+    @Override
+    public Page<NotificationResponse> findNotificationsByReceiverId(Long currentUserId, Pageable pageable) {
+        return this.findByReceiverId(currentUserId, pageable).map(NotificationResponse::from);
+    }
+
+
 }
