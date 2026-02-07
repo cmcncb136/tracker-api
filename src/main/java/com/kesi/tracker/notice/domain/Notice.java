@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Notice {
     private Long id;
-    private Long groupId;
+    private Long gid;
     private Long authorId;
     private NoticeType type;
     private String title;
