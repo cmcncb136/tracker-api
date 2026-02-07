@@ -11,10 +11,9 @@ import java.util.Map;
 public interface NotificationService {
     void send(Notification notification);
     void send(List<Notification> notifications);
-    void read(Long notificationId);
-
+    void read(Long notificationId, Long currentUserId);
     List<Notification> findByReceiverId(Long receiverId);
     Page<Notification> findByReceiverId(Long receiverId, Pageable pageable);
 
-    Page<NotificationResponse> findNotificationsByReceiverId(Long currentUserId, Pageable pageable);
+    Page<NotificationResponse> findNotificationByReceiverId(Long currentUserId, Pageable pageable);
 }

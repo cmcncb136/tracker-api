@@ -27,11 +27,13 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void read(Long notificationId) {
+    public void read(Long notificationId, Long currentUserId) {
         Optional<Notification> notificationOptional = notificationRepository.findById(notificationId);
 
         if(notificationOptional.isEmpty()) return;
         Notification notification = notificationOptional.get();
+
+        if(!notification.getReceiverId().equals(currentUserId)) return;
 
         if(notification.getIsRead()) return; //이미 읽은 경우
         notification.read();
@@ -50,9 +52,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Page<NotificationResponse> findNotificationsByReceiverId(Long currentUserId, Pageable pageable) {
+    public Page<NotificationResponse> findNotificationByReceiverId(Long currentUserId, Pageable pageable) {
         return this.findByReceiverId(currentUserId, pageable).map(NotificationResponse::from);
     }
-
-
 }
