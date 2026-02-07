@@ -5,10 +5,8 @@ import com.kesi.tracker.group.domain.Group;
 import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
-import com.kesi.tracker.notification.domain.Notification;
-import com.kesi.tracker.notification.domain.NotificationCategory;
-import com.kesi.tracker.notification.domain.NotificationContent;
-import com.kesi.tracker.notification.domain.NotificationType;
+import com.kesi.tracker.notification.domain.*;
+import com.kesi.tracker.notification.infrastructure.WebLinkResolver;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.domain.User;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +20,7 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
     private final NotificationService notificationService;
     private final GroupService groupService;
     private final UserService userService;
+    private final WebLinkResolver webLinkResolver;
 
     @Override
     public void handle(GroupMemberInviteRequestedEvent event) {
@@ -38,7 +37,7 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
-                .confirmUrl("") //Todo. 추수 controller 생성 후 작성
+                .confirmUrl(webLinkResolver.createLink(NotificationLink.GROUP_JOIN_REQUEST, group.getGid()))
                 .cancelUrl("")
                 .build();
 

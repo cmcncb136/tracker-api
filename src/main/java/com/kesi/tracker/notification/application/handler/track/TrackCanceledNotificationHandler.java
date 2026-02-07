@@ -43,7 +43,6 @@ public class TrackCanceledNotificationHandler implements NotificationEventHandle
                 .category(NotificationCategory.TRACK)
                 .title(title)
                 .message(message)
-                .confirmUrl("x")
                 .build();
 
         List<Notification> notifications = new ArrayList<>(event.groupLeaderIds().size() + 1);

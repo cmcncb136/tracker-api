@@ -8,8 +8,7 @@ public enum NotificationLink {
     GROUP_JOIN_REQUEST_APPROVED("/groups/%d/join-requests/%d/approved"),
 
     //track
-    TRACK_ASSIGNMENT("/tracks/%d/assignments"),
-    TRACK_ASSIGMENT_CANCEL("/tracks/%d/assignments/cancel"),
+    TRACK_CREATED("/groups/%d/tracks/%d"),
     ;
 
     private final String frontendPath;

@@ -42,7 +42,6 @@ public class TrackAppliedNotificationHandler implements NotificationEventHandler
                 .category(NotificationCategory.TRACK)
                 .title(title)
                 .message(message)
-                .confirmUrl("")
                 .build();
 
         ArrayList<Notification> notifications = new ArrayList<>(event.groupLeaderIds().size() + 1);

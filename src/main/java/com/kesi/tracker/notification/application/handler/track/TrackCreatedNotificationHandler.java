@@ -4,10 +4,8 @@ import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.domain.Group;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
-import com.kesi.tracker.notification.domain.Notification;
-import com.kesi.tracker.notification.domain.NotificationCategory;
-import com.kesi.tracker.notification.domain.NotificationContent;
-import com.kesi.tracker.notification.domain.NotificationType;
+import com.kesi.tracker.notification.domain.*;
+import com.kesi.tracker.notification.infrastructure.WebLinkResolver;
 import com.kesi.tracker.track.application.TrackService;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
@@ -25,6 +23,7 @@ public class TrackCreatedNotificationHandler implements NotificationEventHandler
     private final GroupService groupService;
     private final TrackService trackService;
     private final UserService userService;
+    private final WebLinkResolver webLinkResolver;
 
     @Override
     public void handle(TrackCreatedEvent event) {
@@ -41,7 +40,7 @@ public class TrackCreatedNotificationHandler implements NotificationEventHandler
                 .category(NotificationCategory.TRACK)
                 .title(title)
                 .message(message)
-                .confirmUrl("")
+                .confirmUrl(webLinkResolver.createLink(NotificationLink.TRACK_CREATED, group.getGid(), track.getId()))
                 .build();
 
 

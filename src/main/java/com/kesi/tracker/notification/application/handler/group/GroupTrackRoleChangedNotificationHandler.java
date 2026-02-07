@@ -31,8 +31,6 @@ public class GroupTrackRoleChangedNotificationHandler implements NotificationEve
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
-                .confirmUrl("") //Todo. 추수 controller 생성 후 작성
-                .cancelUrl("")
                 .build();
 
         Notification notification = Notification.builder()

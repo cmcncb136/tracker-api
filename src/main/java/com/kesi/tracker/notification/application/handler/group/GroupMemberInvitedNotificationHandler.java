@@ -5,10 +5,8 @@ import com.kesi.tracker.group.domain.Group;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
-import com.kesi.tracker.notification.domain.Notification;
-import com.kesi.tracker.notification.domain.NotificationCategory;
-import com.kesi.tracker.notification.domain.NotificationContent;
-import com.kesi.tracker.notification.domain.NotificationType;
+import com.kesi.tracker.notification.domain.*;
+import com.kesi.tracker.notification.infrastructure.WebLinkResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class GroupMemberInvitedNotificationHandler implements NotificationEventHandler<GroupMemberInvitedEvent> {
     private final NotificationService notificationService;
     private final GroupService groupService;
+    private final WebLinkResolver webLinkResolver;
 
     @Override
     public void handle(GroupMemberInvitedEvent event) {
@@ -31,8 +30,8 @@ public class GroupMemberInvitedNotificationHandler implements NotificationEventH
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
-                .confirmUrl("") //Todo. 추수 controller 생성 후 작성
-                .cancelUrl("")
+                .confirmUrl(webLinkResolver.createLink(NotificationLink.GROUP_INVITATION, group.getGid()))
+                .cancelUrl("")  //2차 구현 때 reject 기능 구현
                 .build();
 
         Notification notification = Notification.builder()
