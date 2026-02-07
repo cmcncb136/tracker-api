@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/login", "/", "/h2-console/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/files").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .anyRequest().authenticated()
                 )
