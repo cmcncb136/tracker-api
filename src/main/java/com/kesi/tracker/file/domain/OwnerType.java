@@ -3,6 +3,5 @@ public enum OwnerType {
     USER,
     GROUP,
     TRACK,
-    NOTICE,
-    GLOBAL_NOTICE
+    NOTICE
 }

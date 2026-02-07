@@ -28,4 +28,11 @@ public record FileOwner(
                 .ownerId(trackId)
                 .build();
     }
+
+    public static FileOwner ofNotice(Long noticeId) {
+        return FileOwner.builder()
+                .ownerType(OwnerType.NOTICE)
+                .ownerId(noticeId)
+                .build();
+    }
 }
