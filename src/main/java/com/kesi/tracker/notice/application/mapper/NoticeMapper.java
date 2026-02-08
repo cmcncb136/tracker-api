@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NoticeMapper {
-    public static Notice toNotice(NoticeCreationRequest request, Long currentUid) {
+    public static Notice toNotice(NoticeCreationRequest request, Long gid, Long currentUid) {
         return Notice.builder()
-                .gid(request.getGid())
+                .gid(gid)
                 .authorId(currentUid)
                 .type(request.getType())
                 .title(request.getTitle())

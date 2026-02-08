@@ -39,7 +39,6 @@ public class TrackServiceImpl implements TrackService {
     private final UserService userService;
     private final FileService fileService;
     private final GroupService groupService;
-    private final TrackService trackService;
 
     @Override
     public Track create(Track track, Long currentUid) {
@@ -156,7 +155,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public TrackResponse create(TrackCreationRequest trackCreationRequest, Long currentUid) {
         Track track = TrackMapper.toTrack(trackCreationRequest, currentUid);
-        Track savedTrack =  trackService.create(track, currentUid);
+        Track savedTrack =  this.create(track, currentUid);
 
         UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
 

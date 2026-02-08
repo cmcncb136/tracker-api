@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class NoticeCreationRequest {
-    private Long gid;
     private NoticeType type;
     private String title;
     private String content;

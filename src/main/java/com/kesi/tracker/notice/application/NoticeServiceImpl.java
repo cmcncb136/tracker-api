@@ -34,11 +34,11 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public NoticeResponse create(NoticeCreationRequest request, Long currentUid) {
-        if(!groupMemberService.isGroupLeader(request.getGid(), currentUid))
+    public NoticeResponse create(NoticeCreationRequest request, Long gid, Long currentUid) {
+        if(!groupMemberService.isGroupLeader(gid, currentUid))
             throw new IllegalArgumentException("공지는 리더만 작성할 수 있습니다");
 
-        Notice notice = create(NoticeMapper.toNotice(request, currentUid));
+        Notice notice = create(NoticeMapper.toNotice(request, gid, currentUid));
 
         FileOwner owner = FileOwner.ofNotice(notice.getId());
         fileService.assignFileOwner(owner, request.getAttachmentFileIds());
@@ -88,7 +88,9 @@ public class NoticeServiceImpl implements NoticeService {
         );
     }
     @Override
-    public Page<NoticeTitleResponse> search(Long gid, String keyword, Pageable pageable) {
+    public Page<NoticeTitleResponse> search(Long gid, String keyword, Long currentUid, Pageable pageable) {
+        if(!groupMemberService.isGroupMember(gid, currentUid))
+            throw new IllegalArgumentException("같은 소속인 경우만 조회가 가능합니다");
         Page<Notice> notices = noticeRepository.findByGidAndTitleContainingIgnoreCase(gid, keyword, pageable);
 
         HashSet userIdSet = new HashSet<>();

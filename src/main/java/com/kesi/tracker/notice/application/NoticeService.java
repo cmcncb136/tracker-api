@@ -10,12 +10,12 @@ import org.springframework.data.domain.Pageable;
 
 public interface NoticeService {
     Notice create(Notice notice);
-    NoticeResponse create(NoticeCreationRequest request, Long currentUid);
+    NoticeResponse create(NoticeCreationRequest request, Long gid, Long currentUid);
 
     Notice update(Notice notice);
     NoticeResponse update(NoticeUpdateRequest request, Long currentUid);
 
     Notice getById(Long noticeId);
     NoticeResponse getById(Long id, Long currentUid);
-    Page<NoticeTitleResponse> search(Long gid, String keyword, Pageable pageable);
+    Page<NoticeTitleResponse> search(Long gid, String keyword, Long currentUid, Pageable pageable);
 }
