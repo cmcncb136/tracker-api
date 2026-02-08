@@ -69,6 +69,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/login", "/", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/files").permitAll()
+                                .requestMatchers("/files/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .anyRequest().authenticated()
                 )
