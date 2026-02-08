@@ -13,6 +13,7 @@ public interface FileRepository {
     Optional<File> findById(Long id);
     List<File> findByIds(List<Long> ids);
     void deleteById(Long id);
+    void deleteByIds(List<Long> ids);
     List<File> findByOwner(FileOwner owner);
-    List<File> findbyOwners(FileOwners owners);
+    List<File> findByOwners(FileOwners owners);
 }

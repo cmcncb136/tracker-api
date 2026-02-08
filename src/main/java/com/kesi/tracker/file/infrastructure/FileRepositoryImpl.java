@@ -42,13 +42,18 @@ public class FileRepositoryImpl implements FileRepository {
     }
 
     @Override
+    public void deleteByIds(List<Long> ids) {
+        fileJpaRepository.deleteAllByIdInBatch(ids);
+    }
+
+    @Override
     public List<File> findByOwner(FileOwner owner) {
         return fileJpaRepository.findByOwnerIdAndOwnerType(owner.ownerId(), owner.ownerType())
                 .stream().map(FileEntity::toDomain).toList();
     }
 
     @Override
-    public List<File> findbyOwners(FileOwners owners) {
+    public List<File> findByOwners(FileOwners owners) {
         return fileJpaRepository.findByOwnerTypeAndOwnerIdIn(owners.ownerType(), owners.ownerIds())
                 .stream().map(FileEntity::toDomain).toList();
     }

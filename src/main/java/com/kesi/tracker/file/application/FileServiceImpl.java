@@ -6,13 +6,12 @@ import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.file.domain.FileOwners;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,7 +61,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners fileOwers) {
-        List<File> files = fileRepository.findbyOwners(fileOwers);
+        List<File> files = fileRepository.findByOwners(fileOwers);
 
         return files.stream().collect(Collectors.groupingBy(
                 File::getId,
@@ -73,6 +72,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    @Transactional
     public List<File> assignFileOwner(FileOwner owner, List<Long> fileIds) {
         if(ObjectUtils.isEmpty(fileIds)) return List.of();
 
@@ -83,5 +83,28 @@ public class FileServiceImpl implements FileService {
         }
 
         return this.save(files);
+    }
+
+    @Override
+    @Transactional
+    public List<File> updateFromFileOwner(FileOwner owner, List<Long> fileIds) {
+        Set<Long> fileIdSet = new HashSet<>(fileIds);
+        if(ObjectUtils.isEmpty(fileIdSet)) return List.of();
+
+        //기존 내용 조회
+        Set<Long> originalFileIdSet = this.findByOwner(owner).stream()
+                .map(File::getId).collect(Collectors.toSet());
+
+        //삭제할 파일 필터링 및 삭제
+        List<Long> deletedFileIds = originalFileIdSet.stream()
+                .filter(id -> !fileIdSet.contains(id))
+                .toList();
+        if(!deletedFileIds.isEmpty()) fileRepository.deleteByIds(deletedFileIds);
+
+        //추가할 파일 필터링 및 owner 할당
+        List<Long> addedFileIds = fileIdSet.stream()
+                .filter(fileId -> !originalFileIdSet.contains(fileId))
+                .toList();
+        return this.assignFileOwner(owner, addedFileIds);
     }
 }
