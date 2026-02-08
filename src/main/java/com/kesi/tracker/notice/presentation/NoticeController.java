@@ -37,7 +37,7 @@ public class NoticeController {
         return noticeService.search(gid, keyword, userId, pageable);
     }
 
-    @GetMapping("notices/{noticeId}")
+    @GetMapping("/notices/{noticeId}")
     public NoticeResponse get(
             @PathVariable long noticeId,
             @UserId long userId

@@ -1,5 +1,7 @@
 package com.kesi.tracker.notice.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
@@ -67,7 +69,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public Notice getById(Long noticeId) {
         return noticeRepository.findById(noticeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 공지를 찾을 수 없습니다."));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOTICE_NOT_FOUND));
     }
 
     @Override
