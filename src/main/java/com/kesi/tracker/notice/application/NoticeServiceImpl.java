@@ -38,7 +38,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public NoticeResponse create(NoticeCreationRequest request, Long gid, Long currentUid) {
         if(!groupMemberService.isGroupLeader(gid, currentUid))
-            throw new IllegalArgumentException("공지는 리더만 작성할 수 있습니다");
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         Notice notice = create(NoticeMapper.toNotice(request, gid, currentUid));
 
@@ -57,7 +57,7 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponse update(NoticeUpdateRequest request, Long currentUid) {
         Notice original = getById(request.getId());
         if(!groupMemberService.isGroupLeader(original.getGid(), currentUid))
-            throw new IllegalArgumentException("공지는 리더만 수정할 수 있습니다");
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
 
         Notice notice = update(NoticeMapper.toNotice(request, original, currentUid));
@@ -76,7 +76,7 @@ public class NoticeServiceImpl implements NoticeService {
     public NoticeResponse getById(Long id, Long currentUid) {
         Notice notice = getById(id);
         if(!groupMemberService.isGroupMember(notice.getGid(), currentUid))
-            throw new IllegalArgumentException("해당 공지 접근 권한이 없습니다");
+            throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
 
         return toNoticeResponse(notice);
     }
@@ -92,7 +92,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     public Page<NoticeTitleResponse> search(Long gid, String keyword, Long currentUid, Pageable pageable) {
         if(!groupMemberService.isGroupMember(gid, currentUid))
-            throw new IllegalArgumentException("같은 소속인 경우만 조회가 가능합니다");
+            throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
         Page<Notice> notices = noticeRepository.findByGidAndTitleContainingIgnoreCase(gid, keyword, pageable);
 
         HashSet userIdSet = new HashSet<>();

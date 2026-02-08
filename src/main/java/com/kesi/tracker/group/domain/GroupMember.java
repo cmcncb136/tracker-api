@@ -1,5 +1,7 @@
 package com.kesi.tracker.group.domain;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,14 +23,14 @@ public class GroupMember {
 
     public void approve() {
         if(status != GroupMemberStatus.REQUESTED && status != GroupMemberStatus.APPROVED)
-            throw new IllegalStateException("승인할 수 있는 상태가 아닙니다");
+            throw new BusinessException(ErrorCode.CANNOT_APPROVE_STATE);
 
         status = GroupMemberStatus.APPROVED;
     }
 
     public void acceptInvitation() {
         if(status != GroupMemberStatus.INVITED)
-            throw new IllegalStateException("초대받은 상태가 아닙니다");
+            throw new BusinessException(ErrorCode.NOT_INVITED_STATE);
 
         status = GroupMemberStatus.APPROVED;
     }

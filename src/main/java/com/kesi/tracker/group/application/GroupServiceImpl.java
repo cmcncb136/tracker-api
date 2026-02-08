@@ -1,5 +1,7 @@
 package com.kesi.tracker.group.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
@@ -48,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public Group getByGid(Long gid) {
-        return groupRepository.findByGid(gid).orElseThrow(() -> new RuntimeException("Group not found"));
+        return groupRepository.findByGid(gid).orElseThrow(() -> new BusinessException(ErrorCode.GROUP_NOT_FOUND));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
         if(!groupMemberService.isGroupLeader(currentUserId, groupId))
-            throw new RuntimeException("리더만 가입 승인을 할 수 있습니다");
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         GroupMember pendingMember = groupMemberService.getById(requestId);
 
@@ -78,14 +80,14 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void invite(Long gid, Email invitedUserEmail, Long currentUserId) {
-        if (!groupMemberService.isGroupLeader(gid, currentUserId)) throw new RuntimeException("초대는 리더만 할 수 있습니다");
+        if (!groupMemberService.isGroupLeader(gid, currentUserId)) throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
 
         User invitedUser = userService.getByEmail(invitedUserEmail);
 
 
         if (groupMemberService.existsGroupMember(gid, currentUserId))
-            throw new RuntimeException("이미 그룹 멤버이거나 초대가 진행 중입니다."); //Todo. block 등의 경우 보완 로직 필요
+            throw new BusinessException(ErrorCode.GROUP_MEMBER_ALREADY_EXISTS);
 
 
         groupMemberService.createInviteMember(gid, invitedUser.getId());
@@ -146,7 +148,7 @@ public class GroupServiceImpl implements GroupService {
 
         if (group.isPrivate()) { //PRIVATE인 그룹인 경우
             if (!groupMemberService.isGroupMember(gid, currentUid)) //GROUP에 속한 경우만 확인 가능
-                throw new IllegalArgumentException("Don't have permission to access this group");
+                throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
         }
 
         return GroupMapper.toGroupResponse(
@@ -179,7 +181,7 @@ public class GroupServiceImpl implements GroupService {
     public Map<Long, GroupProfileResponse> getGroupResponseByGids(Set<Long> gids) {
         List<Group> groups = groupRepository.findByGids(gids.stream().toList());
         if(groups.size() != gids.size())
-            throw new RuntimeException("Group not found (request : " + gids.size() + ", found : " + gids.size() + ")");
+            throw new BusinessException(ErrorCode.GROUP_NOT_FOUND);
 
         Map<Long, List<FileAccessUrl>> fileaccessurlsMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
@@ -228,15 +230,15 @@ public class GroupServiceImpl implements GroupService {
 
     private void changeTrackRole(Long gid, Long currentUid, Email targetUserEmail, GroupTrackRole trackRole) {
         GroupMember currentGroupMember = groupMemberRepository.findByGidAndUid(gid, currentUid)
-                .orElseThrow(() -> new RuntimeException("GroupMember not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
 
         //리더만 Track Role를 지정할 수 있다
-        if (!currentGroupMember.isLeader()) throw new RuntimeException("GroupMember is not leader");
+        if (!currentGroupMember.isLeader()) throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         User targetUser = userService.getByEmail(targetUserEmail);
 
         GroupMember registerGroupMember = groupMemberRepository.findByGidAndUid(gid, targetUser.getId())
-                .orElseThrow(() -> new RuntimeException("target GroupMember not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
 
         if (registerGroupMember.getTrackRole() == trackRole) return;
 

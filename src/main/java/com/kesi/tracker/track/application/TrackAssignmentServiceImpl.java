@@ -1,5 +1,7 @@
 package com.kesi.tracker.track.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.repository.TrackMemberRepository;
@@ -28,7 +30,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
 
     private TrackMember getTrackMemberByTrackIdAndUid(Long trackId, Long uid) {
         return trackMemberRepository.findByTrackIdAndUid(trackId, uid)
-                .orElseThrow(() -> new RuntimeException("trackMember not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.TRACK_MEMBER_NOT_FOUND));
     }
 
     @Override
@@ -36,15 +38,15 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     public void applyTrack(Long currentUid, Long trackId) {
         Track track = trackService.getById(trackId);
         if(!track.isAssignmentWithinPeriod(LocalDateTime.now()))
-            throw new IllegalArgumentException("수강 신청 기간만 신청 가능합니다");
+            throw new BusinessException(ErrorCode.TRACK_REGISTRATION_CLOSED);
 
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(currentUid, track.getGid());
 
         if(!groupMember.isFollower())
-            throw new RuntimeException("follower만 신청이 가능합니다");
+            throw new BusinessException(ErrorCode.NOT_FOLLOWER);
 
         if(!trackRepository.applyById(trackId)) {
-            throw new RuntimeException("수강 신청 인원이 모두 찼습니다");
+            throw new BusinessException(ErrorCode.TRACK_FULL);
         }
 
         trackMemberRepository.save(TrackMember.builder()
@@ -74,7 +76,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(track.getGid());
 
         if(!trackRepository.cancelById(trackId, currentUid)) {
-            throw new RuntimeException("취소할 수 없습니다");
+            throw new BusinessException(ErrorCode.CANNOT_CANCEL_TRACK);
         }
         //Todo. 동시성 문제를 고려해서 풀 수 있도록 추후 수정
         trackMemberRepository.deleteById(trackMember.getId());

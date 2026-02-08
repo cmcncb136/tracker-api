@@ -1,5 +1,7 @@
 package com.kesi.tracker.group.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.group.application.repository.GroupMemberRepository;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.group.domain.GroupMemberStatus;
@@ -39,7 +41,7 @@ public class GroupMemberServiceImpl implements GroupMemberService {
         GroupMember groupMember = getByGidAndUid(gid, uid);
 
         if(!groupMember.isApproved())
-            throw new RuntimeException("Group member is not approved");
+            throw new BusinessException(ErrorCode.NOT_APPROVED_MEMBER);
 
         return groupMember;
     }
@@ -47,12 +49,12 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     @Override
     public GroupMember getByGidAndUid(Long gid, Long uid) {
         return groupMemberRepository.findByGidAndUid(gid, uid)
-                .orElseThrow(() -> new RuntimeException("Group member not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
     }
 
     @Override
     public GroupMember getById(Long id) {
-        return groupMemberRepository.findById(id).orElseThrow(() -> new RuntimeException("Group member not found"));
+        return groupMemberRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
     }
 
     @Override

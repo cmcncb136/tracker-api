@@ -1,5 +1,7 @@
 package com.kesi.tracker.file.infrastructure.storage;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.storage.FileStorageService;
 import com.kesi.tracker.file.domain.StorageKey;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class FileLocalStorageService implements FileStorageService {
 
             file.transferTo(tempFile);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -48,7 +50,7 @@ public class FileLocalStorageService implements FileStorageService {
         Path src = Path.of(ROOT_PATH, srcKey.value());
         Path dest = Path.of(ROOT_PATH, destKey.value());
 
-        if(!Files.exists(dest)) throw new IllegalArgumentException("Destination path does not exist");
+        if(!Files.exists(dest)) throw new BusinessException(ErrorCode.FILE_PATH_NOT_FOUND);
 
         Path srcParentDir = src.getParent();
         try {
@@ -58,7 +60,7 @@ public class FileLocalStorageService implements FileStorageService {
 
             Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
         }catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
     }
 }

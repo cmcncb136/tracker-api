@@ -1,5 +1,7 @@
 package com.kesi.tracker.file.infrastructure.storage;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.storage.StorageKeyPolicy;
 import com.kesi.tracker.file.domain.*;
 import org.apache.commons.lang3.ObjectUtils;
@@ -16,7 +18,7 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
         FileOwner owner = file.getOwner();
         FilePurpose purpose = file.getPurpose();
         if(ObjectUtils.isEmpty(owner) || ObjectUtils.isEmpty(purpose))
-            throw new IllegalArgumentException("The file has no owner or purpose");
+            throw new BusinessException(ErrorCode.INVALID_FILE_PURPOSE);
 
         OwnerType ownerType = owner.ownerType();
         String directory = getPath(owner, ownerType, purpose);

@@ -1,5 +1,7 @@
 package com.kesi.tracker.group.domain;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -33,7 +35,7 @@ public class Group {
 
     public void decreaseMemberCount() {
         if(memberCount <= 0) {
-            new IllegalArgumentException("memberCount cannot be less than 0");
+            throw new BusinessException(ErrorCode.MEMBER_COUNT_UNDERFLOW);
         }
 
         memberCount--;

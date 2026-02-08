@@ -1,5 +1,7 @@
 package com.kesi.tracker.track.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
@@ -48,7 +50,7 @@ public class TrackServiceImpl implements TrackService {
 
         //HOST 역할을 붙어야 받아야 한다
         if (!groupMember.isHost())
-            throw new RuntimeException("Group member is not host");
+            throw new BusinessException(ErrorCode.NOT_GROUP_HOST);
 
 
         Track createdTrack = trackRepository.save(track);
@@ -73,7 +75,7 @@ public class TrackServiceImpl implements TrackService {
 
         //HOST 역할을 붙어야 받아야 한다
         if (!groupMember.isHost())
-            throw new RuntimeException("Group member is not host");
+            throw new BusinessException(ErrorCode.NOT_GROUP_HOST);
 
         return trackRepository.save(track);
     }
@@ -81,7 +83,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public Track getById(Long id) {
         return trackRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Track not found"));
+                .orElseThrow(() -> new BusinessException(ErrorCode.TRACK_NOT_FOUND));
     }
 
 
@@ -96,7 +98,7 @@ public class TrackServiceImpl implements TrackService {
 
         //그룹 멤버인지 확인
         if (!groupMemberService.isGroupMember(currentUid, track.getGid()))
-            throw new RuntimeException("not group member");
+            throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
 
         UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
 
@@ -110,7 +112,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable) {
         if (!groupMemberService.isGroupMember(currentUid, gid))
-            throw new RuntimeException("not group member");
+            throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
 
         TrackSearchCondition searchCondition = searchRequest.toTrackSearchCondition();
         Page<Track> tracks = trackRepository.searchInGroup(gid, searchCondition, pageable);

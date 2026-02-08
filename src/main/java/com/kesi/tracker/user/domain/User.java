@@ -1,5 +1,7 @@
 package com.kesi.tracker.user.domain;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import jakarta.annotation.Nullable;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +38,7 @@ public class User {
         this.role = Objects.requireNonNull(role);
 
         if(password.length() > MAX_PASSWORD_LENGTH)
-            throw new IllegalArgumentException("Password length exceeds maximum length of 128");
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD_LENGTH);
 
         //Todo. 기타 유효성 검사 (각 변수를 VO를 만들어야 할지 고민)
     }

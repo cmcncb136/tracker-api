@@ -1,6 +1,8 @@
 package com.kesi.tracker.file.domain;
 
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +30,7 @@ public class File {
         Objects.requireNonNull(owner, "Owner must not be null");
 
         if(!FilePurpose.PROFILE.validate(this.getMetadata()))
-            throw new IllegalArgumentException("Invalid file purpose");
+            throw new BusinessException(ErrorCode.INVALID_FILE_PURPOSE);
 
         this.purpose = FilePurpose.PROFILE;
         this.owner = owner;

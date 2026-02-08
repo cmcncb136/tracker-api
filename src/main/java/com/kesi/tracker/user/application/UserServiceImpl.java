@@ -1,5 +1,7 @@
 package com.kesi.tracker.user.application;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.file.domain.FileOwners;
@@ -32,11 +34,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getByEmail(Email email) {
-        return userRepository.findByEmail(email.value()).orElseThrow(() -> new RuntimeException("User not found"));    }
+        return userRepository.findByEmail(email.value()).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));    }
 
     @Override
     public User getById(Long id) {
-        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UserServiceImpl implements UserService {
         List<User> user =  userRepository.findByIdIn(ids.stream().toList());
 
         if(user.size() != ids.size())
-            throw new RuntimeException("User not found (request : " + ids.size() + ", found : " + user.size() + ")");
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
         return user;
     }
@@ -65,10 +67,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void join(UserJoinRequest dto) {
         if(userRepository.existsByEmail(dto.getEmail()))
-            throw new IllegalArgumentException("Email already in use");
+            throw new BusinessException(ErrorCode.EMAIL_DUPLICATION);
 
         if(userRepository.existsByPhone(dto.getPhone()))
-            throw new IllegalArgumentException("Phone already in use");
+            throw new BusinessException(ErrorCode.PHONE_DUPLICATION);
 
         User user = UserMapper.toDomain(dto, bCryptPasswordEncoder.encode(dto.getPassword()));
         User savedUser = userRepository.save(user);
