@@ -10,10 +10,15 @@ import com.kesi.tracker.notice.application.dto.NoticeUpdateRequest;
 import com.kesi.tracker.notice.application.mapper.NoticeMapper;
 import com.kesi.tracker.notice.application.repository.NoticeRepository;
 import com.kesi.tracker.notice.domain.Notice;
+import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +26,7 @@ public class NoticeServiceImpl implements NoticeService {
     private final NoticeRepository noticeRepository;
     private final FileService fileService;
     private final GroupMemberService groupMemberService;
+    private final UserService userService;
 
     @Override
     public Notice create(Notice notice) {
@@ -28,7 +34,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public void create(NoticeCreationRequest request, Long currentUid) {
+    public NoticeResponse create(NoticeCreationRequest request, Long currentUid) {
         if(!groupMemberService.isGroupLeader(request.getGid(), currentUid))
             throw new IllegalArgumentException("공지는 리더만 작성할 수 있습니다");
 
@@ -36,6 +42,8 @@ public class NoticeServiceImpl implements NoticeService {
 
         FileOwner owner = FileOwner.ofNotice(notice.getId());
         fileService.assignFileOwner(owner, request.getAttachmentFileIds());
+
+        return toNoticeResponse(notice);
     }
 
     @Override
@@ -44,7 +52,7 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public Notice update(NoticeUpdateRequest request, Long currentUid) {
+    public NoticeResponse update(NoticeUpdateRequest request, Long currentUid) {
         Notice original = getById(request.getId());
         if(!groupMemberService.isGroupLeader(original.getGid(), currentUid))
             throw new IllegalArgumentException("공지는 리더만 수정할 수 있습니다");
@@ -53,7 +61,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = update(NoticeMapper.toNotice(request, original, currentUid));
         fileService.updateFromFileOwner(FileOwner.ofNotice(notice.getId()), request.getProfileFileIds());
 
-        return null;
+        return toNoticeResponse(notice);
     }
 
     @Override
@@ -64,11 +72,35 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     public NoticeResponse getById(Long id, Long currentUid) {
-        return null;
+        Notice notice = getById(id);
+        if(!groupMemberService.isGroupMember(notice.getGid(), currentUid))
+            throw new IllegalArgumentException("해당 공지 접근 권한이 없습니다");
+
+        return toNoticeResponse(notice);
     }
 
+    private NoticeResponse toNoticeResponse(Notice notice) {
+        return NoticeMapper.toNoticeResponse(
+                notice,
+                userService.getProfile(notice.getAuthorId()),
+                userService.getProfile(notice.getModifiedBy()),
+                fileService.findAccessUrlByOwner(FileOwner.ofNotice(notice.getId()))
+        );
+    }
     @Override
     public Page<NoticeTitleResponse> search(Long gid, String keyword, Pageable pageable) {
-        return null;
+        Page<Notice> notices = noticeRepository.findByGidAndTitleContainingIgnoreCase(gid, keyword, pageable);
+
+        HashSet userIdSet = new HashSet<>();
+        userIdSet.addAll(notices.map(Notice::getAuthorId).stream().toList());
+        userIdSet.addAll(notices.map(Notice::getModifiedBy).stream().toList());
+
+        Map<Long, UserProfileResponse> userProfileMap = userService.getProfiles(userIdSet);
+
+        return notices.map(notice -> NoticeMapper.toNoticeTitleResponse(
+                notice,
+                userProfileMap.get(notice.getAuthorId()),
+                userProfileMap.get(notice.getModifiedBy())
+        ));
     }
 }

@@ -33,7 +33,6 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
             case GROUP -> joinWithSlash( "groups", ownerId.toString(), purpose.getDirName());
             case TRACK -> joinWithSlash( "tracks", ownerId.toString(), purpose.getDirName());
             case NOTICE -> joinWithSlash( "notices", ownerId.toString(), purpose.getDirName());
-            case GLOBAL_NOTICE -> joinWithSlash( "global", "notices", ownerId.toString(), purpose.getDirName());
         };
         return directory;
     }
