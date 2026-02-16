@@ -21,7 +21,7 @@ public class UserMapper {
                 .password(encodedPassword)
                 .name(dto.getName())
                 .nickname(dto.getNickname())
-                .phone(new Phone(dto.getPhone()))
+                .phone(new Phone(dto.getPhone().replace("-", "").trim()))
                 .birthday(dto.getBirthday())
                 .createdAt(LocalDateTime.now())
                 .role(Role.USER)
