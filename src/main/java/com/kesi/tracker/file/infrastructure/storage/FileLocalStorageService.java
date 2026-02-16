@@ -51,12 +51,12 @@ public class FileLocalStorageService implements FileStorageService {
         Path src = Path.of(fileDir, srcKey.value());
         Path dest = Path.of(fileDir, destKey.value());
 
-        if(!Files.exists(dest)) throw new BusinessException(ErrorCode.FILE_PATH_NOT_FOUND);
+        if(!Files.exists(src)) throw new BusinessException(ErrorCode.FILE_PATH_NOT_FOUND);
 
-        Path srcParentDir = src.getParent();
+        Path destParentDir = dest.getParent();
         try {
-            if(ObjectUtils.isNotEmpty(srcParentDir) && !Files.exists(srcParentDir))
-                Files.createDirectories(srcParentDir);
+            if(ObjectUtils.isNotEmpty(destParentDir) && !Files.exists(destParentDir))
+                Files.createDirectories(destParentDir);
 
 
             Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);

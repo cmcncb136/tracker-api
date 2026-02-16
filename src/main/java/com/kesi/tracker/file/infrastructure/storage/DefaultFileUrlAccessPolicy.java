@@ -12,6 +12,6 @@ public class DefaultFileUrlAccessPolicy implements FileUrlAccessPolicy {
 
     @Override
     public String generate(StorageKey storageKey) {
-        return baseUrl + "/" + storageKey.value();
+        return baseUrl + storageKey.value();
     }
 }

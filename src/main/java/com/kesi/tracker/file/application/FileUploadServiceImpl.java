@@ -10,6 +10,7 @@ import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileMetadata;
 import com.kesi.tracker.file.domain.StorageKey;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileUploadServiceImpl implements FileUploadService {
@@ -28,6 +30,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public FileUploadResponse uploadToTemp(MultipartFile file) {
         String fileName = fileNamingPolicy.generate(file);
+        log.info("File name is {}", fileName);
         StorageKey key = storagePathPolicy.resolveTemp(fileName);
 
         fileStorageService.upload(file, key);
