@@ -220,7 +220,7 @@ public class GroupServiceImpl implements GroupService {
         Group savedGroup = groupRepository.save(group);
         FileOwner fileOwner = FileOwner.ofGroup(savedGroup.getGid());
 
-        fileService.assignFileOwner(fileOwner, groupCreationRequest.getProfileFileIds());
+        fileService.assignAsProfile(fileOwner, groupCreationRequest.getProfileFileIds());
 
         return GroupMapper.toGroupResponse(savedGroup,
                 userService.getProfile(group.getCreatedBy()),

@@ -26,6 +26,6 @@ public interface FileService {
 
     Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners owners);
 
-    List<File> assignFileOwner(FileOwner owner, List<Long> fileIds);
+    List<File> assignAsProfile(FileOwner owner, List<Long> fileIds);
     List<File> updateFromFileOwner(FileOwner owner, List<Long> fileIds);
 }

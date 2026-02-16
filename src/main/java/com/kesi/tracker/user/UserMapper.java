@@ -8,11 +8,9 @@ import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.Phone;
 import com.kesi.tracker.user.domain.Role;
 import com.kesi.tracker.user.domain.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class UserMapper {
     public static User toDomain(UserJoinRequest dto, String  encodedPassword) {
