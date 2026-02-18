@@ -65,7 +65,7 @@ public class FileServiceImpl implements FileService {
         List<File> files = fileRepository.findByOwners(fileOwers);
 
         return files.stream().collect(Collectors.groupingBy(
-                File::getId,
+                file -> file.getOwner().ownerId(),
                 Collectors.mapping(
                         file -> new FileAccessUrl(fileUrlAccessPolicy.generate(file.getStorageKey())),
                         Collectors.toList()
