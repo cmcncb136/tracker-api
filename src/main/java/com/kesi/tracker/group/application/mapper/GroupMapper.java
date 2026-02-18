@@ -23,10 +23,14 @@ public class GroupMapper {
                 .build();
     }
 
-    public static GroupProfileResponse toGroupProfileResponse(Group group, List<FileAccessUrl> profileImageUrls) {
+    public static GroupProfileResponse toGroupProfileResponse(
+            Group group,
+            UserProfileResponse creator,
+            List<FileAccessUrl> profileImageUrls) {
         return GroupProfileResponse.builder()
                 .name(group.getName())
                 .introduction(group.getIntroduce())
+                .creator(creator)
                 .creationDate(group.getCreatedAt())
                 .memberCount(group.getMemberCount())
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::toString).toList())

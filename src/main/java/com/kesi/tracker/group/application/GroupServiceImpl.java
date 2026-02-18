@@ -15,6 +15,7 @@ import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
 import jakarta.annotation.Nullable;
@@ -165,9 +166,13 @@ public class GroupServiceImpl implements GroupService {
         Map<Long, List<FileAccessUrl>> fileaccessurlsMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
 
+        Map<Long, UserProfileResponse> userProfileMap
+                = userService.getProfiles(groups.stream().map(Group::getCreatedBy).collect(Collectors.toSet()));
+
         return groups.stream().map(group ->
                 GroupMapper.toGroupProfileResponse(
                         group,
+                        userProfileMap.get(group.getCreatedBy()),
                         fileaccessurlsMap.getOrDefault(group.getGid(), Collections.emptyList())))
                 .toList();
     }
@@ -185,12 +190,15 @@ public class GroupServiceImpl implements GroupService {
 
         Map<Long, List<FileAccessUrl>> fileaccessurlsMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
+        Map<Long, UserProfileResponse> userProfileMap
+                = userService.getProfiles(groups.stream().map(Group::getCreatedBy).collect(Collectors.toSet()));
 
         return groups.stream().collect(
                 Collectors.toMap(
                         Group::getGid,
                         group -> GroupMapper.toGroupProfileResponse(
                                 group,
+                                userProfileMap.get(group.getCreatedBy()),
                                 fileaccessurlsMap.getOrDefault(group.getGid(), Collections.emptyList())
                         )
                 )
@@ -203,12 +211,15 @@ public class GroupServiceImpl implements GroupService {
 
         Map<Long, List<FileAccessUrl>> fileAccessUrlMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
+        Map<Long, UserProfileResponse> userProfileMap
+                = userService.getProfiles(groups.stream().map(Group::getCreatedBy).collect(Collectors.toSet()));
+
 
         return groups.map(group ->
                 GroupMapper.toGroupProfileResponse(
                         group,
-                        fileAccessUrlMap.getOrDefault(group.getGid(), List.of()
-                        )
+                        userProfileMap.get(group.getCreatedBy()),
+                        fileAccessUrlMap.getOrDefault(group.getGid(), List.of())
                 )
         );
     }
