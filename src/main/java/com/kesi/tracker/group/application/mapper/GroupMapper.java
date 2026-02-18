@@ -19,7 +19,7 @@ public class GroupMapper {
                 .creator(creator)
                 .creationDate(group.getCreatedAt())
                 .memberCount(group.getMemberCount())
-                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::toString).toList())
+                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class GroupMapper {
                 .creator(creator)
                 .creationDate(group.getCreatedAt())
                 .memberCount(group.getMemberCount())
-                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::toString).toList())
+                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
 
