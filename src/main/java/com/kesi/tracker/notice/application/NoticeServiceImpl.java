@@ -43,7 +43,7 @@ public class NoticeServiceImpl implements NoticeService {
         Notice notice = create(NoticeMapper.toNotice(request, gid, currentUid));
 
         FileOwner owner = FileOwner.ofNotice(notice.getId());
-        fileService.assignFileOwner(owner, request.getAttachmentFileIds());
+        fileService.assignAsProfile(owner, request.getAttachmentFileIds());
 
         return toNoticeResponse(notice);
     }

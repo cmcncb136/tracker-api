@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,12 +22,12 @@ public class User {
     private String name;
     private String nickname;
     @Nullable private Phone phone;
-    private LocalDateTime birthday;
+    private LocalDate birthday;
     private LocalDateTime createdAt;
     private Role role;
 
     @Builder
-    public User(Long id, Email email, String password, String name, String nickname, Phone phone, LocalDateTime birthday, LocalDateTime createdAt, Role role) {
+    public User(Long id, Email email, String password, String name, String nickname, Phone phone, LocalDate birthday, LocalDateTime createdAt, Role role) {
         this.id = id;
         this.email = Objects.requireNonNull(email);
         this.password = ObjectUtils.requireNonEmpty(password);

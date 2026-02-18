@@ -1,11 +1,10 @@
 package com.kesi.tracker.file.application;
 
 import com.kesi.tracker.file.application.repository.FileRepository;
+import com.kesi.tracker.file.application.storage.FileStorageService;
 import com.kesi.tracker.file.application.storage.FileUrlAccessPolicy;
-import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileAccessUrl;
-import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.file.domain.FileOwners;
+import com.kesi.tracker.file.application.storage.StorageKeyPolicy;
+import com.kesi.tracker.file.domain.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
@@ -19,6 +18,8 @@ import java.util.stream.Collectors;
 public class FileServiceImpl implements FileService {
     private final FileRepository fileRepository;
     private final FileUrlAccessPolicy fileUrlAccessPolicy;
+    private final FileStorageService fileStorageService;
+    private final StorageKeyPolicy storageKeyPolicy;
 
     @Override
     public Optional<File> findById(Long id) {
@@ -73,13 +74,17 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public List<File> assignFileOwner(FileOwner owner, List<Long> fileIds) {
+    public List<File> assignAsProfile(FileOwner owner, List<Long> fileIds) {
         if(ObjectUtils.isEmpty(fileIds)) return List.of();
 
         List<File> files = this.findByIds(fileIds);
 
         for(File file : files){
+            StorageKey newStorageKey = storageKeyPolicy.generate(owner, FilePurpose.PROFILE, file.getMetadata().virtualName());
+            fileStorageService.copy(file.getStorageKey(), newStorageKey);
+
             file.assignAsProfile(owner);
+            file.replace(newStorageKey);
         }
 
         return this.save(files);
@@ -105,6 +110,6 @@ public class FileServiceImpl implements FileService {
         List<Long> addedFileIds = fileIdSet.stream()
                 .filter(fileId -> !originalFileIdSet.contains(fileId))
                 .toList();
-        return this.assignFileOwner(owner, addedFileIds);
+        return this.assignAsProfile(owner, addedFileIds);
     }
 }

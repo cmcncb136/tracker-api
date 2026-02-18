@@ -35,4 +35,8 @@ public class File {
         this.purpose = FilePurpose.PROFILE;
         this.owner = owner;
     }
+
+    public void replace(StorageKey storageKey) {
+        this.storageKey = storageKey;
+    }
 }

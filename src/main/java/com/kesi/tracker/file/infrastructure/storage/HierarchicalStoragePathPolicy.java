@@ -14,16 +14,14 @@ public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
     public static final String TEMP_PATH = "temp/";
 
     @Override
-    public StorageKey resolveAttached(File file) {
-        FileOwner owner = file.getOwner();
-        FilePurpose purpose = file.getPurpose();
+    public StorageKey generate(FileOwner owner, FilePurpose purpose, String virtualName){
         if(ObjectUtils.isEmpty(owner) || ObjectUtils.isEmpty(purpose))
             throw new BusinessException(ErrorCode.INVALID_FILE_PURPOSE);
 
         OwnerType ownerType = owner.ownerType();
         String directory = getPath(owner, ownerType, purpose);
 
-        return new StorageKey(directory + "/" + file.getMetadata().virtualName());
+        return new StorageKey(directory + "/" + virtualName);
     }
 
     @NotNull

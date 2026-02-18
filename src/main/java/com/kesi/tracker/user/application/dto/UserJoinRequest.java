@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,9 +24,9 @@ public class UserJoinRequest {
     @Schema(description = "프로필 이미지 파일 ID 목록")
     private List<Long> profileIds;
 
-    @Schema(description = "생년월일", example = "1990-01-01T00:00:00")
+    @Schema(description = "생년월일", example = "1990-01-01")
     @JsonFormat(shape = JsonFormat.Shape.STRING,
-            pattern = "yyyy-MM-dd'T'HH:mm:ss",
+            pattern = "yyyy-MM-dd",
             timezone = "Asia/Seoul")
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 }

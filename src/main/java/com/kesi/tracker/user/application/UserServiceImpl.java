@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         //Profile 파일로 저장 및 Owner 설정
-        fileService.assignFileOwner(FileOwner.ofUser(savedUser.getId()), dto.getProfileIds());
+        fileService.assignAsProfile(FileOwner.ofUser(savedUser.getId()), dto.getProfileIds());
     }
 
     @Override

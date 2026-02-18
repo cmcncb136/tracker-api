@@ -6,6 +6,7 @@ import com.kesi.tracker.file.application.storage.FileStorageService;
 import com.kesi.tracker.file.domain.StorageKey;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,11 +20,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FileLocalStorageService implements FileStorageService {
-    private static final String ROOT_PATH = "/etc/myapp/mingle/"; //Todo. properties로 분리
-
+    @Value("${file.dir}")
+    private String fileDir;
     @Override
     public void upload(MultipartFile file, StorageKey key) {
-        Path path = Path.of(ROOT_PATH, key.value());
+        Path path = Path.of(fileDir, key.value());
 
         File tempFile = new File(path.toFile().getAbsolutePath());
 
@@ -47,15 +48,15 @@ public class FileLocalStorageService implements FileStorageService {
 
     @Override
     public void copy(StorageKey srcKey, StorageKey destKey) {
-        Path src = Path.of(ROOT_PATH, srcKey.value());
-        Path dest = Path.of(ROOT_PATH, destKey.value());
+        Path src = Path.of(fileDir, srcKey.value());
+        Path dest = Path.of(fileDir, destKey.value());
 
-        if(!Files.exists(dest)) throw new BusinessException(ErrorCode.FILE_PATH_NOT_FOUND);
+        if(!Files.exists(src)) throw new BusinessException(ErrorCode.FILE_PATH_NOT_FOUND);
 
-        Path srcParentDir = src.getParent();
+        Path destParentDir = dest.getParent();
         try {
-            if(ObjectUtils.isNotEmpty(srcParentDir) && !Files.exists(srcParentDir))
-                Files.createDirectories(srcParentDir);
+            if(ObjectUtils.isNotEmpty(destParentDir) && !Files.exists(destParentDir))
+                Files.createDirectories(destParentDir);
 
 
             Files.copy(src, dest, StandardCopyOption.REPLACE_EXISTING);
