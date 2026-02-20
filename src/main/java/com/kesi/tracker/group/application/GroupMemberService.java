@@ -11,6 +11,7 @@ public interface GroupMemberService {
     List<GroupMember> findByGidAndRoleIsLeader(Long gid);
 
     GroupMember createInviteMember(Long gid, Long invitedUid);
+    GroupMember createLeaderMember(Long gid, Long leaderUid);
     boolean existsGroupMember(Long gid, Long uid);
     boolean isGroupMember(Long gid, Long uid);
     boolean isGroupLeader(Long gid, Long uid);
