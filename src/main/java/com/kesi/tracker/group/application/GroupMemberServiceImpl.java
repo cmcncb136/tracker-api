@@ -83,6 +83,21 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    public GroupMember createLeaderMember(Long gid, Long leaderUid) {
+        GroupMember groupMember = GroupMember.builder()
+                .gid(gid)
+                .uid(leaderUid)
+                .role(GroupRole.LEADER)
+                .trackRole(GroupTrackRole.FOLLOWER)
+                .status(GroupMemberStatus.APPROVED)
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .build();
+
+        return groupMemberRepository.save(groupMember);
+    }
+
+    @Override
     public boolean existsGroupMember(Long gid, Long uid) {
         return groupMemberRepository.existsByGidAndUid(gid, uid);
     }
