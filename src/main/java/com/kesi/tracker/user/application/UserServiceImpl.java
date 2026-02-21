@@ -50,12 +50,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getByIds(Set<Long> ids) {
-        List<User> user =  userRepository.findByIdIn(ids.stream().toList());
+        List<User> users =  userRepository.findByIdIn(ids.stream().toList());
 
-        if(user.size() != ids.size())
+        if(users.size() != ids.size())
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
 
-        return user;
+        return users;
     }
 
     @Override

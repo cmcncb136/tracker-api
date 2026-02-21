@@ -28,8 +28,8 @@ public class TrackSearchRequest {
         return TrackSearchCondition.builder()
                 .title(text)
                 .introduction(text)
-                .assignmentStartAt(assignmentStartAt.atTime(0, 0, 0))
-                .assignmentEndAt(assignmentEndAt.atTime(23, 59, 59))
+                .assignmentStartAt(assignmentStartAt == null ? null : assignmentStartAt.atTime(0, 0, 0))
+                .assignmentEndAt(assignmentEndAt == null ? null : assignmentEndAt.atTime(23, 59, 59))
                 .build();
     }
 }
