@@ -28,6 +28,7 @@ public class GroupMapper {
             UserProfileResponse creator,
             List<FileAccessUrl> profileImageUrls) {
         return GroupProfileResponse.builder()
+                .gid(group.getGid())
                 .name(group.getName())
                 .introduction(group.getIntroduce())
                 .creator(creator)

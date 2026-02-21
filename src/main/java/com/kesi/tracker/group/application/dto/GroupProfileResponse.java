@@ -13,6 +13,8 @@ import java.util.List;
 @Data
 @Builder
 public class GroupProfileResponse {
+    @Schema(description = "그룹 ID")
+    private Long gid;
     @Schema(description = "그룹 명")
     private String name;
     @Schema(description = "그룹 소개")
