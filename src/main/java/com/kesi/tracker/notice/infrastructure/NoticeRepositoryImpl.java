@@ -38,4 +38,9 @@ public class NoticeRepositoryImpl implements NoticeRepository {
         return jpaRepository.findByGidAndTitleContainingIgnoreCase(gid, title, pageable)
                 .map(NoticeEntity::toDomain);
     }
+
+    @Override
+    public Page<Notice> findByGid(Long gid, Pageable pageable) {
+        return jpaRepository.findByGid(gid, pageable).map(NoticeEntity::toDomain);
+    }
 }
