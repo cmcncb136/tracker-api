@@ -11,5 +11,8 @@ public interface NoticeRepository {
     Optional<Notice> findById(Long id);
     Notice update(Notice notice);
     void deleteById(Long id);
+
+    //추후 필요시 QueryDSL로 변경
     Page<Notice> findByGidAndTitleContainingIgnoreCase(Long gid, String title, Pageable pageable);
+    Page<Notice> findByGid(Long gid, Pageable pageable);
 }

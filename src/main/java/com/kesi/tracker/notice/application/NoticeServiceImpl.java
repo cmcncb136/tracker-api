@@ -15,6 +15,7 @@ import com.kesi.tracker.notice.domain.Notice;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -93,9 +94,11 @@ public class NoticeServiceImpl implements NoticeService {
     public Page<NoticeTitleResponse> search(Long gid, String keyword, Long currentUid, Pageable pageable) {
         if(!groupMemberService.isGroupMember(gid, currentUid))
             throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
-        Page<Notice> notices = noticeRepository.findByGidAndTitleContainingIgnoreCase(gid, keyword, pageable);
+        Page<Notice> notices = ObjectUtils.isEmpty(keyword) ?
+                noticeRepository.findByGid(gid, pageable)
+                : noticeRepository.findByGidAndTitleContainingIgnoreCase(gid, keyword, pageable);
 
-        HashSet userIdSet = new HashSet<>();
+        HashSet<Long> userIdSet = new HashSet<>();
         userIdSet.addAll(notices.map(Notice::getAuthorId).stream().toList());
         userIdSet.addAll(notices.map(Notice::getModifiedBy).stream().toList());
 

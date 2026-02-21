@@ -34,7 +34,7 @@ public class NoticeController {
     @GetMapping("/groups/{gid}/notices")
     public Page<NoticeTitleResponse> search(
             @PathVariable long gid,
-            @RequestParam String keyword,
+            @RequestParam(required = false) String keyword,
             @UserId long userId,
             @PageableDefault Pageable pageable
     ) {

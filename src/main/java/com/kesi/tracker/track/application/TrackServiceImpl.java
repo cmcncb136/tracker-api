@@ -97,7 +97,7 @@ public class TrackServiceImpl implements TrackService {
         Track track = getById(id);
 
         //그룹 멤버인지 확인
-        if (!groupMemberService.isGroupMember(currentUid, track.getGid()))
+        if (!groupMemberService.isGroupMember(track.getGid(), currentUid    ))
             throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
 
         UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
@@ -111,7 +111,7 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable) {
-        if (!groupMemberService.isGroupMember(currentUid, gid))
+        if (!groupMemberService.isGroupMember(gid, currentUid))
             throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
 
         TrackSearchCondition searchCondition = searchRequest.toTrackSearchCondition();
