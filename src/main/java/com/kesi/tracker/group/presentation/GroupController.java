@@ -3,6 +3,9 @@ package com.kesi.tracker.group.presentation;
 import com.kesi.tracker.core.security.annotation.UserId;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.*;
+import com.kesi.tracker.group.domain.GroupMemberStatus;
+import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService groupService;
+    private final UserService userService;
 
     @Operation(summary = "그룹 상세 조회", description = "GID를 통해 특정 그룹의 상세 정보를 조회합니다.")
     @GetMapping("groups/{gid}")
@@ -50,6 +54,16 @@ public class GroupController {
     @GetMapping("users/me/groups")
     public List<GroupProfileResponse> findByUserId(@UserId Long userId) {
         return groupService.getGroupResponseByUid(userId);
+    }
+
+    @Operation(summary = "내 그룹 멤버 조회", description = "그룹 안에 특정 상태에 멤버 목록을 조회합니다.")
+    @GetMapping("/groups/{gid}/users")
+    public List<UserProfileResponse> getUserProfileResponseByGid(
+            @PathVariable Long gid,
+            @RequestParam(defaultValue = "APPROVED") GroupMemberStatus status,
+            @UserId Long userId
+    ) {
+        return userService.getProfileAndGroupMemberStatus(gid, status, userId);
     }
 
     @Operation(summary = "그룹 초대", description = "이메일을 통해 특정 사용자에게 그룹 초대장을 보냅니다.")

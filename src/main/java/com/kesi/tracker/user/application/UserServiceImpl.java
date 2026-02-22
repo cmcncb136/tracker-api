@@ -5,6 +5,9 @@ import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.file.domain.FileOwners;
+import com.kesi.tracker.group.application.GroupMemberService;
+import com.kesi.tracker.group.domain.GroupMember;
+import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
@@ -26,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final GroupMemberService groupMemberService;
 
     @Override
     public Optional<User> findByEmail(Email email) {
@@ -105,6 +109,20 @@ public class UserServiceImpl implements UserService {
                 user,
                 fileService.findAccessUrlByOwner(owner)
         );
+    }
+
+    @Override
+    public List<UserProfileResponse> getProfileAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid) {
+        GroupMember currentGroupMember = groupMemberService.getByGidAndUid(gid, currentUid);
+
+        //일반 회원은 승인된 사용자만 조회 가능
+        if(!status.equals(GroupMemberStatus.APPROVED) && !currentGroupMember.isLeader())
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
+
+        List<GroupMember> groupMembers = groupMemberService.findByGidAndStatus(gid, status);
+
+        return this.getProfiles(groupMembers.stream().map(GroupMember::getUid).collect(Collectors.toSet()))
+                .values().stream().toList();
     }
 
 
