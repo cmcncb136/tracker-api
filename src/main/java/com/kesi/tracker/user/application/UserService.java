@@ -1,5 +1,6 @@
 package com.kesi.tracker.user.application;
 
+import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
@@ -21,5 +22,6 @@ public interface UserService {
     MyProfileResponse getMyProfile(Long id);
     UserProfileResponse getProfile(String email);
     UserProfileResponse getProfile(Long id);
+    List<UserProfileResponse> getProfileAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid);
     Map<Long, UserProfileResponse> getProfiles(Set<Long> ids);
 }
