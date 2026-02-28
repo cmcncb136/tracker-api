@@ -104,11 +104,8 @@ public class GroupServiceImpl implements GroupService {
     @Override
     @Transactional
     public void joinRequest(Long groupId, Long currentUserId) {
-        List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
-
-        if (leaderGroupMembers.isEmpty()) {
-            log.error("해당 그룹에 리더가 존재하지 않습니다..? groupId : {}", groupId);
-        }
+        if(groupMemberService.existsGroupMember(groupId, currentUserId))
+            throw new BusinessException(ErrorCode.GROUP_MEMBER_ALREADY_EXISTS);
 
         GroupMember groupMember = GroupMember.builder()
                 .gid(groupId)
@@ -122,6 +119,12 @@ public class GroupServiceImpl implements GroupService {
 
         groupMemberRepository.save(groupMember);
 
+        //알림 발생
+        List<GroupMember> leaderGroupMembers = groupMemberRepository.findByGidAndRole(groupId, GroupRole.LEADER);
+
+        if (leaderGroupMembers.isEmpty()) {
+            log.error("해당 그룹에 리더가 존재하지 않습니다..? groupId : {}", groupId);
+        }
         applicationEventPublisher.publishEvent(
                 GroupMemberInviteRequestedEvent.builder()
                         .groupId(groupId)
