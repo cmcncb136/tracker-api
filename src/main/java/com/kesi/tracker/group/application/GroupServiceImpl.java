@@ -164,7 +164,10 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public List<GroupProfileResponse> getGroupResponseByUid(Long uid) {
-        List<Group> groups = groupRepository.findByUid(uid);
+        //승인된 그룹 정보 가져오기
+        List<GroupMember> approvedGroupMemberList = groupMemberService.findByUidAndStatus(uid, GroupMemberStatus.APPROVED);
+        List<Group> groups = groupRepository
+                .findByGids(approvedGroupMemberList.stream().map(GroupMember::getGid).toList());
 
         Map<Long, List<FileAccessUrl>> fileaccessurlsMap
                 = fileService.findAccessUrlByOwners(FileOwners.ofGroup(groups.stream().map(Group::getGid).toList()));
