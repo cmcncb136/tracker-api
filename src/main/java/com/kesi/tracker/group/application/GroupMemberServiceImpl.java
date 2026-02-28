@@ -73,6 +73,11 @@ public class GroupMemberServiceImpl implements GroupMemberService {
     }
 
     @Override
+    public List<GroupMember> findByUidAndStatus(Long uid, GroupMemberStatus status) {
+        return groupMemberRepository.findByUidAndStatus(uid, status);
+    }
+
+    @Override
     public GroupMember createInviteMember(Long gid, Long invitedUid) {
         GroupMember groupMember = GroupMember.builder()
                 .gid(gid)

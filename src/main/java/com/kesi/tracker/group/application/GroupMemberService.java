@@ -11,6 +11,7 @@ public interface GroupMemberService {
     GroupMember getById(Long id);
     List<GroupMember> findByGidAndRoleIsLeader(Long gid);
     List<GroupMember> findByGidAndStatus(Long gid, GroupMemberStatus status);
+    List<GroupMember> findByUidAndStatus(Long uid, GroupMemberStatus service);
 
     GroupMember createInviteMember(Long gid, Long invitedUid);
     GroupMember createLeaderMember(Long gid, Long leaderUid);

@@ -50,6 +50,12 @@ public class GroupMemberRepositoryImpl implements GroupMemberRepository {
     }
 
     @Override
+    public List<GroupMember> findByUidAndStatus(Long uid, GroupMemberStatus status) {
+        return groupMemberJpaRepository.findByUidAndStatus(uid, status)
+                .stream().map(GroupMemberEntity::toDomain).toList();
+    }
+
+    @Override
     public List<GroupMember> findByGidAndRole(Long gid, GroupRole role) {
         return groupMemberJpaRepository.findByGidAndRole(gid, role)
                 .stream().map(GroupMemberEntity::toDomain).toList();
