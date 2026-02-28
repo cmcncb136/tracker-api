@@ -21,7 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "notification")
+@Table(name = "notifications")
 public class NotificationEntity {
 
     @Id
