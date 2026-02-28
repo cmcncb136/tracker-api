@@ -5,6 +5,7 @@ import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +59,7 @@ public class GroupController {
 
     @Operation(summary = "내 그룹 멤버 조회", description = "그룹 안에 특정 상태에 멤버 목록을 조회합니다.")
     @GetMapping("/groups/{gid}/users")
-    public List<UserProfileResponse> getUserProfileResponseByGid(
+    public List<GroupMemberProfileResponse> getUserProfileResponseByGid(
             @PathVariable Long gid,
             @RequestParam(defaultValue = "APPROVED") GroupMemberStatus status,
             @UserId Long userId

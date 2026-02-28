@@ -30,7 +30,7 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
         String title = "그룹 초대 요청";
         String message =
                 String.format("%s(%s)님이 %s 그룹 초대를 요청했습니다",
-                        requestedUser.getNickname(), requestedUser.getEmail(), group.getName());
+                        requestedUser.getNickname(), requestedUser.getEmail().value(), group.getName());
 
         NotificationContent notificationContent = NotificationContent.builder()
                 .type(NotificationType.ACTION)
