@@ -1,7 +1,9 @@
 package com.kesi.tracker.notification.application.handler.group;
 
+import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.domain.Group;
+import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.notification.application.NotificationService;
 import com.kesi.tracker.notification.application.handler.NotificationEventHandler;
@@ -21,11 +23,13 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
     private final GroupService groupService;
     private final UserService userService;
     private final WebLinkResolver webLinkResolver;
+    private final GroupMemberService groupMemberService;
 
     @Override
     public void handle(GroupMemberInviteRequestedEvent event) {
         User requestedUser = userService.getById(event.requestedUserId());
         Group group = groupService.getByGid(event.groupId());
+        GroupMember requestedGroupMember = groupMemberService.getByGidAndUid(event.groupId(), event.requestedUserId());
 
         String title = "그룹 초대 요청";
         String message =
@@ -37,7 +41,7 @@ public class GroupMemberInviteRequestedNotificationHandler implements Notificati
                 .category(NotificationCategory.GROUP)
                 .title(title)
                 .message(message)
-                .confirmUrl(webLinkResolver.createLink(NotificationLink.GROUP_JOIN_REQUEST, group.getGid()))
+                .confirmUrl(webLinkResolver.createLink(NotificationLink.GROUP_JOIN_REQUEST, group.getGid(), requestedGroupMember.getId()))
                 .cancelUrl("")
                 .build();
 
