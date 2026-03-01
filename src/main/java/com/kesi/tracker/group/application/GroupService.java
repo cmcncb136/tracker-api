@@ -2,6 +2,8 @@ package com.kesi.tracker.group.application;
 
 import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.domain.Group;
+import com.kesi.tracker.group.domain.GroupMemberStatus;
+import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Page;
@@ -31,4 +33,7 @@ public interface GroupService {
     Map<Long, GroupProfileResponse> getGroupResponseByGids(Set<Long> gids);
     Page<GroupProfileResponse> searchPublicGroups(GroupSearchRequest searchRequest, Pageable pageable);
     GroupResponse create(GroupCreationRequest groupCreationRequest, Long currentUid);
+    List<GroupMemberProfileResponse> getGroupMemberProfileResponseByGidAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid);
+
+    MyGroupInfoResponse getMyGroupInfoResponse(Long gid, Long currentUid);
 }

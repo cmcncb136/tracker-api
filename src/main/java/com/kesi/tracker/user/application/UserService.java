@@ -23,6 +23,5 @@ public interface UserService {
     MyProfileResponse getMyProfile(Long id);
     UserProfileResponse getProfile(String email);
     UserProfileResponse getProfile(Long id);
-    List<GroupMemberProfileResponse> getProfileAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid);
     Map<Long, UserProfileResponse> getProfiles(Set<Long> ids);
 }

@@ -14,7 +14,9 @@ import com.kesi.tracker.group.domain.*;
 import com.kesi.tracker.group.domain.event.GroupMemberInviteRequestedEvent;
 import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
+import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -244,6 +247,37 @@ public class GroupServiceImpl implements GroupService {
         return GroupMapper.toGroupResponse(savedGroup,
                 userService.getProfile(group.getCreatedBy()),
                 fileService.findAccessUrlByOwner(fileOwner));
+    }
+
+    @Override
+    public List<GroupMemberProfileResponse> getGroupMemberProfileResponseByGidAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid) {
+        GroupMember currentGroupMember = groupMemberService.getByGidAndUid(gid, currentUid);
+
+        //일반 회원은 승인된 사용자만 조회 가능
+        if(!status.equals(GroupMemberStatus.APPROVED) && !currentGroupMember.isLeader())
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
+
+        Map<Long, GroupMember> groupMemberMap = groupMemberService.findByGidAndStatus(gid, status)
+                .stream().collect(Collectors.toMap(GroupMember::getUid, Function.identity()));
+
+        List<Long> memberUids = groupMemberMap.values().stream().map(GroupMember::getUid).toList();
+
+        List<User> members = userService.getByIds(memberUids);
+        Map<Long, List<FileAccessUrl>> accessUrlMap =
+                fileService.findAccessUrlByOwners(FileOwners.ofUser(memberUids));
+
+        return members.stream().map(member -> UserMapper.toGroupMemberProfileResponse(
+                member,
+                groupMemberMap.get(member.getId()),
+                accessUrlMap.getOrDefault(member.getId(), Collections.emptyList())
+        )).toList();
+
+    }
+
+    @Override
+    public MyGroupInfoResponse getMyGroupInfoResponse(Long gid, Long currentUid) {
+        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(gid, currentUid);
+        return GroupMapper.toGroupInfoResponse(groupMember);
     }
 
 

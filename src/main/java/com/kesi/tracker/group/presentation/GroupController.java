@@ -64,8 +64,18 @@ public class GroupController {
             @RequestParam(defaultValue = "APPROVED") GroupMemberStatus status,
             @UserId Long userId
     ) {
-        return userService.getProfileAndGroupMemberStatus(gid, status, userId);
+        return groupService.getGroupMemberProfileResponseByGidAndGroupMemberStatus(gid, status, userId);
     }
+
+    @Operation(summary = "내 그룹에서 자기 정보 조회", description = "그룹에서 내 정보(역할 등) 조회합니다.")
+    @GetMapping("/groups/{gid}/me")
+    public MyGroupInfoResponse getMyProfileResponseByGid(
+            @PathVariable Long gid,
+            @UserId Long userId
+    ) {
+        return groupService.getMyGroupInfoResponse(gid, userId);
+    }
+
 
     @Operation(summary = "그룹 초대", description = "이메일을 통해 특정 사용자에게 그룹 초대장을 보냅니다.")
     @PostMapping("/groups/{gid}/invitations")

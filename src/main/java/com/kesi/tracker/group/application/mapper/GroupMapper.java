@@ -4,7 +4,9 @@ import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.application.dto.GroupCreationRequest;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
 import com.kesi.tracker.group.application.dto.GroupResponse;
+import com.kesi.tracker.group.application.dto.MyGroupInfoResponse;
 import com.kesi.tracker.group.domain.Group;
+import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,13 @@ public class GroupMapper {
                 .createdBy(createBy)
                 .createdAt(LocalDateTime.now())
                 .memberCount(1) //초기 인원은 1명
+                .build();
+    }
+
+    public static MyGroupInfoResponse toGroupInfoResponse(GroupMember groupMember) {
+        return MyGroupInfoResponse.builder()
+                .role(groupMember.getRole())
+                .trackRole(groupMember.getTrackRole())
                 .build();
     }
 }
