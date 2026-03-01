@@ -5,11 +5,7 @@ import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.file.domain.FileOwners;
-import com.kesi.tracker.group.application.GroupMemberService;
-import com.kesi.tracker.group.domain.GroupMember;
-import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.user.UserMapper;
-import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
@@ -22,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +26,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final GroupMemberService groupMemberService;
 
     @Override
     public Optional<User> findByEmail(Email email) {
@@ -111,30 +105,6 @@ public class UserServiceImpl implements UserService {
                 user,
                 fileService.findAccessUrlByOwner(owner)
         );
-    }
-
-    @Override
-    public List<GroupMemberProfileResponse> getProfileAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid) {
-        GroupMember currentGroupMember = groupMemberService.getByGidAndUid(gid, currentUid);
-
-        //일반 회원은 승인된 사용자만 조회 가능
-        if(!status.equals(GroupMemberStatus.APPROVED) && !currentGroupMember.isLeader())
-            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
-
-        Map<Long, GroupMember> groupMemberMap = groupMemberService.findByGidAndStatus(gid, status)
-                .stream().collect(Collectors.toMap(GroupMember::getUid, Function.identity()));
-
-        List<Long> memberUids = groupMemberMap.values().stream().map(GroupMember::getUid).toList();
-
-        List<User> members = this.getByIds(memberUids);
-        Map<Long, List<FileAccessUrl>> accessUrlMap =
-                fileService.findAccessUrlByOwners(FileOwners.ofUser(memberUids));
-
-        return members.stream().map(member -> UserMapper.toGroupMemberProfileResponse(
-                member,
-                groupMemberMap.get(member.getId()),
-                accessUrlMap.getOrDefault(member.getId(), Collections.emptyList())
-        )).toList();
     }
 
 
