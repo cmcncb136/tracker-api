@@ -64,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
-        if(!groupMemberService.isGroupLeader(currentUserId, groupId))
+        if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         GroupMember pendingMember = groupMemberService.getById(requestId);
