@@ -7,6 +7,7 @@ import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.file.domain.FileOwners;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.dto.MyProfileResponse;
+import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserJoinRequest;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.application.repository.UserRepository;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,11 +82,34 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public MyProfileResponse getMyProfile(Long id) {
-        FileOwner owner = FileOwner.ofUser(id);
+    public UserComposite getUserCompositeById(Long id) {
+        User user = this.getById(id);
+        FileOwner owner = FileOwner.ofUser(user.getId());
 
-        return UserMapper.toMyProfileResponse(this.getById(id),
-                fileService.findAccessUrlByOwner(owner));
+        return new UserComposite(user, fileService.findAccessUrlByOwner(owner));
+    }
+
+    @Override
+    public List<UserComposite> getUserCompositeByIds(Set<Long> ids) {
+        List<User> users = this.getByIds(ids);
+        Map<Long, List<FileAccessUrl>> accessUrlMap =
+                fileService.findAccessUrlByOwners(FileOwners.ofUser(users.stream().map(User::getId).toList()));
+
+        return UserComposite.from(users, accessUrlMap);
+    }
+
+    @Override
+    public Map<Long, UserComposite> getUserCompositeMapByIds(Set<Long> ids) {
+        return getUserCompositeByIds(ids).stream()
+                .collect(Collectors.toMap(
+                        UserComposite::getUid,
+                        Function.identity()
+                ));
+    }
+
+    @Override
+    public MyProfileResponse getMyProfile(Long id) {
+       return UserMapper.toMyProfileResponse(this.getUserCompositeById(id));
     }
 
     @Override
@@ -98,28 +123,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserProfileResponse getProfile(Long id) {
-        User user = this.getById(id);
-        FileOwner owner = FileOwner.ofUser(user.getId());
-
-        return UserMapper.toUserProfileResponse(
-                user,
-                fileService.findAccessUrlByOwner(owner)
-        );
+        return UserMapper.toUserProfileResponse(this.getUserCompositeById(id));
     }
 
 
     @Override
     public Map<Long, UserProfileResponse> getProfiles(Set<Long> ids) {
-        List<User> users = this.getByIds(ids);
-        Map<Long, List<FileAccessUrl>> accessUrlMap =
-                fileService.findAccessUrlByOwners(FileOwners.ofUser(users.stream().map(User::getId).toList()));
-
-        return users.stream().collect(Collectors.toMap(
-                User::getId,
-                user -> UserMapper.toUserProfileResponse(
-                        user,
-                        accessUrlMap.getOrDefault(user.getId(), Collections.emptyList()))
-        ));
+        return this.getUserCompositeByIds(ids)
+                .stream()
+                .collect(Collectors.toMap(
+                        UserComposite::getUid,
+                        UserMapper::toUserProfileResponse
+                ));
     }
 }
 

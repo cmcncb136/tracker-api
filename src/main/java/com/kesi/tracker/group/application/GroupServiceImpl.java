@@ -17,6 +17,7 @@ import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
+import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
@@ -257,21 +258,15 @@ public class GroupServiceImpl implements GroupService {
         if(!status.equals(GroupMemberStatus.APPROVED) && !currentGroupMember.isLeader())
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
+
         Map<Long, GroupMember> groupMemberMap = groupMemberService.findByGidAndStatus(gid, status)
                 .stream().collect(Collectors.toMap(GroupMember::getUid, Function.identity()));
 
-        List<Long> memberUids = groupMemberMap.values().stream().map(GroupMember::getUid).toList();
-
-        List<User> members = userService.getByIds(memberUids);
-        Map<Long, List<FileAccessUrl>> accessUrlMap =
-                fileService.findAccessUrlByOwners(FileOwners.ofUser(memberUids));
-
-        return members.stream().map(member -> UserMapper.toGroupMemberProfileResponse(
-                member,
-                groupMemberMap.get(member.getId()),
-                accessUrlMap.getOrDefault(member.getId(), Collections.emptyList())
-        )).toList();
-
+        return userService.getUserCompositeByIds(groupMemberMap.keySet())
+                .stream().map(userComposite -> UserMapper.toGroupMemberProfileResponse(
+                        userComposite,
+                        groupMemberMap.get(userComposite.getUid())
+                )).toList();
     }
 
     @Override

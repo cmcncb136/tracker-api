@@ -2,10 +2,7 @@ package com.kesi.tracker.user;
 
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.domain.GroupMember;
-import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
-import com.kesi.tracker.user.application.dto.MyProfileResponse;
-import com.kesi.tracker.user.application.dto.UserJoinRequest;
-import com.kesi.tracker.user.application.dto.UserProfileResponse;
+import com.kesi.tracker.user.application.dto.*;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.Phone;
 import com.kesi.tracker.user.domain.Role;
@@ -28,6 +25,13 @@ public class UserMapper {
                 .build();
     }
 
+    public static MyProfileResponse toMyProfileResponse(UserComposite userComposite) {
+        return UserMapper.toMyProfileResponse(
+                userComposite.user(),
+                userComposite.accessUrls()
+        );
+    }
+
     public static MyProfileResponse toMyProfileResponse(User user, List<FileAccessUrl> profileImageUrls) {
         return MyProfileResponse.builder()
                 .email(user.getEmail().value())
@@ -40,12 +44,27 @@ public class UserMapper {
                 .build();
     }
 
+    public static UserProfileResponse toUserProfileResponse(UserComposite userComposite) {
+        return UserMapper.toUserProfileResponse(
+                userComposite.user(),
+                userComposite.accessUrls()
+        );
+    }
+
     public static UserProfileResponse toUserProfileResponse(User user, List<FileAccessUrl> profileImageUrls) {
         return UserProfileResponse.builder()
                 .email(user.getEmail().value())
                 .nickname(user.getNickname())
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
+    }
+
+    public static GroupMemberProfileResponse toGroupMemberProfileResponse(UserComposite userComposite, GroupMember groupMember) {
+        return UserMapper.toGroupMemberProfileResponse(
+                userComposite.user(),
+                groupMember,
+                userComposite.accessUrls()
+        );
     }
 
     public static GroupMemberProfileResponse toGroupMemberProfileResponse(User user, GroupMember groupMember, List<FileAccessUrl> profileImageUrls) {

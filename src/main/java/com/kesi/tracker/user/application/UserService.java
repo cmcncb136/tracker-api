@@ -1,10 +1,6 @@
 package com.kesi.tracker.user.application;
 
-import com.kesi.tracker.group.domain.GroupMemberStatus;
-import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
-import com.kesi.tracker.user.application.dto.MyProfileResponse;
-import com.kesi.tracker.user.application.dto.UserJoinRequest;
-import com.kesi.tracker.user.application.dto.UserProfileResponse;
+import com.kesi.tracker.user.application.dto.*;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
 
@@ -20,6 +16,11 @@ public interface UserService {
 
     User save(User user);
     void join(UserJoinRequest dto);
+
+    UserComposite getUserCompositeById(Long id);
+    List<UserComposite> getUserCompositeByIds(Set<Long> ids);
+    Map<Long, UserComposite> getUserCompositeMapByIds(Set<Long> ids);
+
     MyProfileResponse getMyProfile(Long id);
     UserProfileResponse getProfile(String email);
     UserProfileResponse getProfile(Long id);
