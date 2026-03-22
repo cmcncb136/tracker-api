@@ -76,4 +76,21 @@ public class UserMapper {
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
+
+    public static GroupJoinRequestUserProfileResponse toGroupJoinRequestUserProfileResponse(UserComposite userComposite, GroupMember groupMember) {
+        return toGroupJoinRequestUserProfileResponse(
+                userComposite.user(),
+                groupMember,
+                userComposite.accessUrls()
+        );
+    }
+
+    public static GroupJoinRequestUserProfileResponse toGroupJoinRequestUserProfileResponse(User user, GroupMember groupMember, List<FileAccessUrl> profileImageUrls) {
+        return GroupJoinRequestUserProfileResponse.builder()
+                .email(user.getEmail().value())
+                .nickname(user.getNickname())
+                .requestId(groupMember.getId())
+                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
+                .build();
+    }
 }
