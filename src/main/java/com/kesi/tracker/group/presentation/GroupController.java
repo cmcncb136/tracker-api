@@ -5,8 +5,8 @@ import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.domain.GroupMemberStatus;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.GroupJoinRequestUserProfileResponse;
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
-import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -57,14 +57,23 @@ public class GroupController {
         return groupService.getGroupResponseByUid(userId);
     }
 
-    @Operation(summary = "내 그룹 멤버 조회", description = "그룹 안에 특정 상태에 멤버 목록을 조회합니다.")
-    @GetMapping("/groups/{gid}/users")
-    public List<GroupMemberProfileResponse> getUserProfileResponseByGid(
+    @Operation(summary = "내 그룹 특정 상태 멤버 조회", description = "그룹 안에 특정 상태에 멤버 목록을 조회합니다.")
+    @GetMapping(value = "/groups/{gid}/join-requests")
+    public List<GroupJoinRequestUserProfileResponse> findMemberByStatus(
             @PathVariable Long gid,
-            @RequestParam(defaultValue = "APPROVED") GroupMemberStatus status,
+            @RequestParam GroupMemberStatus status,
             @UserId Long userId
     ) {
-        return groupService.getGroupMemberProfileResponseByGidAndGroupMemberStatus(gid, status, userId);
+        return groupService.findMemberByStatus(gid, status, userId);
+    }
+
+    @Operation(summary = "내 그룹 멤버 조회", description = "그룹 안에 승인된 멤버 목록을 조회힙니다. ")
+    @GetMapping(value = "/groups/{gid}/users")
+    public List<GroupMemberProfileResponse> findGroupMember(
+            @PathVariable Long gid,
+            @UserId Long userId
+    ) {
+        return groupService.findGroupMember(gid, userId);
     }
 
     @Operation(summary = "내 그룹에서 자기 정보 조회", description = "그룹에서 내 정보(역할 등) 조회합니다.")

@@ -16,7 +16,9 @@ import com.kesi.tracker.group.domain.event.GroupMemberInvitedEvent;
 import com.kesi.tracker.group.domain.event.GroupTrackRoleChangedEvent;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.GroupJoinRequestUserProfileResponse;
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
+import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
@@ -64,7 +66,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
-        if(!groupMemberService.isGroupLeader(currentUserId, groupId))
+        if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         GroupMember pendingMember = groupMemberService.getById(requestId);
@@ -250,28 +252,35 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public List<GroupMemberProfileResponse> getGroupMemberProfileResponseByGidAndGroupMemberStatus(Long gid, GroupMemberStatus status, Long currentUid) {
-        GroupMember currentGroupMember = groupMemberService.getByGidAndUid(gid, currentUid);
-
-        //일반 회원은 승인된 사용자만 조회 가능
-        if(!status.equals(GroupMemberStatus.APPROVED) && !currentGroupMember.isLeader())
+    public List<GroupJoinRequestUserProfileResponse> findMemberByStatus(Long gid, GroupMemberStatus status, Long currentUid) {
+        //해당 기능은 Leader만 사용 가능
+        if(!groupMemberService.isGroupLeader(gid, currentUid))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
         Map<Long, GroupMember> groupMemberMap = groupMemberService.findByGidAndStatus(gid, status)
                 .stream().collect(Collectors.toMap(GroupMember::getUid, Function.identity()));
 
-        List<Long> memberUids = groupMemberMap.values().stream().map(GroupMember::getUid).toList();
+        return userService.getUserCompositeByIds(groupMemberMap.keySet())
+                .stream().map(userComposite -> UserMapper.toGroupJoinRequestUserProfileResponse(
+                        userComposite,
+                        groupMemberMap.get(userComposite.getUid())
+                )).toList();
+    }
 
-        List<User> members = userService.getByIds(memberUids);
-        Map<Long, List<FileAccessUrl>> accessUrlMap =
-                fileService.findAccessUrlByOwners(FileOwners.ofUser(memberUids));
+    @Override
+    public List<GroupMemberProfileResponse> findGroupMember(Long gid, Long currentUid) {
+        //해당 기능 Member만 사용 가능
+        if(!groupMemberService.isGroupMember(gid, currentUid))
+            throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
 
-        return members.stream().map(member -> UserMapper.toGroupMemberProfileResponse(
-                member,
-                groupMemberMap.get(member.getId()),
-                accessUrlMap.getOrDefault(member.getId(), Collections.emptyList())
-        )).toList();
+        Map<Long, GroupMember> groupMemberMap = groupMemberService.findByGidAndStatus(gid, GroupMemberStatus.APPROVED)
+                .stream().collect(Collectors.toMap(GroupMember::getUid, Function.identity()));
 
+        return userService.getUserCompositeByIds(groupMemberMap.keySet())
+                .stream().map(userComposite -> UserMapper.toGroupMemberProfileResponse(
+                        userComposite,
+                        groupMemberMap.get(userComposite.getUid())
+                )).toList();
     }
 
     @Override
