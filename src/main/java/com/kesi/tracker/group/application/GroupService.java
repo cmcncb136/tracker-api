@@ -19,7 +19,7 @@ public interface GroupService {
     Group getByGid(Long gid);
     Page<Group> searchPublicByName(String name, Pageable pageable);
 
-    void approveJoinRequest(Long gid, Long requestId, Long currentUid);
+    void updateStatus(Long gid, Long requestId, GroupMemberStatus status, Long currentUid);
     void acceptInvitation(Long gid, Long currentUid);
 
     void invite(Long gid, Email invitedUserEmail, Long currentUid);

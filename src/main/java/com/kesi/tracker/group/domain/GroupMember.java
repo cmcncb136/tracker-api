@@ -21,6 +21,22 @@ public class GroupMember {
     LocalDateTime createdAt;
     LocalDateTime modifiedAt;
 
+    public void block() {
+        if(isLeader()) {
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER); //Todo. leader는 차단할 수 없습니다
+        }
+
+        status = GroupMemberStatus.BLOCKED;
+    }
+
+    public void reject() {
+        if(status != GroupMemberStatus.REQUESTED && status != GroupMemberStatus.INVITED)
+            throw new BusinessException(ErrorCode.CANNOT_APPROVE_STATE); //Todo. 초대 및 초대 요청 상태가 아닙니다.
+
+        status = GroupMemberStatus.REJECTED;
+    }
+
+
     public void approve() {
         if(status != GroupMemberStatus.REQUESTED && status != GroupMemberStatus.APPROVED)
             throw new BusinessException(ErrorCode.CANNOT_APPROVE_STATE);

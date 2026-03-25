@@ -65,15 +65,19 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
+    public void updateStatus(Long groupId, Long requestId, GroupMemberStatus status, Long currentUserId) {
         if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
-        GroupMember pendingMember = groupMemberService.getById(requestId);
+        GroupMember requestMember = groupMemberService.getById(requestId);
 
-        pendingMember.approve();
+        switch (status) {
+            case APPROVED -> requestMember.approve();
+            case BLOCKED -> requestMember.block();
+            case REJECTED -> requestMember.reject();
+        }
 
-        groupMemberRepository.save(pendingMember);
+        groupMemberRepository.save(requestMember);
     }
 
     @Override
