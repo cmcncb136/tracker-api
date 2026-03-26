@@ -18,7 +18,6 @@ import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.GroupJoinRequestUserProfileResponse;
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
-import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.ActionActor;
 import com.kesi.tracker.user.domain.Email;
@@ -67,11 +66,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void updateStatus(Long groupId, Long requestId, GroupMemberStatus status, Long currentUserId) {
+    public void updateStatus(Long groupId, Long relationId, GroupMemberStatus status, Long currentUserId) {
         if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
-        GroupMember requestMember = groupMemberService.getById(requestId);
+        GroupMember requestMember = groupMemberService.getById(relationId);
         if(!requestMember.getGid().equals(groupId))
             throw new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND);
 

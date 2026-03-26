@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService groupService;
-    private final UserService userService;
 
     @Operation(summary = "그룹 상세 조회", description = "GID를 통해 특정 그룹의 상세 정보를 조회합니다.")
     @GetMapping("groups/{gid}")
@@ -119,14 +118,14 @@ public class GroupController {
     }
 
     @Operation(summary = "멤버 상태 변경", description = "승인, 거절, 차단 등 멤버의 상태를 변경합니다.")
-    @PatchMapping("/groups/{gid}/join-requests/{requestId}")
+    @PatchMapping("/groups/{gid}/join-requests/{relationId}")
     public void updateMemberStatus(
             @PathVariable Long gid,
-            @PathVariable Long requestId,
+            @PathVariable Long relationId,
             @RequestParam GroupMemberStatus status,
             @UserId Long userId
     ) {
-        groupService.updateStatus(gid, requestId, status, userId);
+        groupService.updateStatus(gid, relationId, status, userId);
     }
 
     @Operation(summary = "트랙 팔로워 지정", description = "그룹원이 트랙의 팔로워(학습자) 역할을 수행하도록 변경합니다.")

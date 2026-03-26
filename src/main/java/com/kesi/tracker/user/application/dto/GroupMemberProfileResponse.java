@@ -16,6 +16,8 @@ public class GroupMemberProfileResponse {
     private String email;
     @Schema(description = "닉네임")
     private String nickname;
+    @Schema(description = "그룹 관계 id(GroupMember id)")
+    private Long relationId;
     @Schema(description = "그룹 역할")
     private GroupRole role;
     @Schema(description = "트랙 역할 (HOST, FOLLOWER)")
