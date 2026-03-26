@@ -118,16 +118,15 @@ public class GroupController {
         groupService.joinRequest(gid, userId);
     }
 
-    @Operation(summary = "그룹 가입 신청 승인", description = "그룹 리더가 가입 신청을 승인합니다.")
-    @PostMapping("groups/{gid}/join-requests/{requestId}/approve")
-    public void approveJoinRequest(
+    @Operation(summary = "멤버 상태 변경", description = "승인, 거절, 차단 등 멤버의 상태를 변경합니다.")
+    @PatchMapping("/groups/{gid}/join-requests/{requestId}")
+    public void updateMemberStatus(
             @PathVariable Long gid,
             @PathVariable Long requestId,
+            @RequestParam GroupMemberStatus status,
             @UserId Long userId
     ) {
-        groupService.approveJoinRequest(
-                gid, requestId, userId
-        );
+        groupService.updateStatus(gid, requestId, status, userId);
     }
 
     @Operation(summary = "트랙 팔로워 지정", description = "그룹원이 트랙의 팔로워(학습자) 역할을 수행하도록 변경합니다.")

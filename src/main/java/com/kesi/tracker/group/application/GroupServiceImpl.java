@@ -20,6 +20,7 @@ import com.kesi.tracker.user.application.dto.GroupJoinRequestUserProfileResponse
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
+import com.kesi.tracker.user.domain.ActionActor;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.User;
 import jakarta.annotation.Nullable;
@@ -65,21 +66,24 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public void approveJoinRequest(Long groupId, Long requestId, Long currentUserId) {
+    @Transactional
+    public void updateStatus(Long groupId, Long requestId, GroupMemberStatus status, Long currentUserId) {
         if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
-        GroupMember pendingMember = groupMemberService.getById(requestId);
+        GroupMember requestMember = groupMemberService.getById(requestId);
+        if(!requestMember.getGid().equals(groupId))
+            throw new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND);
 
-        pendingMember.approve();
+        requestMember.changeStatusByLeader(status, ActionActor.LEADER);
 
-        groupMemberRepository.save(pendingMember);
+        groupMemberRepository.save(requestMember);
     }
 
     @Override
     public void acceptInvitation(Long gid, Long currentUid) {
         GroupMember groupMember = groupMemberService.getByGidAndUid(gid, currentUid);
-        groupMember.acceptInvitation();
+        groupMember.changeStatusByLeader(GroupMemberStatus.APPROVED, ActionActor.MEMBER);
         groupMemberRepository.save(groupMember);
     }
 

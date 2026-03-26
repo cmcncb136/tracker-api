@@ -25,10 +25,11 @@ public enum ErrorCode {
     NOT_GROUP_LEADER(HttpStatus.FORBIDDEN, "그룹 리더 전용 권한입니다"),
     NOT_GROUP_MEMBER(HttpStatus.FORBIDDEN, "그룹 멤버가 아닙니다"),
     NOT_APPROVED_MEMBER(HttpStatus.FORBIDDEN, "승인된 그룹 멤버가 아닙니다"),
-    CANNOT_APPROVE_STATE(HttpStatus.BAD_REQUEST, "승인할 수 있는 상태가 아닙니다"),
-    NOT_INVITED_STATE(HttpStatus.BAD_REQUEST, "초대받은 상태가 아닙니다"),
     GROUP_MEMBER_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "이미 그룹 멤버이거나 초대가 진행 중입니다"),
     MEMBER_COUNT_UNDERFLOW(HttpStatus.BAD_REQUEST, "멤버 수는 0보다 작을 수 없습니다"),
+    INVALID_MEMBER_STATUS(HttpStatus.BAD_REQUEST, "해당 상태 변경은 지원하지 않습니다"),
+    UNAUTHORIZED_STATUS_CHANGE(HttpStatus.FORBIDDEN, "해당 멤버의 상태를 변경할 권한이 없습니다"),
+    INVALID_STATE_TRANSITION(HttpStatus.BAD_REQUEST, "유효하지 않은 상태 전이입니다"),
 
     // Track
     TRACK_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 트랙을 찾을 수 없습니다"),
