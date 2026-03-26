@@ -67,11 +67,11 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public void updateStatus(Long groupId, Long requestId, GroupMemberStatus status, Long currentUserId) {
+    public void updateStatus(Long groupId, Long relationId, GroupMemberStatus status, Long currentUserId) {
         if(!groupMemberService.isGroupLeader(groupId, currentUserId))
             throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 
-        GroupMember requestMember = groupMemberService.getById(requestId);
+        GroupMember requestMember = groupMemberService.getById(relationId);
         if(!requestMember.getGid().equals(groupId))
             throw new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND);
 

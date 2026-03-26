@@ -14,8 +14,8 @@ public class GroupJoinRequestUserProfileResponse {
     private String email;
     @Schema(description = "닉네임")
     private String nickname;
-    @Schema(description = "요청 pid(GroupMember id)")
-    private Long requestId;
+    @Schema(description = "그룹 관계 id(GroupMember id)")
+    private Long relationId;
     @Schema(description = "프로필 이미지 URL 목록")
     private List<String> profileImageUrls;
 }

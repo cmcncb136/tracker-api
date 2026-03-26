@@ -72,6 +72,7 @@ public class UserMapper {
                 .email(user.getEmail().value())
                 .nickname(user.getNickname())
                 .role(groupMember.getRole())
+                .relationId(groupMember.getId())
                 .trackRole(groupMember.getTrackRole())
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
@@ -89,7 +90,7 @@ public class UserMapper {
         return GroupJoinRequestUserProfileResponse.builder()
                 .email(user.getEmail().value())
                 .nickname(user.getNickname())
-                .requestId(groupMember.getId())
+                .relationId(groupMember.getId())
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
