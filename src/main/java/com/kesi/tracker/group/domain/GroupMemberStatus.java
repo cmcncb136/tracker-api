@@ -17,7 +17,7 @@ public enum GroupMemberStatus {
 
 
     private static final Map<ActionActor, Set<GroupMemberStatus>> PERMISSIONS = Map.of(
-            ActionActor.LEADER, EnumSet.of(APPROVED, REJECTED, BLOCKED),
+            ActionActor.LEADER, EnumSet.of(APPROVED, REJECTED, BLOCKED, REQUESTED),
             ActionActor.MEMBER, EnumSet.of(LEFT, APPROVED), // APPROVED는 초대 수락 시
             ActionActor.SYSTEM, EnumSet.of(BLOCKED, LEFT)   // 시스템은 강제 처리 가능
     );
