@@ -15,6 +15,6 @@ public record NotificationContent (
         String confirmUrl,
         String cancelUrl,
 
-        /** 타입별 추가 데이터를 넣기 위한 확장 영역 */
+        /** 타입별 추가 데이터를 넣기 위한 확장 영역
         Map<String, Object> metadata
 ) { }

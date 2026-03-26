@@ -2,6 +2,7 @@ package com.kesi.tracker.group.domain;
 
 import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
+import com.kesi.tracker.user.domain.ActionActor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,35 +22,59 @@ public class GroupMember {
     LocalDateTime createdAt;
     LocalDateTime modifiedAt;
 
-    public void block() {
-        if(isLeader()) {
-            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER); //Todo. leader는 차단할 수 없습니다
+
+    public void changeStatusByLeader(GroupMemberStatus status, ActionActor actionActor) {
+        if(!status.canBeChangedBy(actionActor))
+            throw new BusinessException(ErrorCode.UNAUTHORIZED_STATUS_CHANGE);
+
+        switch (status) {
+            case APPROVED -> {
+                if (ActionActor.MEMBER.equals(actionActor))
+                    this.acceptInvitation();
+                else this.approve();
+            }
+            case BLOCKED -> this.block();
+            case REJECTED -> this.reject();
+            case LEFT -> this.left();
+            default -> throw new BusinessException(ErrorCode.INVALID_MEMBER_STATUS);
+        }
+    }
+
+    private void block() {
+        if(isLeader()) { //방의 리더는 자기 자신을 차단할 수 없음
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
         }
 
         status = GroupMemberStatus.BLOCKED;
     }
 
-    public void reject() {
+    private void reject() {
+        //요청 또는 초대 상태인 경우만 거절 가능
         if(status != GroupMemberStatus.REQUESTED && status != GroupMemberStatus.INVITED)
-            throw new BusinessException(ErrorCode.CANNOT_APPROVE_STATE); //Todo. 초대 및 초대 요청 상태가 아닙니다.
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
 
         status = GroupMemberStatus.REJECTED;
     }
 
 
-    public void approve() {
-        if(status != GroupMemberStatus.REQUESTED && status != GroupMemberStatus.APPROVED)
-            throw new BusinessException(ErrorCode.CANNOT_APPROVE_STATE);
+    private void approve() {
+        if(status != GroupMemberStatus.REQUESTED)
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
 
         status = GroupMemberStatus.APPROVED;
     }
 
-    public void acceptInvitation() {
+    private void acceptInvitation() {
         if(status != GroupMemberStatus.INVITED)
-            throw new BusinessException(ErrorCode.NOT_INVITED_STATE);
+            throw new BusinessException(ErrorCode.INVALID_STATE_TRANSITION);
 
         status = GroupMemberStatus.APPROVED;
     }
+
+    private void left() {
+        //Todo. 추후 구현 예정
+    }
+
 
     public boolean isLeader() {
         return role == GroupRole.LEADER;
@@ -66,5 +91,4 @@ public class GroupMember {
     public boolean isFollower() {
         return trackRole == GroupTrackRole.FOLLOWER;
     }
-
 }
