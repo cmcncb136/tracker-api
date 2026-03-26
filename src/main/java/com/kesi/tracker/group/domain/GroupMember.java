@@ -35,9 +35,17 @@ public class GroupMember {
             }
             case BLOCKED -> this.block();
             case REJECTED -> this.reject();
+            case REQUESTED -> this.unblock();
             case LEFT -> this.left();
             default -> throw new BusinessException(ErrorCode.INVALID_MEMBER_STATUS);
         }
+    }
+
+    public void unblock() {
+        if(this.status != GroupMemberStatus.BLOCKED)
+            throw new BusinessException(ErrorCode.INVALID_MEMBER_STATUS);
+
+        this.status = GroupMemberStatus.REQUESTED;
     }
 
     private void block() {
