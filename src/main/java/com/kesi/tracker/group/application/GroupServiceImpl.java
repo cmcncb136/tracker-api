@@ -18,7 +18,6 @@ import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.GroupJoinRequestUserProfileResponse;
 import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
-import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import com.kesi.tracker.user.domain.ActionActor;
 import com.kesi.tracker.user.domain.Email;

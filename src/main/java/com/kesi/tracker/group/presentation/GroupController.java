@@ -23,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GroupController {
     private final GroupService groupService;
-    private final UserService userService;
 
     @Operation(summary = "그룹 상세 조회", description = "GID를 통해 특정 그룹의 상세 정보를 조회합니다.")
     @GetMapping("groups/{gid}")
