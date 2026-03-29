@@ -35,6 +35,8 @@ public class NotificationResponse {
     @Schema(description = "알림 생성일")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
+    @Schema(description = "알림읽음 여부")
+    private boolean isRead;
 
 
     public static NotificationResponse from(Notification notification) {
@@ -50,6 +52,7 @@ public class NotificationResponse {
                 .cancelUrl(content.cancelUrl())
                 .metadata(content.metadata())
                 .createdAt(notification.getCreatedAt())
+                .isRead(notification.getIsRead())
                 .build();
     }
 }
