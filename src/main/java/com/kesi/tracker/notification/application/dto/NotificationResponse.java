@@ -1,5 +1,6 @@
 package com.kesi.tracker.notification.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
 import com.kesi.tracker.notification.domain.NotificationContent;
@@ -32,6 +33,7 @@ public class NotificationResponse {
     @Schema(description = "추가 메타데이터")
     private Map<String, Object> metadata;
     @Schema(description = "알림 생성일")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
 
