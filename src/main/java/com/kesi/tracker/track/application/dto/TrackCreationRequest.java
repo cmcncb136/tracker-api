@@ -26,10 +26,10 @@ public class TrackCreationRequest {
     @Schema(description = "참가비", example = "10000")
     private Long cost;
 
-    @Schema(description = "수강 신청 시작 일시", example = "2026-02-01T00:00:00")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @Schema(description = "수강 신청 시작 일시", example = "2026-02-01T00:00")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm[:ss]", timezone = "Asia/Seoul")
     private LocalDateTime assignmentStartAt;
-    @Schema(description = "수강 신청 종료 일시", example = "2026-02-28T23:59:59")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @Schema(description = "수강 신청 종료 일시", example = "2026-02-28T23:59")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm[:ss]", timezone = "Asia/Seoul")
     private LocalDateTime assignmentEndAt;
 }
