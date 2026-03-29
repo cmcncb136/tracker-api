@@ -3,6 +3,7 @@ package com.kesi.tracker.notification.infrastructure;
 import com.kesi.tracker.notification.application.model.query.NotificationSearch;
 import com.kesi.tracker.notification.application.repository.NotificationRepository;
 import com.kesi.tracker.notification.domain.Notification;
+import com.kesi.tracker.notification.domain.NotificationCategory;
 import com.kesi.tracker.notification.domain.NotificationType;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -59,8 +60,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                 = queryFactory.selectFrom(notificationEntity)
                 .where(
                         typeEq(search.getType()),
+                        categoryEq(search.getCategory()),
                         messageContains(search.getMessage()),
-                        isReadEq(search.getIsRead()),
+                        isReadEq(search.getRead()),
                         notificationEntity.receiverId.eq(search.getReceiverId())
                 )
                 .offset(pageable.getOffset())
@@ -73,8 +75,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                 .from(notificationEntity)
                 .where(
                         typeEq(search.getType()),
+                        categoryEq(search.getCategory()),
                         messageContains(search.getMessage()),
-                        isReadEq(search.getIsRead()),
+                        isReadEq(search.getRead()),
                         notificationEntity.receiverId.eq(search.getReceiverId())
                 )
                 .fetchOne();
@@ -85,6 +88,10 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     private BooleanExpression typeEq(NotificationType type) {
         return type != null ? QNotificationEntity.notificationEntity.type.eq(type) : null;
+    }
+
+    private BooleanExpression categoryEq(NotificationCategory category) {
+        return QNotificationEntity.notificationEntity.category.eq(category);
     }
 
     private BooleanExpression messageContains(String message) {
