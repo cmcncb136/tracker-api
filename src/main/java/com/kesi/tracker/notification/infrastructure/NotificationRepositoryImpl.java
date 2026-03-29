@@ -91,7 +91,7 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     private BooleanExpression categoryEq(NotificationCategory category) {
-        return QNotificationEntity.notificationEntity.category.eq(category);
+        return category != null ? QNotificationEntity.notificationEntity.category.eq(category) : null;
     }
 
     private BooleanExpression messageContains(String message) {
