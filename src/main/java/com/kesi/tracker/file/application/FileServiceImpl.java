@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,12 +65,17 @@ public class FileServiceImpl implements FileService {
     public Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners fileOwers) {
         List<File> files = fileRepository.findByOwners(fileOwers);
 
-        return files.stream().collect(Collectors.groupingBy(
+        Map<Long, List<FileAccessUrl>> fileMap = files.stream().collect(Collectors.groupingBy(
                 file -> file.getOwner().ownerId(),
                 Collectors.mapping(
                         file -> new FileAccessUrl(fileUrlAccessPolicy.generate(file.getStorageKey())),
                         Collectors.toList()
                 )));
+
+        return fileOwers.ownerIds().stream().collect(Collectors.toMap(
+                Function.identity(),
+                ownerId -> fileMap.getOrDefault(ownerId, Collections.emptyList())
+        ));
     }
 
     @Override
