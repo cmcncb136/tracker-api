@@ -1,5 +1,6 @@
 package com.kesi.tracker.notification.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.kesi.tracker.notification.domain.Notification;
 import com.kesi.tracker.notification.domain.NotificationCategory;
 import com.kesi.tracker.notification.domain.NotificationContent;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Schema(description = "알림 내역 응답")
@@ -30,6 +32,10 @@ public class NotificationResponse {
     private String cancelUrl;
     @Schema(description = "추가 메타데이터")
     private Map<String, Object> metadata;
+    @Schema(description = "알림 생성일")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+
 
     public static NotificationResponse from(Notification notification) {
         NotificationContent content = notification.getContent();
@@ -43,6 +49,7 @@ public class NotificationResponse {
                 .confirmUrl(content.confirmUrl())
                 .cancelUrl(content.cancelUrl())
                 .metadata(content.metadata())
+                .createdAt(notification.getCreatedAt())
                 .build();
     }
 }

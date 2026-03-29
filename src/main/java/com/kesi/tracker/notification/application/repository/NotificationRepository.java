@@ -1,5 +1,6 @@
 package com.kesi.tracker.notification.application.repository;
 
+import com.kesi.tracker.notification.application.model.query.NotificationSearch;
 import com.kesi.tracker.notification.domain.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,4 +14,5 @@ public interface NotificationRepository {
     Optional<Notification> findById(Long id);
     List<Notification> findByReceiverId(Long receiverId);
     Page<Notification> findByReceiverId(Long receiverId, Pageable pageable);
+    Page<Notification> searchOrderByCreatedAtDesc(NotificationSearch search, Pageable pageable);
 }
