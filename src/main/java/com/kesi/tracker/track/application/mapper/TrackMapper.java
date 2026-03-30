@@ -30,7 +30,7 @@ public class TrackMapper {
                 .place(track.getPlace())
                 .cost(track.getCost())
 
-                .assignmentEndAt(track.getAssignmentEndAt())
+                .assignmentStartAt(track.getAssignmentStartAt())
                 .assignmentEndAt(track.getAssignmentEndAt())
 
                 .createdAt(track.getCreatedAt())
