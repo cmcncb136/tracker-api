@@ -5,14 +5,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "트랙 생성 요청")
 @Data
 public class TrackCreationRequest {
-    @Schema(description = "그룹 ID", example = "1")
-    private Long gid;
-
-    @Schema(description = "수강 정원", example = "20")
+    @Schema(description = "수강 정원", example = "5")
     private int capacity;
 
     @Schema(description = "트랙 제목", example = "스프링 핵심 원리")
@@ -32,4 +30,7 @@ public class TrackCreationRequest {
     @Schema(description = "수강 신청 종료 일시", example = "2026-02-28T23:59")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm[:ss]", timezone = "Asia/Seoul")
     private LocalDateTime assignmentEndAt;
+
+    @Schema(description = "프로필 이미지 파일 ID 목록")
+    private List<Long> profileFileIds;
 }

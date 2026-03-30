@@ -30,7 +30,7 @@ public class TrackMapper {
                 .place(track.getPlace())
                 .cost(track.getCost())
 
-                .assignmentEndAt(track.getAssignmentEndAt())
+                .assignmentStartAt(track.getAssignmentStartAt())
                 .assignmentEndAt(track.getAssignmentEndAt())
 
                 .createdAt(track.getCreatedAt())
@@ -50,10 +50,11 @@ public class TrackMapper {
     }
 
     public static Track toTrack(
+            Long gid,
             TrackCreationRequest trackCreationRequest,
             Long currentUserId) {
         return Track.builder()
-                .gid(trackCreationRequest.getGid())
+                .gid(gid)
                 .hostId(currentUserId)
                 .capacity(trackCreationRequest.getCapacity())
                 .followerCnt(0)

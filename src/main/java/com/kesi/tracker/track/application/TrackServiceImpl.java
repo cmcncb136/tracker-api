@@ -3,6 +3,7 @@ package com.kesi.tracker.track.application;
 import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
+import com.kesi.tracker.file.domain.File;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
 import com.kesi.tracker.group.application.GroupMemberService;
@@ -155,16 +156,18 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public TrackResponse create(TrackCreationRequest trackCreationRequest, Long currentUid) {
-        Track track = TrackMapper.toTrack(trackCreationRequest, currentUid);
+    public TrackResponse create(Long gid, TrackCreationRequest trackCreationRequest, Long currentUid) {
+        Track track = TrackMapper.toTrack(gid, trackCreationRequest, currentUid);
         Track savedTrack =  this.create(track, currentUid);
 
+        FileOwner fileOwner = FileOwner.ofTrack(savedTrack.getId());
+        fileService.assignAsProfile(fileOwner, trackCreationRequest.getProfileFileIds());
         UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
 
         return TrackMapper.toTrackResponse(
                 savedTrack,
                 hostProfile,
-                fileService.findAccessUrlByOwner(FileOwner.ofTrack(track.getId()))
+                fileService.findAccessUrlByOwner(fileOwner)
         );
     }
 }
