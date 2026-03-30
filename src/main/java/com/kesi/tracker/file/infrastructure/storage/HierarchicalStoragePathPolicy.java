@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HierarchicalStoragePathPolicy implements StorageKeyPolicy {
-    public static final String TEMP_PATH = "temp/";
+    public static final String TEMP_PATH = "temp";
 
     @Override
     public StorageKey generate(FileOwner owner, FilePurpose purpose, String virtualName){

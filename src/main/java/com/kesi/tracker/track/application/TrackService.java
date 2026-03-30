@@ -15,5 +15,5 @@ public interface TrackService {
     TrackResponse getTrackResponseById(Long id, Long currentUid);
     Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable);
     Page<TrackWithGroupResponse> searchTrackInGroupInUser(Long currentUid, TrackWithGroupSearchRequest searchRequest, Pageable pageable);
-    TrackResponse create(TrackCreationRequest track, Long currentUid);
+    TrackResponse create(Long gid, TrackCreationRequest track, Long currentUid);
 }

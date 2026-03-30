@@ -31,10 +31,10 @@ public class TrackController {
     }
 
     @Operation(summary = "그룹 내 트랙 검색", description = "특정 그룹에 속한 트랙들을 조회 및 검색합니다.")
-    @GetMapping("/groups/tracks")
+    @GetMapping("/groups/{gid}/tracks")
     public Page<TrackResponse> searchTrackInGroup(
             @UserId Long userId,
-            @RequestParam Long gid,
+            @PathVariable Long gid,
             @ModelAttribute TrackSearchRequest searchRequest,
             @PageableDefault Pageable pageable
             ) {
@@ -42,12 +42,13 @@ public class TrackController {
     }
 
     @Operation(summary = "트랙 생성")
-    @PostMapping("/groups/tracks")
+    @PostMapping("/groups/{gid}/tracks")
     public TrackResponse create(
+            @PathVariable Long gid,
             @RequestBody TrackCreationRequest trackCreationRequest,
             @UserId Long userId
             ) {
-        return trackService.create(trackCreationRequest, userId);
+        return trackService.create(gid, trackCreationRequest, userId);
     }
 
     @Operation(summary = "사용자 트랙 목록 조회", description = "로그인한 사용자가 수강 중이거나 관련된 트랙 목록을 조회합니다.")
