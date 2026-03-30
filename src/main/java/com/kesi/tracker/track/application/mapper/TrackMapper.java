@@ -35,7 +35,7 @@ public class TrackMapper {
 
                 .createdAt(track.getCreatedAt())
                 .modifiedAt(track.getModifiedAt())
-                .profileUrls(profileUrls.stream().map(FileAccessUrl::toString).toList())
+                .profileUrls(profileUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
 
