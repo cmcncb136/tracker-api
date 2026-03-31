@@ -50,6 +50,16 @@ public class GroupController {
         return groupService.create(groupCreationRequest, userId);
     }
 
+    @Operation(summary = "그룹 수정")
+    @PutMapping("groups/{gid}")
+    public GroupResponse update(
+            @PathVariable Long gid,
+            @RequestBody GroupUpdateRequest updateRequest,
+            @UserId Long userId
+    ) {
+        return groupService.update(gid, updateRequest, userId);
+    }
+
     @Operation(summary = "내 그룹 목록 조회", description = "로그인한 사용자가 속한 그룹 목록을 조회합니다.")
     @GetMapping("users/me/groups")
     public List<GroupProfileResponse> findByUserId(@UserId Long userId) {

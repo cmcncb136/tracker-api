@@ -19,8 +19,8 @@ public class GroupResponse {
     private String introduction;
     @Schema(description = "그룹 상세 설명")
     private String description;
-    @Schema(description = "그룹 생성자 프로필")
-    private UserProfileResponse creator;
+    @Schema(description = "그룹 리더 프로필")
+    private UserProfileResponse leader;
     @Schema(description = "그룹 생성 일시")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime creationDate;

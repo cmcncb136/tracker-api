@@ -38,4 +38,6 @@ public interface GroupService {
     List<GroupMemberProfileResponse> findGroupMember(Long gid, Long currentUid);
 
     MyGroupInfoResponse getMyGroupInfoResponse(Long gid, Long currentUid);
+
+    GroupResponse update(Long gid, GroupUpdateRequest groupUpdateRequest, Long currentUid);
 }

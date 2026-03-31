@@ -16,8 +16,11 @@ public class Group {
     private String description;
 
     private AccessType access;
+
     private Long createdBy;
+    private Long modifiedBy;
     private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     private Integer memberCount;
 

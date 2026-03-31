@@ -38,8 +38,14 @@ public class GroupEntity {
     @Column(name = "created_by", nullable = false)
     private Long createdBy;
 
+    @Column(name = "modified_by", nullable = false)
+    private Long modifiedBy;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "modified_at", nullable = false)
+    private LocalDateTime modifiedAt;
 
     @Column(name = "member_count", nullable = false)
     private Integer memberCount;
@@ -53,7 +59,9 @@ public class GroupEntity {
                 .access(this.access)
                 .memberCount(this.memberCount)
                 .createdBy(this.createdBy)
+                .modifiedBy(this.modifiedBy)
                 .createdAt(this.createdAt)
+                .modifiedAt(this.modifiedAt)
                 .build();
     }
 
@@ -66,7 +74,9 @@ public class GroupEntity {
                 .access(group.getAccess())
                 .memberCount(group.getMemberCount())
                 .createdBy(group.getCreatedBy())
+                .modifiedBy(group.getModifiedBy())
                 .createdAt(group.getCreatedAt())
+                .modifiedAt(group.getModifiedAt())
                 .build();
     }
 }
