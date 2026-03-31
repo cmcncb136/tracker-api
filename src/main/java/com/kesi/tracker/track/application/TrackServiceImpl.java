@@ -3,13 +3,10 @@ package com.kesi.tracker.track.application;
 import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
-import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileAccessUrl;
-import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.file.domain.FileOwners;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.application.dto.*;
 import com.kesi.tracker.track.application.mapper.TrackMapper;
@@ -67,18 +64,6 @@ public class TrackServiceImpl implements TrackService {
 
 
         return createdTrack;
-    }
-
-    @Override
-    public Track update(Track track, Long currentUid) {
-        //TRACK에 있는 그룹이 존재하고 해당 TRACK에 승인된 멤버이어야 한다
-        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(track.getGid(), currentUid);
-
-        //HOST 역할을 붙어야 받아야 한다
-        if (!groupMember.isHost())
-            throw new BusinessException(ErrorCode.NOT_GROUP_HOST);
-
-        return trackRepository.save(track);
     }
 
     @Override
@@ -158,7 +143,7 @@ public class TrackServiceImpl implements TrackService {
     @Override
     public TrackResponse create(Long gid, TrackCreationRequest trackCreationRequest, Long currentUid) {
         Track track = TrackMapper.toTrack(gid, trackCreationRequest, currentUid);
-        Track savedTrack =  this.create(track, currentUid);
+        Track savedTrack = this.create(track, currentUid);
 
         FileOwner fileOwner = FileOwner.ofTrack(savedTrack.getId());
         fileService.assignAsProfile(fileOwner, trackCreationRequest.getProfileFileIds());
@@ -166,6 +151,36 @@ public class TrackServiceImpl implements TrackService {
 
         return TrackMapper.toTrackResponse(
                 savedTrack,
+                hostProfile,
+                fileService.findAccessUrlByOwner(fileOwner)
+        );
+    }
+
+    @Override
+    public TrackResponse update(Long gid, Long trackId, TrackUpdateRequest updateRequest, Long currentUid) {
+        Track originalTrack = getById(trackId);
+        //gid가 올바른 값이 아닌 경우
+        if (!originalTrack.equals(gid)) throw new BusinessException(ErrorCode.TRACK_NOT_FOUND);
+
+        //groupMember가 아닌 경우
+        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(gid, currentUid);
+
+        //host이거나 리더가 아니라면 수정 불가능
+        if(!originalTrack.getHostId().equals(currentUid) && !groupMember.isLeader())
+            throw new BusinessException(ErrorCode.CANNOT_MODIFY_TRACK);
+
+        Track track = TrackMapper.toTrack(
+                gid,
+                originalTrack,
+                updateRequest,
+                currentUid);
+
+        FileOwner fileOwner = FileOwner.ofTrack(track.getId());
+        fileService.updateFromOwner(fileOwner, FilePurpose.PROFILE, updateRequest.getProfileFileIds());
+        UserProfileResponse hostProfile = userService.getProfile(track.getHostId());
+
+        return TrackMapper.toTrackResponse(
+                trackRepository.save(track),
                 hostProfile,
                 fileService.findAccessUrlByOwner(fileOwner)
         );

@@ -7,9 +7,9 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Schema(description = "트랙 생성 요청")
+@Schema(description = "트랙 수정 요청")
 @Data
-public class TrackCreationRequest {
+public class TrackUpdateRequest {
     @Schema(description = "수강 정원", example = "5")
     private int capacity;
     @Schema(description = "트랙 제목", example = "스프링 핵심 원리")

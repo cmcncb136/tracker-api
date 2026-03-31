@@ -51,6 +51,17 @@ public class TrackController {
         return trackService.create(gid, trackCreationRequest, userId);
     }
 
+    @Operation(summary = "트랙 수정")
+    @PutMapping("/groups/{gid}/tracks/{trackId}")
+    public void update(
+            @PathVariable Long gid,
+            @PathVariable Long trackId,
+            @RequestBody TrackUpdateRequest updateRequest,
+            @UserId Long userId
+    ) {
+        trackService.update(gid, trackId, updateRequest, userId);
+    }
+
     @Operation(summary = "사용자 트랙 목록 조회", description = "로그인한 사용자가 수강 중이거나 관련된 트랙 목록을 조회합니다.")
     @GetMapping("/users/tracks")
     public Page<TrackWithGroupResponse> searchTrackInUser(
