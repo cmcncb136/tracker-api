@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +17,6 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "track")
 public class TrackEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -91,7 +91,6 @@ public class TrackEntity {
 
 
     public static TrackEntity fromDomain(Track domain) {
-
         return TrackEntity.builder()
                 .id(domain.getId())
                 .gid(domain.getGid())

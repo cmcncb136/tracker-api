@@ -5,6 +5,7 @@ import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.file.domain.FilePurpose;
 import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.application.mapper.GroupMapper;
 import com.kesi.tracker.file.domain.FileOwners;
@@ -290,6 +291,31 @@ public class GroupServiceImpl implements GroupService {
     public MyGroupInfoResponse getMyGroupInfoResponse(Long gid, Long currentUid) {
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(gid, currentUid);
         return GroupMapper.toGroupInfoResponse(groupMember);
+    }
+
+    @Override
+    public GroupResponse update(Long gid, GroupUpdateRequest updateRequest, Long currentUid) {
+        Group originalGroup = this.getByGid(gid);
+        if(!groupMemberService.isGroupLeader(gid, currentUid))
+            throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
+
+        Group group = GroupMapper.toGroup(
+                originalGroup,
+                updateRequest,
+                currentUid
+        );
+
+        Group updatedGroup = groupRepository.save(group);
+        FileOwner fileOwner = FileOwner.ofGroup(gid);
+        fileService.updateFromOwner(fileOwner, FilePurpose.PROFILE, updateRequest.getProfileFileIds());
+
+        GroupMember leader = groupMemberService.findByGidAndRoleIsLeader(gid).getFirst();
+
+        return GroupMapper.toGroupResponse(
+                updatedGroup,
+                userService.getProfile(leader.getId()),
+                fileService.findAccessUrlByOwner(fileOwner)
+        );
     }
 
 

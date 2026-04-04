@@ -9,11 +9,12 @@ import java.util.List;
 
 public interface TrackService {
     Track create(Track track, Long currentUid);
-    Track update(Track track, Long currentUid);
     Track getById(Long id);
     List<Track> findByGid(Long gid);
     TrackResponse getTrackResponseById(Long id, Long currentUid);
     Page<TrackResponse> searchTrackInGroup(Long gid, Long currentUid, TrackSearchRequest searchRequest, Pageable pageable);
     Page<TrackWithGroupResponse> searchTrackInGroupInUser(Long currentUid, TrackWithGroupSearchRequest searchRequest, Pageable pageable);
     TrackResponse create(Long gid, TrackCreationRequest track, Long currentUid);
+    TrackResponse update(Long gid, Long trackId, TrackUpdateRequest track, Long currentUid);
+
 }

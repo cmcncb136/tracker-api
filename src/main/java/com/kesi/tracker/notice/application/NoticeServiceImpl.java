@@ -4,6 +4,7 @@ import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
 import com.kesi.tracker.file.domain.FileOwner;
+import com.kesi.tracker.file.domain.FilePurpose;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.notice.application.dto.NoticeCreationRequest;
 import com.kesi.tracker.notice.application.dto.NoticeResponse;
@@ -62,7 +63,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 
         Notice notice = update(NoticeMapper.toNotice(request, original, currentUid));
-        fileService.updateFromFileOwner(FileOwner.ofNotice(notice.getId()), request.getProfileFileIds());
+        fileService.updateFromOwner(FileOwner.ofNotice(notice.getId()), FilePurpose.PROFILE, request.getProfileFileIds());
 
         return toNoticeResponse(notice);
     }

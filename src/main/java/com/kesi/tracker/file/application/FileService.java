@@ -1,9 +1,6 @@
 package com.kesi.tracker.file.application;
 
-import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileAccessUrl;
-import com.kesi.tracker.file.domain.FileOwner;
-import com.kesi.tracker.file.domain.FileOwners;
+import com.kesi.tracker.file.domain.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,5 +24,6 @@ public interface FileService {
     Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners owners);
 
     List<File> assignAsProfile(FileOwner owner, List<Long> fileIds);
-    List<File> updateFromFileOwner(FileOwner owner, List<Long> fileIds);
+    List<File> assign(FileOwner owner, FilePurpose purpose, List<Long> fileIds);
+    List<File> updateFromOwner(FileOwner owner, FilePurpose purpose, List<Long> fileIds);
 }

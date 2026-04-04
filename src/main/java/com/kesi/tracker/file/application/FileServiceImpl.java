@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +82,12 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public List<File> assignAsProfile(FileOwner owner, List<Long> fileIds) {
+        return this.assign(owner, FilePurpose.PROFILE, fileIds);
+    }
+
+    @Override
+    @Transactional
+    public List<File> assign(FileOwner owner, FilePurpose purpose, List<Long> fileIds) {
         if(ObjectUtils.isEmpty(fileIds)) return List.of();
 
         List<File> files = this.findByIds(fileIds);
@@ -98,12 +105,13 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
-    public List<File> updateFromFileOwner(FileOwner owner, List<Long> fileIds) {
+    public List<File> updateFromOwner(FileOwner owner, FilePurpose purpose, List<Long> fileIds) {
         Set<Long> fileIdSet = new HashSet<>(fileIds);
         if(ObjectUtils.isEmpty(fileIdSet)) return List.of();
 
         //기존 내용 조회
-        Set<Long> originalFileIdSet = this.findByOwner(owner).stream()
+        List<File> originalFiles = fileRepository.findByOwnerAndPurpose(owner, purpose);
+        Set<Long> originalFileIdSet = originalFiles.stream()
                 .map(File::getId).collect(Collectors.toSet());
 
         //삭제할 파일 필터링 및 삭제
@@ -116,6 +124,10 @@ public class FileServiceImpl implements FileService {
         List<Long> addedFileIds = fileIdSet.stream()
                 .filter(fileId -> !originalFileIdSet.contains(fileId))
                 .toList();
-        return this.assignAsProfile(owner, addedFileIds);
+
+        return Stream.concat(
+                originalFiles.stream(),
+                this.assignAsProfile(owner, addedFileIds).stream()
+                ).toList();
     }
 }
