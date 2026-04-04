@@ -1,6 +1,7 @@
 package com.kesi.tracker.track.infrastructure;
 
 import com.kesi.tracker.track.domain.TrackMember;
+import com.kesi.tracker.track.domain.TrackRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,19 +23,23 @@ public class TrackMemberEntity {
     private Long id;
 
     @Column(name = "track_id", nullable = false)
-    Long trackId;
+    private Long trackId;
 
     @Column(nullable = false)
-    Long uid;
+    private Long uid;
+
+    @Column(nullable = false)
+    private TrackRole role;
 
     @Column(name = "created_at", nullable = false)
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     public TrackMember toDomain() {
         return TrackMember.builder()
                 .id(id)
                 .uid(uid)
                 .trackId(trackId)
+                .role(role)
                 .createdAt(createdAt)
                 .build();
     }
@@ -44,6 +49,7 @@ public class TrackMemberEntity {
                 .id(domain.getId())
                 .trackId(domain.getTrackId())
                 .uid(domain.getUid())
+                .role(domain.getRole())
                 .createdAt(domain.getCreatedAt())
                 .build();
     }

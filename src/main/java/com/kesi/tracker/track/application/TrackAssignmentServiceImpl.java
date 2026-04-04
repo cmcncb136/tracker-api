@@ -22,16 +22,11 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class TrackAssignmentServiceImpl implements TrackAssignmentService {
-    private final TrackMemberRepository trackMemberRepository;
+    private final TrackMemberService trackMemberService;
     private final TrackService trackService;
     private final GroupMemberService groupMemberService;
     private final ApplicationEventPublisher applicationEventPublisher;
     private final TrackRepository trackRepository;
-
-    private TrackMember getTrackMemberByTrackIdAndUid(Long trackId, Long uid) {
-        return trackMemberRepository.findByTrackIdAndUid(trackId, uid)
-                .orElseThrow(() -> new BusinessException(ErrorCode.TRACK_MEMBER_NOT_FOUND));
-    }
 
     @Override
     @Transactional
@@ -49,11 +44,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
             throw new BusinessException(ErrorCode.TRACK_FULL);
         }
 
-        trackMemberRepository.save(TrackMember.builder()
-                        .uid(currentUid)
-                        .trackId(trackId)
-                        .createdAt(LocalDateTime.now())
-                .build());
+        trackMemberService.save(TrackMember.createFollower(track.getId(), currentUid));
 
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(groupMember.getGid());
 
@@ -64,13 +55,12 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
                 .hostId(track.getHostId())
                 .groupLeaderIds(leaderGroupMembers.stream().map(GroupMember::getUid).collect(Collectors.toList()))
                 .build());
-
     }
 
     @Override
     @Transactional
     public void cancelTrack(Long currentUid, Long trackId) {
-        TrackMember trackMember = getTrackMemberByTrackIdAndUid(currentUid, trackId);
+        TrackMember trackMember = trackMemberService.getTrackMemberByTrackIdAndUid(currentUid, trackId);
 
         Track track = trackService.getById(trackId);
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(track.getGid());
@@ -79,7 +69,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
             throw new BusinessException(ErrorCode.CANNOT_CANCEL_TRACK);
         }
         //Todo. 동시성 문제를 고려해서 풀 수 있도록 추후 수정
-        trackMemberRepository.deleteById(trackMember.getId());
+        trackMemberService.deleteById(trackMember.getId());
 
         applicationEventPublisher.publishEvent(TrackCanceledEvent.builder()
                 .canceledUserId(currentUid)

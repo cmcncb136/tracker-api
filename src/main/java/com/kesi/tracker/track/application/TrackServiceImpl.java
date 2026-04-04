@@ -14,6 +14,7 @@ import com.kesi.tracker.track.application.query.TrackSearchCondition;
 import com.kesi.tracker.track.application.query.TrackWithGroupSearchCondition;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
+import com.kesi.tracker.track.domain.TrackMember;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
 import com.kesi.tracker.user.application.UserService;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
@@ -40,6 +41,8 @@ public class TrackServiceImpl implements TrackService {
     private final FileService fileService;
     private final GroupService groupService;
 
+    private final TrackMemberService trackMemberService;
+
     @Override
     public Track create(Track track, Long currentUid) {
         //TRACK에 있는 그룹이 존재하고 해당 TRACK에 승인된 멤버이어야 한다
@@ -53,6 +56,7 @@ public class TrackServiceImpl implements TrackService {
 
         Track createdTrack = trackRepository.save(track);
 
+        trackMemberService.save(TrackMember.createdHost(createdTrack.getId(), currentUid));
 
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(groupMember.getGid());
         applicationEventPublisher.publishEvent(TrackCreatedEvent.builder()
