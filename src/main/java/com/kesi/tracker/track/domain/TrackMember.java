@@ -8,8 +8,8 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-@Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@AllArgsConstructor
 public class TrackMember {
     private Long id;
     private Long trackId;
