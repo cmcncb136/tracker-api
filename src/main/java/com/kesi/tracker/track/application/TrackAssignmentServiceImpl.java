@@ -60,6 +60,8 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     @Transactional
     public void cancelTrack(Long currentUid, Long trackId) {
         TrackMember trackMember = trackMemberService.getTrackMemberByTrackIdAndUid(currentUid, trackId);
+        if(trackMember.isHost())
+            throw new BusinessException(ErrorCode.HOST_CANNOT_CANCEL_TRACK);
 
         Track track = trackService.getById(trackId);
         List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(track.getGid());

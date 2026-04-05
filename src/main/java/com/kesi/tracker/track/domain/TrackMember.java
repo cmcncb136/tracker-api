@@ -34,4 +34,8 @@ public class TrackMember {
                 .createdAt(LocalDateTime.now())
                 .build();
     }
+
+    public boolean isHost() {
+        return TrackRole.HOST.equals(role);
+    }
 }
