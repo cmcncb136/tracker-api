@@ -34,7 +34,7 @@ public class TrackController {
     }
 
     @Operation(summary = "트랙 생성")
-    @PostMapping("/tracks")
+    @PostMapping("/groups/{gid}/tracks")
     public TrackResponse create(
             @PathVariable Long gid,
             @RequestBody TrackCreationRequest trackCreationRequest,

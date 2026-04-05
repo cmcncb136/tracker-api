@@ -3,7 +3,7 @@ package com.kesi.tracker.notification.domain;
 public enum NotificationLink {
     //group
     GROUP_INVITATION("/groups/%d/invitations"),
-    GROUP_JOIN_REQUEST("/groups/%d/setting?relationId=%d"),
+    GROUP_JOIN_REQUEST("/groups/%d/settings?relationId=%d"),
     GROUP_INVITATION_ACCEPT("/groups/%d/invitation/accept"),
 
     //track
