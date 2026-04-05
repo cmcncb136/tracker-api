@@ -2,9 +2,7 @@ package com.kesi.tracker.track.application;
 
 import com.kesi.tracker.track.application.dto.*;
 import com.kesi.tracker.track.domain.Track;
-import com.kesi.tracker.track.domain.TrackRole;
 import com.kesi.tracker.user.application.dto.TrackMemberResponse;
-import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

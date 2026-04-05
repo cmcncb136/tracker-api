@@ -5,8 +5,6 @@ import com.kesi.tracker.core.security.annotation.UserId;
 import com.kesi.tracker.track.application.TrackAssignmentService;
 import com.kesi.tracker.track.application.TrackService;
 import com.kesi.tracker.track.application.dto.*;
-import com.kesi.tracker.track.domain.TrackRole;
-import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.application.dto.TrackMemberResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

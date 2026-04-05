@@ -15,7 +15,6 @@ import com.kesi.tracker.track.application.query.TrackWithGroupSearchCondition;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.TrackMember;
-import com.kesi.tracker.track.domain.TrackRole;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
 import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
