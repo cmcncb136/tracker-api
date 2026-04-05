@@ -16,7 +16,10 @@ import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.TrackMember;
 import com.kesi.tracker.track.domain.event.TrackCreatedEvent;
+import com.kesi.tracker.user.UserMapper;
 import com.kesi.tracker.user.application.UserService;
+import com.kesi.tracker.user.application.dto.TrackMemberResponse;
+import com.kesi.tracker.user.application.dto.UserComposite;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,6 +84,26 @@ public class TrackServiceImpl implements TrackService {
     public List<Track> findByGid(Long gid) {
         return trackRepository.findByGid(gid);
     }
+
+
+    @Override
+    public List<TrackMemberResponse> findUserProfileByTrackIdAndRole(Long trackId, TrackRoleFilter roleFilter, Long currentUid) {
+        Track track = getById(trackId);
+        if(!groupMemberService.isGroupMember(track.getGid(), currentUid)) {
+            throw new BusinessException(ErrorCode.NOT_GROUP_MEMBER);
+        }
+
+        List<TrackMember> trackMembers = roleFilter.isAll()
+                ? trackMemberService.findByTrackId(trackId)
+                : trackMemberService.findByTrackIdAndRole(trackId, TrackMapper.toDomain(roleFilter));
+
+        Map<Long, UserComposite> userMap = userService.getUserCompositeMapByIds(trackMembers.stream().map(TrackMember::getUid).collect(Collectors.toSet()));
+
+        return trackMembers.stream().map(trackMember ->
+                        UserMapper.toTrackMemberResponse(userMap.get(trackMember.getUid()), trackMember))
+                .toList();
+    }
+
 
     @Override
     public TrackResponse getTrackResponseById(Long id, Long currentUid) {
@@ -161,20 +184,17 @@ public class TrackServiceImpl implements TrackService {
     }
 
     @Override
-    public TrackResponse update(Long gid, Long trackId, TrackUpdateRequest updateRequest, Long currentUid) {
+    public TrackResponse update(Long trackId, TrackUpdateRequest updateRequest, Long currentUid) {
         Track originalTrack = getById(trackId);
-        //gid가 올바른 값이 아닌 경우
-        if (!originalTrack.equals(gid)) throw new BusinessException(ErrorCode.TRACK_NOT_FOUND);
 
         //groupMember가 아닌 경우
-        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(gid, currentUid);
+        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(originalTrack.getGid(), currentUid);
 
         //host이거나 리더가 아니라면 수정 불가능
         if(!originalTrack.getHostId().equals(currentUid) && !groupMember.isLeader())
             throw new BusinessException(ErrorCode.CANNOT_MODIFY_TRACK);
 
         Track track = TrackMapper.toTrack(
-                gid,
                 originalTrack,
                 updateRequest,
                 currentUid);

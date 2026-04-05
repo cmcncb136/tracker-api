@@ -4,7 +4,6 @@ import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.domain.GroupMember;
-import com.kesi.tracker.track.application.repository.TrackMemberRepository;
 import com.kesi.tracker.track.application.repository.TrackRepository;
 import com.kesi.tracker.track.domain.Track;
 import com.kesi.tracker.track.domain.TrackMember;

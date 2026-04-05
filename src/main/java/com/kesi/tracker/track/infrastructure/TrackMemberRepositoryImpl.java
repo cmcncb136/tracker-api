@@ -2,6 +2,7 @@ package com.kesi.tracker.track.infrastructure;
 
 import com.kesi.tracker.track.application.repository.TrackMemberRepository;
 import com.kesi.tracker.track.domain.TrackMember;
+import com.kesi.tracker.track.domain.TrackRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +33,13 @@ public class TrackMemberRepositoryImpl implements TrackMemberRepository {
     public List<TrackMember> findByTrackId(Long trackId) {
         return trackMemberJpaRepository.findByTrackId(trackId)
                 .stream().map(TrackMemberEntity::toDomain).toList();
+    }
+
+    @Override
+    public List<TrackMember> findByTrackIdAndRole(Long trackId, TrackRole role) {
+        return trackMemberJpaRepository.findByTrackIdAndRole(
+                trackId, role
+        ).stream().map(TrackMemberEntity::toDomain).toList();
     }
 
     @Override
