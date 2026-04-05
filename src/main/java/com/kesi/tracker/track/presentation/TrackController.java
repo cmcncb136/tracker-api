@@ -90,7 +90,7 @@ public class TrackController {
             @PathVariable Long trackId,
             @UserId Long userId
     ) {
-        trackAssignmentService.cancelTrack(trackId, userId);
+        trackAssignmentService.cancelTrack(userId, trackId);
     }
 
     @Operation(summary = "트랙 멤버 조회", description = "트랙을 신청한 멤버를 조회합니다.")
