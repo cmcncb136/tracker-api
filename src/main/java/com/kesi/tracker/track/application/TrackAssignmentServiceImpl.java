@@ -59,7 +59,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
     @Override
     @Transactional
     public void cancelTrack(Long currentUid, Long trackId) {
-        TrackMember trackMember = trackMemberService.getTrackMemberByTrackIdAndUid(currentUid, trackId);
+        TrackMember trackMember = trackMemberService.getTrackMemberByTrackIdAndUid(trackId, currentUid);
         if(trackMember.isHost())
             throw new BusinessException(ErrorCode.HOST_CANNOT_CANCEL_TRACK);
 
