@@ -28,6 +28,7 @@ public class TrackMemberEntity {
     @Column(nullable = false)
     private Long uid;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TrackRole role;
 

@@ -97,7 +97,7 @@ public class TrackController {
     @GetMapping(value = "/track/{trackId}/users")
     public List<TrackMemberResponse> findTrackMember(
             @PathVariable Long trackId,
-            @RequestParam(defaultValue = "ALL") TrackRoleFilter trackRoleFilter,
+            @RequestParam(name = "role", defaultValue = "ALL") TrackRoleFilter trackRoleFilter,
             @UserId Long userId
     ) {
         return trackService.findUserProfileByTrackIdAndRole(trackId, trackRoleFilter, userId);
