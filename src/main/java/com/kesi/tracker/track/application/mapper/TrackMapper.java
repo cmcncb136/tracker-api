@@ -2,11 +2,9 @@ package com.kesi.tracker.track.application.mapper;
 
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
-import com.kesi.tracker.track.application.dto.TrackCreationRequest;
-import com.kesi.tracker.track.application.dto.TrackResponse;
-import com.kesi.tracker.track.application.dto.TrackUpdateRequest;
-import com.kesi.tracker.track.application.dto.TrackWithGroupResponse;
+import com.kesi.tracker.track.application.dto.*;
 import com.kesi.tracker.track.domain.Track;
+import com.kesi.tracker.track.domain.TrackRole;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 
 import java.time.LocalDateTime;
@@ -51,14 +49,13 @@ public class TrackMapper {
     }
 
     public static Track toTrack(
-            Long gid,
             Track originalTrack,
             TrackUpdateRequest updateRequest,
             Long currentUserId
     ) {
         return Track.builder()
                 .id(originalTrack.getId())
-                .gid(gid)
+                .gid(originalTrack.getGid())
                 .hostId(originalTrack.getHostId())
                 .capacity(updateRequest.getCapacity())
                 .followerCnt(originalTrack.getFollowerCnt())
@@ -97,5 +94,13 @@ public class TrackMapper {
                 .createdBy(currentUserId)
                 .modifiedBy(currentUserId)
                 .build();
+    }
+
+    public static TrackRole toDomain(TrackRoleFilter filter) {
+        return switch (filter) {
+            case HOST -> TrackRole.HOST;
+            case FOLLOWER -> TrackRole.FOLLOWER;
+            case ALL -> null;
+        };
     }
 }

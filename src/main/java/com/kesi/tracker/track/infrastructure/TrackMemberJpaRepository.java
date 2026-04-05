@@ -1,5 +1,6 @@
 package com.kesi.tracker.track.infrastructure;
 
+import com.kesi.tracker.track.domain.TrackRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -9,4 +10,5 @@ public interface TrackMemberJpaRepository extends JpaRepository<TrackMemberEntit
     Optional<TrackMemberEntity> findByTrackIdAndUid(Long trackId, Long uid);
     List<TrackMemberEntity> findByTrackId(Long trackId);
     List<TrackMemberEntity> findByUid(Long uid);
+    List<TrackMemberEntity> findByTrackIdAndRole(Long trackId, TrackRole role);
 }

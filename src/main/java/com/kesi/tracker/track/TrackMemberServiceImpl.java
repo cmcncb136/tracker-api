@@ -9,21 +9,12 @@ import com.kesi.tracker.track.domain.TrackRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TrackMemberServiceImpl implements TrackMemberService {
     private final TrackMemberRepository trackMemberRepository;
-
-    @Override
-    public TrackMember createTrackHost(Long trackId, Long hostId) {
-        TrackMember hostMember = TrackMember.builder()
-                .trackId(trackId)
-                .uid(hostId)
-                .role(TrackRole.HOST)
-                .build();
-
-        return trackMemberRepository.save(hostMember);
-    }
 
     @Override
     public TrackMember save(TrackMember trackMember) {
@@ -34,6 +25,16 @@ public class TrackMemberServiceImpl implements TrackMemberService {
     public TrackMember getTrackMemberByTrackIdAndUid(Long trackId, Long uid) {
         return trackMemberRepository.findByTrackIdAndUid(trackId, uid)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TRACK_MEMBER_NOT_FOUND));
+    }
+
+    @Override
+    public List<TrackMember> findByTrackId(Long trackId) {
+        return trackMemberRepository.findByTrackId(trackId);
+    }
+
+    @Override
+    public List<TrackMember> findByTrackIdAndRole(Long trackId, TrackRole role) {
+        return trackMemberRepository.findByTrackIdAndRole(trackId, role);
     }
 
     @Override

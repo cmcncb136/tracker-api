@@ -2,6 +2,7 @@ package com.kesi.tracker.user;
 
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.domain.GroupMember;
+import com.kesi.tracker.track.domain.TrackMember;
 import com.kesi.tracker.user.application.dto.*;
 import com.kesi.tracker.user.domain.Email;
 import com.kesi.tracker.user.domain.Phone;
@@ -93,5 +94,22 @@ public class UserMapper {
                 .relationId(groupMember.getId())
                 .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
+    }
+
+    public static TrackMemberResponse toTrackMemberResponse(User user, TrackMember trackMember, List<FileAccessUrl> profileImageUrls) {
+        return TrackMemberResponse.builder()
+                .email(user.getEmail().value())
+                .nickname(user.getNickname())
+                .relationId(trackMember.getId())
+                .role(trackMember.getRole())
+                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
+                .build();
+    }
+
+    public static TrackMemberResponse toTrackMemberResponse(UserComposite userComposite, TrackMember trackMember) {
+        return toTrackMemberResponse(
+                userComposite.user(),
+                trackMember,
+                userComposite.accessUrls());
     }
 }
