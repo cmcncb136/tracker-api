@@ -99,7 +99,7 @@ public class FileServiceImpl implements FileService {
         List<File> files = this.findByIds(fileIds);
 
         for(File file : files){
-            StorageKey newStorageKey = storageKeyPolicy.generate(owner, FilePurpose.PROFILE, file.getMetadata().virtualName());
+            StorageKey newStorageKey = storageKeyPolicy.generate(owner, purpose, file.getMetadata().virtualName());
             fileStorageService.copy(file.getStorageKey(), newStorageKey);
 
             file.assign(owner, purpose);
