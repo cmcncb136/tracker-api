@@ -34,7 +34,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
         if(!track.isAssignmentWithinPeriod(LocalDateTime.now()))
             throw new BusinessException(ErrorCode.TRACK_REGISTRATION_CLOSED);
 
-        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(currentUid, track.getGid());
+        GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(track.getGid(), currentUid);
 
         if(!groupMember.isFollower())
             throw new BusinessException(ErrorCode.NOT_FOLLOWER);
@@ -45,7 +45,7 @@ public class TrackAssignmentServiceImpl implements TrackAssignmentService {
 
         trackMemberService.save(TrackMember.createFollower(track.getId(), currentUid));
 
-        List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(groupMember.getGid());
+        List<GroupMember> leaderGroupMembers = groupMemberService.findByGidAndRoleIsLeader(track.getGid());
 
         applicationEventPublisher.publishEvent(TrackAppliedEvent.builder()
                 .appliedUserId(currentUid)
