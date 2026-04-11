@@ -1,5 +1,6 @@
 package com.kesi.tracker.notice.application.mapper;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.notice.application.dto.NoticeCreationRequest;
 import com.kesi.tracker.notice.application.dto.NoticeResponse;
@@ -46,7 +47,7 @@ public class NoticeMapper {
             Notice notice,
             UserProfileResponse authorProfile,
             UserProfileResponse modifiedAuthorProfile,
-            List<FileAccessUrl> attachmentFileAccessUrls) {
+            List<FileResponse> fileResponses) {
         return NoticeResponse.builder()
                 .id(notice.getId())
                 .gid(notice.getGid())
@@ -57,7 +58,7 @@ public class NoticeMapper {
                 .modifiedAt(notice.getModifiedAt())
                 .authorProfile(authorProfile)
                 .modifiedAuthorProfile(modifiedAuthorProfile)
-                .attachmentFileUrls(attachmentFileAccessUrls.stream().map(FileAccessUrl::value).toList())
+                .attachmentFileUrls(fileResponses)
                 .build();
     }
 

@@ -88,7 +88,7 @@ public class NoticeServiceImpl implements NoticeService {
                 notice,
                 userService.getProfile(notice.getAuthorId()),
                 userService.getProfile(notice.getModifiedBy()),
-                fileService.findAccessUrlByOwner(FileOwner.ofNotice(notice.getId()))
+                fileService.findResponseByOwner(FileOwner.ofNotice(notice.getId()))
         );
     }
     @Override

@@ -1,5 +1,7 @@
 package com.kesi.tracker.file.application;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
+import com.kesi.tracker.file.application.mapper.FileMapper;
 import com.kesi.tracker.file.application.repository.FileRepository;
 import com.kesi.tracker.file.application.storage.FileStorageService;
 import com.kesi.tracker.file.application.storage.FileUrlAccessPolicy;
@@ -22,6 +24,7 @@ public class FileServiceImpl implements FileService {
     private final FileUrlAccessPolicy fileUrlAccessPolicy;
     private final FileStorageService fileStorageService;
     private final StorageKeyPolicy storageKeyPolicy;
+    private final FileMapper fileMapper;
 
     @Override
     public Optional<File> findById(Long id) {
@@ -51,6 +54,13 @@ public class FileServiceImpl implements FileService {
     @Override
     public void deleteById(Long id) {
         fileRepository.deleteById(id);
+    }
+
+    @Override
+    public List<FileResponse> findResponseByOwner(FileOwner owner) {
+        return findByOwner(owner).stream()
+                .map(fileMapper::toFileResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
