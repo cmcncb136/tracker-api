@@ -36,8 +36,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         Long userId = customUserDetails.getId();
         Role role = customUserDetails.getRole();
-        String token = jwtUtil.createJwt(userId, role, 60 * 60 * 1000L);
+        String token = jwtUtil.createAccessToken(userId, role);
+        String refreshToken = jwtUtil.createRefreshToken(userId, role);
+
         response.setHeader("Authorization", "Bearer " + token);
+        response.setHeader("Refresh-Token", refreshToken);
     }
 
     @Override

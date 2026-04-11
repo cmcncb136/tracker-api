@@ -15,7 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -52,7 +51,7 @@ public class SecurityConfig {
             configuration.setAllowedMethods(Collections.singletonList("*"));
             configuration.setAllowCredentials(true);
             configuration.setAllowedHeaders(Collections.singletonList("*"));
-            configuration.setExposedHeaders(Collections.singletonList("Authorization")); //Authorization 헤더 노출
+            configuration.setExposedHeaders(List.of("Authorization", "Refresh-Token")); //Authorization, Refresh-Token 헤더 노출
             configuration.setMaxAge(3600L); //1시간 동안 캐싱
             return configuration;
         };
@@ -68,9 +67,8 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/login", "/", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/files").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/files", "/users", "/auth/refresh").permitAll()
                                 .requestMatchers("/files/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
