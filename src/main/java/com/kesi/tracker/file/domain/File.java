@@ -27,12 +27,21 @@ public class File {
     private FileMetadata metadata;
 
     public void assignAsProfile(FileOwner owner) {
-        Objects.requireNonNull(owner, "Owner must not be null");
+        this.assign(owner, FilePurpose.PROFILE);
+    }
 
-        if(!FilePurpose.PROFILE.validate(this.getMetadata()))
+    public void assignAsAttachment(FileOwner owner) {
+        this.assign(owner, FilePurpose.ATTACHMENT);
+    }
+
+    public void assign(FileOwner owner, FilePurpose purpose) {
+        Objects.requireNonNull(owner, "Owner must not be null");
+        Objects.requireNonNull(purpose, "Purpose must not be null");
+
+        if(!purpose.validate(this.getMetadata()))
             throw new BusinessException(ErrorCode.INVALID_FILE_PURPOSE);
 
-        this.purpose = FilePurpose.PROFILE;
+        this.purpose = purpose;
         this.owner = owner;
     }
 
