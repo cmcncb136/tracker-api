@@ -23,6 +23,7 @@ public interface FileService {
 
     Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners owners);
 
+    List<File> assignAsAttachment(FileOwner owner, List<Long> fileIds);
     List<File> assignAsProfile(FileOwner owner, List<Long> fileIds);
     List<File> assign(FileOwner owner, FilePurpose purpose, List<Long> fileIds);
     List<File> updateFromOwner(FileOwner owner, FilePurpose purpose, List<Long> fileIds);

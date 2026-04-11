@@ -81,6 +81,12 @@ public class FileServiceImpl implements FileService {
 
     @Override
     @Transactional
+    public List<File> assignAsAttachment(FileOwner owner, List<Long> fileIds) {
+        return this.assign(owner, FilePurpose.ATTACHMENT, fileIds);
+    }
+
+    @Override
+    @Transactional
     public List<File> assignAsProfile(FileOwner owner, List<Long> fileIds) {
         return this.assign(owner, FilePurpose.PROFILE, fileIds);
     }
@@ -96,7 +102,7 @@ public class FileServiceImpl implements FileService {
             StorageKey newStorageKey = storageKeyPolicy.generate(owner, FilePurpose.PROFILE, file.getMetadata().virtualName());
             fileStorageService.copy(file.getStorageKey(), newStorageKey);
 
-            file.assignAsProfile(owner);
+            file.assign(owner, purpose);
             file.replace(newStorageKey);
         }
 

@@ -57,7 +57,7 @@ public class NoticeMapper {
                 .modifiedAt(notice.getModifiedAt())
                 .authorProfile(authorProfile)
                 .modifiedAuthorProfile(modifiedAuthorProfile)
-                .attachmentFileUrls(attachmentFileAccessUrls.stream().map(FileAccessUrl::toString).toList())
+                .attachmentFileUrls(attachmentFileAccessUrls.stream().map(FileAccessUrl::value).toList())
                 .build();
     }
 
