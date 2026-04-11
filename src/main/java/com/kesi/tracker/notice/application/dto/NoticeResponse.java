@@ -1,6 +1,7 @@
 package com.kesi.tracker.notice.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.notice.domain.NoticeType;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +35,6 @@ public class NoticeResponse {
     private LocalDateTime modifiedAt;
     @Schema(description = "최종 수정자 프로필")
     private UserProfileResponse modifiedAuthorProfile;
-    @Schema(description = "첨부 파일 URL 목록")
-    private List<String> attachmentFileUrls;
+    @Schema(description = "첨부 파일 목록")
+    private List<FileResponse> attachmentFileUrls;
 }

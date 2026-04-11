@@ -1,5 +1,6 @@
 package com.kesi.tracker.file.application;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.*;
 
 import java.util.List;
@@ -19,8 +20,9 @@ public interface FileService {
 
     void deleteById(Long id);
 
-    List<FileAccessUrl> findAccessUrlByOwner(FileOwner owner);
+    List<FileResponse> findResponseByOwner(FileOwner owner);
 
+    List<FileAccessUrl> findAccessUrlByOwner(FileOwner owner);
     Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners owners);
 
     List<File> assignAsAttachment(FileOwner owner, List<Long> fileIds);
