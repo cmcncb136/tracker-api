@@ -51,6 +51,7 @@ public enum ErrorCode {
     CANNOT_CANCEL_TRACK(HttpStatus.BAD_REQUEST, "취소할 수 없는 상태입니다"),
     CANNOT_MODIFY_TRACK(HttpStatus.FORBIDDEN, "해당 트랙을 수정할 수 있는 권한이 없습니다"),
     HOST_CANNOT_CANCEL_TRACK(HttpStatus.BAD_REQUEST, "트랙 생성자는 수강 취소를 할 수 없습니다"),
+    INVALID_RECRUITMENT_PERIOD(HttpStatus.BAD_REQUEST, "수강 신청 기간은 운영 기간 내에 포함되어야 합니다"),
 
     // File
     INVALID_FILE_PURPOSE(HttpStatus.BAD_REQUEST, "올바르지 않은 파일 용도입니다"),

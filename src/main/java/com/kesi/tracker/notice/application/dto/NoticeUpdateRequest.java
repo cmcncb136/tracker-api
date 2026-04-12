@@ -18,5 +18,5 @@ public class NoticeUpdateRequest {
     @Schema(description = "공지 내용", example = "변경된 장소는 잠실역 2번 출구 앞입니다.")
     private String content;
     @Schema(description = "첨부 파일 ID 목록")
-    private List<Long> profileFileIds;
+    private List<Long> attachmentFileIds;
 }

@@ -29,6 +29,9 @@ public class TrackMapper {
                 .place(track.getPlace())
                 .cost(track.getCost())
 
+                .operatingStartAt(track.getOperatingStartAt())
+                .operatingEndAt(track.getOperatingEndAt())
+
                 .assignmentStartAt(track.getAssignmentStartAt())
                 .assignmentEndAt(track.getAssignmentEndAt())
 
@@ -64,6 +67,10 @@ public class TrackMapper {
                 .description(updateRequest.getDescription())
                 .place(updateRequest.getPlace())
                 .cost(updateRequest.getCost())
+
+                .operatingStartAt(updateRequest.getOperatingStartAt())
+                .operatingEndAt(updateRequest.getOperatingEndAt())
+
                 .assignmentStartAt(updateRequest.getAssignmentStartAt())
                 .assignmentEndAt(updateRequest.getAssignmentEndAt())
                 .createdAt(originalTrack.getCreatedAt())
@@ -87,6 +94,10 @@ public class TrackMapper {
                 .description(trackCreationRequest.getDescription())
                 .place(trackCreationRequest.getPlace())
                 .cost(trackCreationRequest.getCost())
+
+                .operatingStartAt(trackCreationRequest.getOperatingStartAt())
+                .operatingEndAt(trackCreationRequest.getOperatingEndAt())
+
                 .assignmentStartAt(trackCreationRequest.getAssignmentStartAt())
                 .assignmentEndAt(trackCreationRequest.getAssignmentEndAt())
                 .createdAt(LocalDateTime.now())
