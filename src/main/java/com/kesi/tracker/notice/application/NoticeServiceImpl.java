@@ -63,7 +63,7 @@ public class NoticeServiceImpl implements NoticeService {
 
 
         Notice notice = update(NoticeMapper.toNotice(request, original, currentUid));
-        fileService.updateFromOwner(FileOwner.ofNotice(notice.getId()), FilePurpose.PROFILE, request.getProfileFileIds());
+        fileService.updateFromOwner(FileOwner.ofNotice(notice.getId()), FilePurpose.ATTACHMENT, request.getAttachmentFileIds());
 
         return toNoticeResponse(notice);
     }
