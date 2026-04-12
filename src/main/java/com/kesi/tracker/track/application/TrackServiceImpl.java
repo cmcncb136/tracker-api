@@ -51,7 +51,6 @@ public class TrackServiceImpl implements TrackService {
         //TRACK에 있는 그룹이 존재하고 해당 TRACK에 승인된 멤버이어야 한다
         GroupMember groupMember = groupMemberService.getApprovedByGidAndUid(track.getGid(), currentUid);
 
-
         //HOST 역할을 붙어야 받아야 한다
         if (!groupMember.isHost())
             throw new BusinessException(ErrorCode.NOT_GROUP_HOST);

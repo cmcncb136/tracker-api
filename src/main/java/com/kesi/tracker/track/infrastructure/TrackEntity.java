@@ -49,9 +49,13 @@ public class TrackEntity {
     @Column(nullable = false)
     private Long cost;
 
+    @Column(name = "operating_start_at", nullable = false)
+    private LocalDateTime operatingStartAt;
+    @Column(name = "operating_end_at", nullable = false)
+    private LocalDateTime operatingEndAt;
+
     @Column(name = "assignment_start_at", nullable = false)
     private LocalDateTime assignmentStartAt;
-
     @Column(name = "assignment_end_at", nullable = false)
     private LocalDateTime assignmentEndAt;
 
@@ -80,6 +84,8 @@ public class TrackEntity {
                 .description(this.description)
                 .place(this.place)
                 .cost(this.cost)
+                .operatingStartAt(this.operatingStartAt)
+                .operatingEndAt(this.operatingEndAt)
                 .assignmentStartAt(this.assignmentStartAt)
                 .assignmentEndAt(this.assignmentEndAt)
                 .createdAt(this.createdAt)
@@ -102,6 +108,8 @@ public class TrackEntity {
                 .description(domain.getDescription())
                 .place(domain.getPlace())
                 .cost(domain.getCost())
+                .operatingStartAt(domain.getOperatingStartAt())
+                .operatingEndAt(domain.getOperatingEndAt())
                 .assignmentStartAt(domain.getAssignmentStartAt())
                 .assignmentEndAt(domain.getAssignmentEndAt())
                 .createdAt(domain.getCreatedAt())
