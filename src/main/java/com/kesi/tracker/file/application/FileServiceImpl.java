@@ -122,8 +122,8 @@ public class FileServiceImpl implements FileService {
     @Override
     @Transactional
     public List<File> updateFromOwner(FileOwner owner, FilePurpose purpose, List<Long> fileIds) {
+        if(ObjectUtils.isEmpty(fileIds)) return List.of();
         Set<Long> fileIdSet = new HashSet<>(fileIds);
-        if(ObjectUtils.isEmpty(fileIdSet)) return List.of();
 
         //기존 내용 조회
         List<File> originalFiles = fileRepository.findByOwnerAndPurpose(owner, purpose);
