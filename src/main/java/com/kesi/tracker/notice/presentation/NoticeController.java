@@ -53,7 +53,7 @@ public class NoticeController {
     @Operation(summary = "공지사항 수정")
     @PatchMapping("notices/{noticeId}")
     public NoticeResponse update(
-            @RequestParam NoticeUpdateRequest request,
+            @RequestBody NoticeUpdateRequest request,
             @UserId long userId
     ) {
         return noticeService.update(request, userId);
