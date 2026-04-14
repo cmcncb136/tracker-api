@@ -167,7 +167,7 @@ public class GroupServiceImpl implements GroupService {
         return GroupMapper.toGroupResponse(
                 group,
                 userService.getProfile(group.getCreatedBy()),
-                fileService.findAccessUrlByOwner(FileOwner.ofGroup(gid))
+                fileService.findResponseByOwner(FileOwner.ofGroup(gid))
         );
     }
 
@@ -252,7 +252,7 @@ public class GroupServiceImpl implements GroupService {
 
         return GroupMapper.toGroupResponse(savedGroup,
                 userService.getProfile(group.getCreatedBy()),
-                fileService.findAccessUrlByOwner(fileOwner));
+                fileService.findResponseByOwner(fileOwner));
     }
 
     @Override
@@ -314,7 +314,7 @@ public class GroupServiceImpl implements GroupService {
         return GroupMapper.toGroupResponse(
                 updatedGroup,
                 userService.getProfile(leader.getId()),
-                fileService.findAccessUrlByOwner(fileOwner)
+                fileService.findResponseByOwner(fileOwner)
         );
     }
 

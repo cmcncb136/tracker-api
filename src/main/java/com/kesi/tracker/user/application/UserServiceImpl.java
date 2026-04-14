@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public MyProfileResponse getMyProfile(Long id) {
-       return UserMapper.toMyProfileResponse(this.getUserCompositeById(id));
+       return UserMapper.toMyProfileResponse(this.getById(id), fileService.findResponseByOwner(FileOwner.ofUser(id)));
     }
 
     @Override

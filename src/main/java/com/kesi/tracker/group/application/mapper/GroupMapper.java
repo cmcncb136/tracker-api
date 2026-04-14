@@ -1,5 +1,6 @@
 package com.kesi.tracker.group.application.mapper;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.application.dto.*;
 import com.kesi.tracker.group.domain.Group;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class GroupMapper {
-    public static GroupResponse toGroupResponse(Group group, UserProfileResponse leader, List<FileAccessUrl> profileImageUrls) {
+    public static GroupResponse toGroupResponse(Group group, UserProfileResponse leader, List<FileResponse> profileFiles) {
         return GroupResponse.builder()
                 .name(group.getName())
                 .introduction(group.getIntroduce())
@@ -18,7 +19,7 @@ public class GroupMapper {
                 .leader(leader)
                 .creationDate(group.getCreatedAt())
                 .memberCount(group.getMemberCount())
-                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
+                .profileFiles(profileFiles)
                 .build();
     }
 

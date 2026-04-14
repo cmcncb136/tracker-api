@@ -3,6 +3,7 @@ package com.kesi.tracker.track.application;
 import com.kesi.tracker.core.exception.BusinessException;
 import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.file.application.FileService;
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.*;
 import com.kesi.tracker.group.application.GroupMemberService;
 import com.kesi.tracker.group.application.GroupService;
@@ -117,7 +118,7 @@ public class TrackServiceImpl implements TrackService {
         return TrackMapper.toTrackResponse(
                 track,
                 hostProfile,
-                fileService.findAccessUrlByOwner(FileOwner.ofTrack(track.getId()))
+                fileService.findResponseByOwner(FileOwner.ofTrack(track.getId()))
         );
     }
 
@@ -132,13 +133,13 @@ public class TrackServiceImpl implements TrackService {
         Map<Long, UserProfileResponse> userProfileResponseMap
                 = userService.getProfiles(tracks.map(Track::getHostId).toSet());
 
-        Map<Long, List<FileAccessUrl>> fileAccessUrlsMap
-                = fileService.findAccessUrlByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
+        Map<Long, List<FileResponse>> fileResponsesMap
+                = fileService.findResponseByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
 
         return tracks.map(track -> TrackMapper.toTrackResponse(
                 track,
                 userProfileResponseMap.get(track.getHostId()),
-                fileAccessUrlsMap.get(track.getId())
+                fileResponsesMap.get(track.getId())
         ));
     }
 
@@ -153,14 +154,14 @@ public class TrackServiceImpl implements TrackService {
         Map<Long, GroupProfileResponse> groupProfileResponseMap
                 = groupService.getGroupResponseByGids(tracks.map(Track::getHostId).toSet());
 
-        Map<Long, List<FileAccessUrl>> fileAccessUrlsMap
-                = fileService.findAccessUrlByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
+        Map<Long, List<FileResponse>> fileResponsesMap
+                = fileService.findResponseByOwners(FileOwners.ofTrack(tracks.map(Track::getId).toList()));
 
         return tracks.map(track -> TrackMapper.toTrackWithGroupResponse(
                 TrackMapper.toTrackResponse(
                         track,
                         userProfileResponseMap.get(track.getHostId()),
-                        fileAccessUrlsMap.get(track.getId())
+                        fileResponsesMap.get(track.getId())
                 ),
                 groupProfileResponseMap.get(track.getGid())
         ));
@@ -178,7 +179,7 @@ public class TrackServiceImpl implements TrackService {
         return TrackMapper.toTrackResponse(
                 savedTrack,
                 hostProfile,
-                fileService.findAccessUrlByOwner(fileOwner)
+                fileService.findResponseByOwner(fileOwner)
         );
     }
 
@@ -205,7 +206,7 @@ public class TrackServiceImpl implements TrackService {
         return TrackMapper.toTrackResponse(
                 trackRepository.save(track),
                 hostProfile,
-                fileService.findAccessUrlByOwner(fileOwner)
+                fileService.findResponseByOwner(fileOwner)
         );
     }
 }

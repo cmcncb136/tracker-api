@@ -1,6 +1,7 @@
 package com.kesi.tracker.user.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kesi.tracker.file.application.dto.FileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +28,6 @@ public class MyProfileResponse {
     @Schema(description = "가입 일시")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
-    @Schema(description = "프로필 이미지 URL 목록")
-    private List<String> profileImageUrls;
+    @Schema(description = "프로필 파일 목록")
+    private List<FileResponse> profileFiles;
 }
