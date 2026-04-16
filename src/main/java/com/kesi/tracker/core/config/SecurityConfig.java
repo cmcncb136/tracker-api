@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/login", "/", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                        auth.requestMatchers("/login", "/", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**","/error").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/files", "/users", "/auth/refresh").permitAll()
                                 .requestMatchers("/files/**").permitAll()
                         .anyRequest().authenticated()
