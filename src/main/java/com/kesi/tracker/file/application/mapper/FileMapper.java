@@ -4,7 +4,6 @@ import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.application.dto.FileUploadResponse;
 import com.kesi.tracker.file.application.storage.FileUrlAccessPolicy;
 import com.kesi.tracker.file.domain.File;
-import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.file.domain.FileMetadata;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -36,6 +35,7 @@ public class FileMapper {
 
     public FileResponse toFileResponse(File file) {
         return FileResponse.builder()
+                .id(file.getId())
                 .originalFileName(file.getMetadata().originalFileName())
                 .size(file.getMetadata().fileSize())
                 .url(fileUrlAccessPolicy.generate(file.getStorageKey()))

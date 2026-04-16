@@ -21,6 +21,7 @@ public interface FileService {
     void deleteById(Long id);
 
     List<FileResponse> findResponseByOwner(FileOwner owner);
+    Map<Long, List<FileResponse>> findResponseByOwners(FileOwners owners);
 
     List<FileAccessUrl> findAccessUrlByOwner(FileOwner owner);
     Map<Long, List<FileAccessUrl>> findAccessUrlByOwners(FileOwners owners);

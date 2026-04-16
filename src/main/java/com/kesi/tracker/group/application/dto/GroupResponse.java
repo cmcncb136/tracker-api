@@ -1,6 +1,7 @@
 package com.kesi.tracker.group.application.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.user.application.dto.UserProfileResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -26,6 +27,6 @@ public class GroupResponse {
     private LocalDateTime creationDate;
     @Schema(description = "그룹 멤버 수")
     private Integer memberCount;
-    @Schema(description = "그룹 프로필 이미지 URL 목록")
-    private List<String> profileImageUrls;
+    @Schema(description = "프로필 파일 목록")
+    private List<FileResponse> profileFiles;
 }

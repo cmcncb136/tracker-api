@@ -1,5 +1,6 @@
 package com.kesi.tracker.track.application.mapper;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.application.dto.GroupProfileResponse;
 import com.kesi.tracker.track.application.dto.*;
@@ -14,7 +15,7 @@ public class TrackMapper {
     public static TrackResponse toTrackResponse(
             Track track,
             UserProfileResponse hostProfile,
-            List<FileAccessUrl> profileUrls) {
+            List<FileResponse> profileFiles) {
 
         return TrackResponse.builder()
                 .id(track.getId())
@@ -37,7 +38,7 @@ public class TrackMapper {
 
                 .createdAt(track.getCreatedAt())
                 .modifiedAt(track.getModifiedAt())
-                .profileUrls(profileUrls.stream().map(FileAccessUrl::value).toList())
+                .profileFiles(profileFiles)
                 .build();
     }
 

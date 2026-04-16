@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 @Builder
 public class FileResponse {
+    @Schema(description = "파일 ID", example = "2")
+    public Long id;
     @Schema(description = "원본 파일명", example = "profile_image.png")
     private String originalFileName;
     @Schema(description = "파일 크기 (Byte)", example = "102450")

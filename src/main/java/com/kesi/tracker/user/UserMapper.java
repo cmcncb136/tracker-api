@@ -1,5 +1,6 @@
 package com.kesi.tracker.user;
 
+import com.kesi.tracker.file.application.dto.FileResponse;
 import com.kesi.tracker.file.domain.FileAccessUrl;
 import com.kesi.tracker.group.domain.GroupMember;
 import com.kesi.tracker.track.domain.TrackMember;
@@ -26,14 +27,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static MyProfileResponse toMyProfileResponse(UserComposite userComposite) {
-        return UserMapper.toMyProfileResponse(
-                userComposite.user(),
-                userComposite.accessUrls()
-        );
-    }
-
-    public static MyProfileResponse toMyProfileResponse(User user, List<FileAccessUrl> profileImageUrls) {
+    public static MyProfileResponse toMyProfileResponse(User user, List<FileResponse> profileFiles) {
         return MyProfileResponse.builder()
                 .email(user.getEmail().value())
                 .name(user.getName())
@@ -41,7 +35,7 @@ public class UserMapper {
                 .phone(user.getPhone() != null ? user.getPhone().value() : null)
                 .birthday(user.getBirthday())
                 .createdAt(user.getCreatedAt())
-                .profileImageUrls(profileImageUrls.stream().map(FileAccessUrl::value).toList())
+                .profileFiles(profileFiles)
                 .build();
     }
 

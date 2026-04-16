@@ -64,6 +64,23 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public Map<Long, List<FileResponse>> findResponseByOwners(FileOwners owners) {
+        List<File> files = fileRepository.findByOwners(owners);
+
+        //Map 변환
+        Map<Long, List<FileResponse>> fileResponsesMap = files.stream().collect(Collectors.groupingBy(
+                file -> file.getOwner().ownerId(),
+                Collectors.mapping(fileMapper::toFileResponse, Collectors.toList())
+        ));
+
+        //비어 있는 경우 empty 할당
+        return owners.ownerIds().stream().collect(Collectors.toMap(
+                Function.identity(),
+                ownerId -> fileResponsesMap.getOrDefault(ownerId, Collections.emptyList())
+        ));
+    }
+
+    @Override
     public List<FileAccessUrl> findAccessUrlByOwner(FileOwner owner) {
         return findByOwner(owner).stream()
                 .map(File::getStorageKey)
