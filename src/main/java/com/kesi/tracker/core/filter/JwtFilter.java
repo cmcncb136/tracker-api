@@ -29,10 +29,10 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         String token = authorizationHeader.substring(7);
-        log.info("token: {}", token);
+//        log.info("token: {}", token);
 
         try {
-            if(jwtUtil.isTokenExpired(token)) {
+            if(jwtUtil.isTokenExpired(token)) { //validate(exception) and expired
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is expired");
                 return;
             }
@@ -50,6 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.warn(e.getClass().getName(), e);
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is invalid");
+            return;
         }
 
         filterChain.doFilter(request, response);
