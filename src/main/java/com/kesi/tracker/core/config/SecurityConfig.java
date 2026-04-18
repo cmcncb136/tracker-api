@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -26,6 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtUtil jwtUtil;
 
     @Bean
@@ -66,6 +68,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .formLogin(form -> form.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
+                .exceptionHandling(handler -> handler.authenticationEntryPoint(this.authenticationEntryPoint))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/login", "/", "/h2-console/**", "/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**","/error").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/files", "/users", "/auth/refresh").permitAll()
