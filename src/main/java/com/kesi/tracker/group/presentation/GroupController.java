@@ -10,6 +10,7 @@ import com.kesi.tracker.user.application.dto.GroupMemberProfileResponse;
 import com.kesi.tracker.user.domain.Email;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public class GroupController {
     @GetMapping("groups/{gid}")
     public GroupResponse getByGid(
             @PathVariable long gid,
-            @UserId Long userId
+            @Nullable @UserId Long userId
     ) {
         return groupService.getGroupResponseByGid(gid, userId);
     }
