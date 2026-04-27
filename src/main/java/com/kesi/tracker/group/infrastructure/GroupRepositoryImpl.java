@@ -1,5 +1,7 @@
 package com.kesi.tracker.group.infrastructure;
 
+import com.kesi.tracker.core.exception.BusinessException;
+import com.kesi.tracker.core.exception.ErrorCode;
 import com.kesi.tracker.group.application.repository.GroupRepository;
 import com.kesi.tracker.group.domain.AccessType;
 import com.kesi.tracker.group.domain.Group;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,5 +63,17 @@ public class GroupRepositoryImpl implements GroupRepository {
     @Override
     public void deleteByGid(Long gid) {
         groupJpaRepository.deleteById(gid);
+    }
+
+    @Override
+    @Transactional
+    public void increaseMemberCount(Long gid) {
+        groupJpaRepository.increaseMemberCount(gid);
+    }
+
+    @Override
+    @Transactional
+    public int decreaseMemberCount(Long gid) {
+        return groupJpaRepository.decreaseMemberCount(gid);
     }
 }

@@ -8,12 +8,12 @@ import java.util.Map;
 import java.util.Set;
 
 public enum GroupMemberStatus {
-    REQUESTED,  // 가입 요청
-    INVITED,    // 초대 요청
-    APPROVED,   // 승인됨 (정식 멤버)
-    REJECTED,   // 거절됨
-    BLOCKED,    // 그룹에서 차단됨
-    LEFT;        // 탈퇴
+    REQUESTED(false),  // 가입 요청
+    INVITED(false),    // 초대 요청
+    APPROVED(true),   // 승인됨 (정식 멤버)
+    REJECTED(false),   // 거절됨
+    BLOCKED(false),    // 그룹에서 차단됨
+    LEFT(false);        // 탈퇴
 
 
     private static final Map<ActionActor, Set<GroupMemberStatus>> PERMISSIONS = Map.of(
@@ -24,5 +24,16 @@ public enum GroupMemberStatus {
 
     public boolean canBeChangedBy(ActionActor actor) {
         return PERMISSIONS.getOrDefault(actor, Collections.emptySet()).contains(this);
+    }
+
+
+    private final boolean countable;
+
+    GroupMemberStatus(boolean countable) {
+        this.countable = countable;
+    }
+
+    public boolean isCountableMember() {
+        return countable;
     }
 }

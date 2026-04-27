@@ -40,4 +40,8 @@ public interface GroupService {
     MyGroupInfoResponse getMyGroupInfoResponse(Long gid, Long currentUid);
 
     GroupResponse update(Long gid, GroupUpdateRequest groupUpdateRequest, Long currentUid);
+
+
+    void increaseMemberCount(Long gid);
+    int decreaseMemberCount(Long gid);
 }

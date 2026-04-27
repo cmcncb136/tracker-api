@@ -75,16 +75,28 @@ public class GroupServiceImpl implements GroupService {
         if(!requestMember.getGid().equals(groupId))
             throw new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND);
 
-        requestMember.changeStatusByLeader(status, ActionActor.LEADER);
-
+        MemberCountChange memberCountChange = requestMember.changeStatusByLeader(status, ActionActor.LEADER);
         groupMemberRepository.save(requestMember);
+
+        processMemberCountChange(groupId, memberCountChange);
     }
 
     @Override
     public void acceptInvitation(Long gid, Long currentUid) {
         GroupMember groupMember = groupMemberService.getByGidAndUid(gid, currentUid);
-        groupMember.changeStatusByLeader(GroupMemberStatus.APPROVED, ActionActor.MEMBER);
+        MemberCountChange memberCountChange = groupMember.changeStatusByLeader(GroupMemberStatus.APPROVED, ActionActor.MEMBER);
         groupMemberRepository.save(groupMember);
+
+        processMemberCountChange(gid, memberCountChange);
+    }
+
+
+    private void processMemberCountChange(Long gid, MemberCountChange memberCountChange) {
+        switch (memberCountChange) {
+            case MemberCountChange.INCREMENT -> increaseMemberCount(gid);
+            case MemberCountChange.DECREMENT -> decreaseMemberCount(gid);
+            case MemberCountChange.NONE -> {}
+        }
     }
 
     @Override
@@ -318,11 +330,24 @@ public class GroupServiceImpl implements GroupService {
         );
     }
 
+    @Override
+    public void increaseMemberCount(Long gid) {
+        groupRepository.increaseMemberCount(gid);
+    }
+
+    @Override
+    public int decreaseMemberCount(Long gid) {
+        int updated =  groupRepository.decreaseMemberCount(gid);
+        if(updated == 0)
+            throw new BusinessException(ErrorCode.MEMBER_COUNT_UNDERFLOW);
+
+        return updated;
+    }
+
 
     private void changeTrackRole(Long gid, Long currentUid, Email targetUserEmail, GroupTrackRole trackRole) {
         GroupMember currentGroupMember = groupMemberRepository.findByGidAndUid(gid, currentUid)
                 .orElseThrow(() -> new BusinessException(ErrorCode.GROUP_MEMBER_NOT_FOUND));
-
         //리더만 Track Role를 지정할 수 있다
         if (!currentGroupMember.isLeader()) throw new BusinessException(ErrorCode.NOT_GROUP_LEADER);
 

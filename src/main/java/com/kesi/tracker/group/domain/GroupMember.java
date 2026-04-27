@@ -23,7 +23,9 @@ public class GroupMember {
     LocalDateTime modifiedAt;
 
 
-    public void changeStatusByLeader(GroupMemberStatus status, ActionActor actionActor) {
+    public MemberCountChange changeStatusByLeader(GroupMemberStatus status, ActionActor actionActor) {
+        GroupMemberStatus beforeStatus = this.status;
+
         if(!status.canBeChangedBy(actionActor))
             throw new BusinessException(ErrorCode.UNAUTHORIZED_STATUS_CHANGE);
 
@@ -39,6 +41,8 @@ public class GroupMember {
             case LEFT -> this.left();
             default -> throw new BusinessException(ErrorCode.INVALID_MEMBER_STATUS);
         }
+
+        return MemberCountChange.from(beforeStatus, this.status);
     }
 
     public void unblock() {
