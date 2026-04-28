@@ -18,4 +18,7 @@ public interface GroupRepository {
 
     Group save(Group group);
     void deleteByGid(Long gid);
+
+    void increaseMemberCount(Long gid);
+    int decreaseMemberCount(Long gid);
 }
