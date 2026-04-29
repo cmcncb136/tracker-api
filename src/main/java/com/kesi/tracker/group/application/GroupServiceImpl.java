@@ -108,7 +108,7 @@ public class GroupServiceImpl implements GroupService {
         User invitedUser = userService.getByEmail(invitedUserEmail);
 
 
-        if (groupMemberService.existsGroupMember(gid, currentUserId))
+        if (groupMemberService.existsGroupMember(gid, invitedUser.getId()))
             throw new BusinessException(ErrorCode.GROUP_MEMBER_ALREADY_EXISTS);
 
 
